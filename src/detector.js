@@ -1,4 +1,6 @@
 const AWS = require('aws-sdk');
+const { enableFlowLogs, collectFlowLogs } = require('./flow_logs');
+
 
 AWS.config.update({ region: 'us-east-1' }); // Update to your region
 
