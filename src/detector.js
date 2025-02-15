@@ -24,6 +24,12 @@ async function inventoryAWSEnvironment() {
         console.log("VPCs:", vpcs.Vpcs);
         console.log("VPCs count:", vpcs.Vpcs.length);
 
+        for (const vpc of vpcs.Vpcs) {
+            // Enable VPC flow logs
+            enableFlowLogs(vpc.VpcId);
+            console.log(`Enabled logs for VPC ${vpc.VpcId}`);
+        }
+
         // Get S3 buckets
         const s3Buckets = await s3.listBuckets().promise();
         console.log("S3 Buckets:", s3Buckets.Buckets);
@@ -75,25 +81,6 @@ function collectNetworkActivity() {
     // TODO: Implement logic to collect network activity
 }
 
-// This function should interface with AWS's infrastructure and obtain flow logs for all VPCs
-async function collectFlowLogs() {
-    console.log("Collecting flow logs...");
-    const ec2 = new AWS.EC2();
-
-    try {
-        // Get VPCs
-        const vpcs = await ec2.describeVpcs().promise();
-        const vpcIds = vpcs.Vpcs.map(vpc => vpc.VpcId);
-
-        // Get Flow Logs for each VPC
-        for (const vpcId of vpcIds) {
-            const flowLogs = await ec2.describeFlowLogs({ Filter: [{ Name: 'resource-id', Values: [vpcId] }] }).promise();
-            console.log(`Flow Logs for VPC ${vpcId}:`, flowLogs.FlowLogs);
-        }
-    } catch (error) {
-        console.error("Error collecting flow logs:", error);
-    }
-}
 
 function collectAllLogs() {
     console.log("Collecting all logs...");
