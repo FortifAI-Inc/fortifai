@@ -94,6 +94,5 @@ module.exports = {
     collectRunningProcesses,
     collectResourceUtilization,
     collectNetworkActivity,
-    collectFlowLogs,
     collectAllLogs
 };

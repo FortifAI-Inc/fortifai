@@ -87,6 +87,8 @@ function aggregateFlowLogs(logs) {
 }
 
 module.exports = {
+    collectFlowLogs,
+    enableFlowLogs,
     parseFlowLog,
     filterFlowLogs,
     aggregateFlowLogs
