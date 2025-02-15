@@ -1,0 +1,14 @@
+{
+  "name": "fortifai",
+  "version": "1.0.0",
+  "description": "A Node.js project for Fortified Intelligence",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.814.0"
+  }
+}
