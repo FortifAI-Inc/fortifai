@@ -1,5 +1,5 @@
 const AWS = require('aws-sdk');
-const { enableFlowLogs, collectFlowLogs } = require('./flow_logs');
+const flow_logs = require('./flow_logs');
 
 
 AWS.config.update({ region: 'us-east-1' }); // Update to your region
@@ -28,7 +28,7 @@ async function inventoryAWSEnvironment() {
 
         for (const vpc of vpcs.Vpcs) {
             // Enable VPC flow logs
-            enableFlowLogs(vpc.VpcId);
+            flow_logs.enableFlowLogs(vpc.VpcId);
             console.log(`Enabled logs for VPC ${vpc.VpcId}`);
         }
 
