@@ -16,6 +16,8 @@ async function inventoryAWSEnvironment() {
         // Get EC2 instances
         const ec2Instances = await ec2.describeInstances().promise();
         const instanceList = ec2Instances.Reservations.map(reservation => reservation.Instances).flat();
+        console.log("EC2 Instances:", instanceList);
+        console.log("EC2 Instances count:", instanceList.length);
 
         // Get S3 buckets
         const s3Buckets = await s3.listBuckets().promise();
