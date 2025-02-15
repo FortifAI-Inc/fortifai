@@ -10,7 +10,7 @@ async function inventoryAWSEnvironment() {
     const s3 = new AWS.S3();
     const rds = new AWS.RDS();
     const lambda = new AWS.Lambda();
-    const vpc = new AWS.VPC();
+    //const vpc = new AWS.VPC();
 
     try {
         // Get EC2 instances
@@ -29,7 +29,7 @@ async function inventoryAWSEnvironment() {
         const lambdaFunctions = await lambda.listFunctions().promise();
 
         // Get VPCs
-        const vpcs = await vpc.describeVpcs().promise();
+        //const vpcs = await vpc.describeVpcs().promise();
 
 
         // Compile the inventory
@@ -38,7 +38,7 @@ async function inventoryAWSEnvironment() {
             s3Buckets: s3Buckets.Buckets,
             rdsInstances: rdsInstances.DBInstances,
             lambdaFunctions: lambdaFunctions.Functions,
-            vpcs: vpcs.Vpcs
+            //vpcs: vpcs.Vpcs
         };
 
         return inventory;
