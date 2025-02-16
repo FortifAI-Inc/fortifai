@@ -31,8 +31,9 @@ async function enableFlowLogs(vpcId) {
             ResourceIds: [vpcId],
             ResourceType: 'VPC',
             TrafficType: 'ALL',
-            DeliverLogsPermissionArn: 'arn:aws:iam::123456789012:role/flow-logs-role',
-            LogGroupName: 'flow-logs-group',
+            DeliverLogsPermissionArn: 'arn:aws:iam::058264435853:role/OrganizationAccountAccessRole',
+            LogDestination: 'arn:aws:logs:us-east-1:058264435853:log-group:MyLog',
+            //LogGroupName: 'MyLog',
             MaxAggregationInterval: 60
         }).promise();
         console.log("Flow Log created:", flowLog);
