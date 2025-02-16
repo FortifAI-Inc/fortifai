@@ -15,6 +15,7 @@ async function collectFlowLogs() {
         for (const vpcId of vpcIds) {
             const flowLogs = await ec2.describeFlowLogs({ Filter: [{ Name: 'resource-id', Values: [vpcId] }] }).promise();
             console.log(`Flow Logs for VPC ${vpcId}:`, flowLogs.FlowLogs);
+            getFlowLogs(flowLogs.FlowLogs[0].FlowLogId);
         }
     } catch (error) {
         console.error("Error collecting flow logs:", error);
