@@ -78,7 +78,7 @@ async function getS3FlowLogs(flowLogId) {
                     if ((parsedLog.dstaddr !== "172.31.81.107") && (parsedLog.dstaddr !== "-")) {
                         dns.reverse(parsedLog.dstaddr, (err, hostnames) => {
                             if (err) {
-                                console.error(`DNS lookup failed for ${parsedLog.dstaddr}:`, err);
+                                //console.error(`DNS lookup failed for ${parsedLog.dstaddr}:`, err);
                             } else {
                                 console.log(`DNS name for ${parsedLog.dstaddr}:`, hostnames[0]);
                             }
