@@ -64,10 +64,16 @@ async function getS3FlowLogs(flowLogId) {
             const objectData = await s3.getObject({ Bucket: params.Bucket, Key: obj.Key }).promise();
             const decompressedData = zlib.gunzipSync(objectData.Body);
             const logEntries = decompressedData.toString('utf-8').split('\n');
-            logEntries.forEach(entry => {
+            logEntries.slice(1).forEach(entry => { // Skip the header line
                 if (entry) {
-                    const log = JSON.parse(entry);
-                    const parsedLog = parseFlowLog(log);
+                    const logParts = entry.split(' ');
+                    const parsedLog = {
+                        srcaddr: logParts[3],
+                        dstaddr: logParts[4],
+                        srcport: logParts[5],
+                        dstport: logParts[6],
+                        protocol: logParts[7]
+                    };
                     console.log(parsedLog);
                 }
             });
