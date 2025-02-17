@@ -58,6 +58,9 @@ async function getS3FlowLogs(flowLogId) {
 
         const data = await s3.listObjectsV2(params).promise();
         for (const obj of data.Contents) {
+            if (obj.Size === 0) { // skip directory
+                continue
+            }
             const objectData = await s3.getObject({ Bucket: params.Bucket, Key: obj.Key }).promise();
             const decompressedData = zlib.gunzipSync(objectData.Body);
             const logEntries = decompressedData.toString('utf-8').split('\n');
