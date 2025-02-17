@@ -28,7 +28,7 @@ async function inventoryAWSEnvironment() {
 
         for (const vpc of vpcs.Vpcs) {
             // Enable VPC flow logs
-            //flow_logs.enableFlowLogs(vpc.VpcId);
+            flow_logs.enableFlowLogs(vpc.VpcId);
             console.log(`Enabled logs for VPC ${vpc.VpcId}`);
         }
 
