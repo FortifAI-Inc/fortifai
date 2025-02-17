@@ -1,6 +1,7 @@
 // flow_logs.js
 const AWS = require('aws-sdk');
 const zlib = require('zlib');
+const dns = require('dns');
 
 // This function should interface with AWS's infrastructure and obtain flow logs for all VPCs
 async function collectFlowLogs() {
