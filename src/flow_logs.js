@@ -15,7 +15,7 @@ async function collectFlowLogs() {
         for (const vpcId of vpcIds) {
             const flowLogs = await ec2.describeFlowLogs({ Filter: [{ Name: 'resource-id', Values: [vpcId] }] }).promise();
             console.log(`Flow Logs for VPC ${vpcId}:`, flowLogs.FlowLogs);
-            getFlowLogs(flowLogs.FlowLogs[0].FlowLogId);
+            getS3FlowLogs(flowLogs.FlowLogs[0].FlowLogId);
         }
     } catch (error) {
         console.error("Error collecting flow logs:", error);
@@ -44,8 +44,33 @@ async function enableFlowLogs(vpcId) {
         console.error("Error enabling flow logs:", error);
     }
 }
-// This function receives FlowLogId as input and iterates over all log entries calling the parser for each in order to print the details
-async function getFlowLogs(flowLogId) {
+async function getS3FlowLogs(flowLogId) {
+    console.log(`Retrieving flow logs for FlowLogId ${flowLogId} from S3...`);
+    const s3 = new AWS.S3();
+
+    try {
+        const params = {
+            Bucket: 'hilikloggerbucket',
+            Prefix: `AWSLogs/${flowLogId}/`
+        };
+
+        const data = await s3.listObjectsV2(params).promise();
+        for (const obj of data.Contents) {
+            const objectData = await s3.getObject({ Bucket: params.Bucket, Key: obj.Key }).promise();
+            const logEntries = objectData.Body.toString('utf-8').split('\n');
+            logEntries.forEach(entry => {
+                if (entry) {
+                    const log = JSON.parse(entry);
+                    const parsedLog = parseFlowLog(log);
+                    console.log(parsedLog);
+                }
+            });
+        }
+    } catch (error) {
+        console.error("Error retrieving flow logs from S3:", error);
+    }
+}
+async function getCloudWatchFlowLogs(flowLogId) {
     console.log(`Retrieving flow logs for FlowLogId ${flowLogId}...`);
     const cloudwatchlogs = new AWS.CloudWatchLogs();
 
