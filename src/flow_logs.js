@@ -1,5 +1,6 @@
 // flow_logs.js
 const AWS = require('aws-sdk');
+const zlib = require('zlib');
 
 // This function should interface with AWS's infrastructure and obtain flow logs for all VPCs
 async function collectFlowLogs() {
@@ -57,7 +58,8 @@ async function getS3FlowLogs(flowLogId) {
         const data = await s3.listObjectsV2(params).promise();
         for (const obj of data.Contents) {
             const objectData = await s3.getObject({ Bucket: params.Bucket, Key: obj.Key }).promise();
-            const logEntries = objectData.Body.toString('utf-8').split('\n');
+            const decompressedData = zlib.gunzipSync(objectData.Body);
+            const logEntries = decompressedData.toString('utf-8').split('\n');
             logEntries.forEach(entry => {
                 if (entry) {
                     const log = JSON.parse(entry);
