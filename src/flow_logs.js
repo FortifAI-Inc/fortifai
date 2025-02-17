@@ -32,7 +32,7 @@ async function enableFlowLogs(vpcId) {
             ResourceIds: [vpcId],
             ResourceType: 'VPC',
             TrafficType: 'ALL',
-            DeliverLogsPermissionArn: 'arn:aws:iam::058264435853:role/OrganizationAccountAccessRole',
+            DeliverLogsPermissionArn: 'arn:aws:iam::058264435853:role/VPCFlowLogs-Cloudwatch-1739715485175',
             LogDestination: 'arn:aws:logs:us-east-1:058264435853:log-group:MyLog',
             //LogGroupName: 'MyLog',
             MaxAggregationInterval: 60
