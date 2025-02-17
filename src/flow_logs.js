@@ -74,7 +74,16 @@ async function getS3FlowLogs(flowLogId) {
                         dstport: logParts[6],
                         protocol: logParts[7]
                     };
-                    console.log(parsedLog);
+                    if (parsedLog.dstaddr !== "172.31.81.107") {
+                        dns.reverse(parsedLog.dstaddr, (err, hostnames) => {
+                            if (err) {
+                                console.error(`DNS lookup failed for ${parsedLog.dstaddr}:`, err);
+                            } else {
+                                console.log(`DNS name for ${parsedLog.dstaddr}:`, hostnames[0]);
+                            }
+                        });
+                        //console.log(parsedLog);
+                    }
                 }
             });
         }
