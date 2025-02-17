@@ -52,7 +52,8 @@ async function getS3FlowLogs(flowLogId) {
     try {
         const params = {
             Bucket: 'hilikloggerbucket',
-            Prefix: `AWSLogs/${flowLogId}/`
+            //Prefix: `AWSLogs/${flowLogId}/`
+            Prefix: `AWSLogs/058264435853/`
         };
 
         const data = await s3.listObjectsV2(params).promise();
