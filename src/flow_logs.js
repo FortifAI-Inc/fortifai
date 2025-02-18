@@ -65,6 +65,8 @@ async function getS3FlowLogs(flowLogId) {
             const objectData = await s3.getObject({ Bucket: params.Bucket, Key: obj.Key }).promise();
             const decompressedData = zlib.gunzipSync(objectData.Body);
             const logEntries = decompressedData.toString('utf-8').split('\n');
+            const uniqueIPs = {}; // Global dictionary to store unique IP addresses
+
             logEntries.slice(1).forEach(entry => { // Skip the header line
                 if (entry) {
                     const logParts = entry.split(' ');
@@ -76,13 +78,16 @@ async function getS3FlowLogs(flowLogId) {
                         protocol: logParts[7]
                     };
                     if ((parsedLog.dstaddr !== "172.31.81.107") && (parsedLog.dstaddr !== "-")) {
-                        dns.reverse(parsedLog.dstaddr, (err, hostnames) => {
-                            if (err) {
-                                //console.error(`DNS lookup failed for ${parsedLog.dstaddr}:`, err);
-                            } else {
-                                console.log(`DNS name for ${parsedLog.dstaddr}:`, hostnames[0]);
-                            }
-                        });
+                        if (!uniqueIPs[parsedLog.dstaddr]) {
+                            uniqueIPs[parsedLog.dstaddr] = true;
+                            dns.reverse(parsedLog.dstaddr, (err, hostnames) => {
+                                if (err) {
+                                    //console.error(`DNS lookup failed for ${parsedLog.dstaddr}:`, err);
+                                } else {
+                                    console.log(`DNS name for ${parsedLog.dstaddr}:`, hostnames[0]);
+                                }
+                            });
+                        }
                         //console.log(parsedLog);
                     }
                 }
