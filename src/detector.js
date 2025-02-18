@@ -4,6 +4,12 @@ const flow_logs = require('./flow_logs');
 
 AWS.config.update({ region: 'us-east-1' }); // Update to your region
 
+
+/// TBD: https://github.com/thiagosanches/awscraper/tree/main/scrapers has many more scrapers, e.g. glue jobs, Lambdas and more
+/// TBD: map ECS / EKS workloads
+
+
+
 // This function should interface with AWS's infrastructure and obtain a list of all provisioned elements - EC2, VPCs, SGs etc
 // This function should be called at the start of the program
 async function inventoryAWSEnvironment() {
