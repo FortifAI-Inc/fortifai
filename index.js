@@ -1,6 +1,6 @@
 const detector = require('./src/detector');
 const flow_logs = require('./src/flow_logs');
-const llm_registry = require('./src/llm_registry');
+const llm_registry = require('./src/llms_registry');
 
 console.log("Starting Fortifai...");
 
