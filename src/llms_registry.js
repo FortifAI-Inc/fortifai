@@ -10,12 +10,12 @@ const llmProviders = {
     "Databricks": "*.cloud.databricks.com", // This is a per-account addres. TBD
     "DeepInfra": "api.deepinfra.com",
     "DeepSeek": "api.deepseek.com",
-    "Eden AI": "api.edenai.co",
+    "Eden AI": "api.edenai.run",
     "Fireworks AI": "api.fireworks.ai",
     "Google": "us-central1-aiplatform.googleapis.com",
     "Groq": "api.groq.com",
     "Hugging Face": "api-inference.huggingface.co",
-    "Inflection AI": "api.inflection.ai",
+    "Inflection AI": "layercake.pubwestus3.inf7ks8.com",
     "Meta Llama": "api.meta.com",
     "Microsoft Azure OpenAI": ".openai.azure.com", // this is a per-account address. TBD
     "Mistral AI": "api.mistral.ai",
