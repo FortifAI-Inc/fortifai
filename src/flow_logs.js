@@ -73,13 +73,13 @@ async function getS3FlowLogs(flowLogId) {
                 if (entry) {
                     const logParts = entry.split(' ');
                     const parsedLog = {
-                        srcaddr: logParts[3],
-                        dstaddr: logParts[4],
-                        srcport: logParts[5],
-                        dstport: logParts[6],
-                        protocol: logParts[7]
+                        dir: logparts[0]
+                        srcaddr: logParts[4],
+                        dstaddr: logParts[5],
+                        dstport: logParts[7],
+                        protocol: logParts[6]
                     };
-                    if ((parsedLog.dstaddr !== "172.31.81.107") && (parsedLog.dstaddr !== "-")) {
+                    if (parsedLog.dir == "egress")  {
                         if (!uniqueIPs[parsedLog.dstaddr]) {
                             uniqueIPs[parsedLog.dstaddr] = true;
                             dns.reverse(parsedLog.dstaddr, (err, hostnames) => {
