@@ -38,14 +38,36 @@ function listIPAddresses() {
     }
 }
 
+// the function resolveDNS receives a domain address as input. it loops 20 times, waiting 1 second between each iteration. on each itteration it uses DNS resolution for the domain
+// it will return a list of unique IP addresses obtained from the DNS server
+async function resolveDNS(domain) {
+    const uniqueIPs = new Set();
+    for (let i = 0; i < 20; i++) {
+        try {
+            const addresses = await new Promise((resolve, reject) => {
+                dns.resolve4(domain, (err, addresses) => {
+                    if (err) reject(err);
+                    else resolve(addresses);
+                });
+            });
+            addresses.forEach(ip => uniqueIPs.add(ip));
+        } catch (err) {
+            console.error(`DNS resolution failed for ${domain}: ${err.message}`);
+        }
+        await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+    return Array.from(uniqueIPs);
+}
+
+
 function init() {
     for (const [provider, address] of Object.entries(llmProviders)) {
-        dns.lookup(address, (err, ip) => {
-            if (err) {
-                console.error(`DNS lookup failed for ${address}: ${err.message}`);
-            } else {
+        resolveDNS(address).then(ips => {
+            ips.forEach(ip => {
                 llmIPRegistry[ip] = provider;
-            }
+            });
+        }).catch(err => {
+            console.error(`Failed to resolve DNS for ${address}: ${err.message}`);
         });
     }
     console.log("LLM IP registry: \n", llmIPRegistry);
