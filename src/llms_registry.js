@@ -3,11 +3,11 @@ const dns = require('dns');
 const llmProviders = {
     "AI21 Labs": "api.ai21.com",
     "Aleph Alpha": "api.aleph-alpha.com",
-    "Amazon Bedrock": "bedrock-runtime.amazonaws.com",
+    //"Amazon Bedrock": "bedrock-runtime.amazonaws.com",
     "Anthropic": "api.anthropic.com",
     "Anyscale": "api.endpoints.anyscale.com",
     "Cohere": "api.cohere.ai",
-    "Databricks": "*.cloud.databricks.com", // This is a per-account addres. TBD
+    //"Databricks": "*.cloud.databricks.com", // This is a per-account addres. TBD
     "DeepInfra": "api.deepinfra.com",
     "DeepSeek": "api.deepseek.com",
     "Eden AI": "api.edenai.run",
@@ -17,7 +17,7 @@ const llmProviders = {
     "Hugging Face": "api-inference.huggingface.co",
     "Inflection AI": "layercake.pubwestus3.inf7ks8.com",
     "Meta Llama": "api.meta.com",
-    "Microsoft Azure OpenAI": ".openai.azure.com", // this is a per-account address. TBD
+    //"Microsoft Azure OpenAI": ".openai.azure.com", // this is a per-account address. TBD
     "Mistral AI": "api.mistral.ai",
     "MosaicML": "api.mosaicml.com",
     "NVIDIA": "api.nvidia.com",
