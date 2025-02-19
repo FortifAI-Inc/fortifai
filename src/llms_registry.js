@@ -40,7 +40,7 @@ function listIPAddresses() {
 
 // the function resolveDNS receives a domain address as input. it loops 20 times, waiting 1 second between each iteration. on each itteration it uses DNS resolution for the domain
 // it will return a list of unique IP addresses obtained from the DNS server
-async function resolveDNS(domain) {
+function resolveDNS(domain) {
     const uniqueIPs = new Set();
     for (let i = 0; i < 20; i++) {
         try {
