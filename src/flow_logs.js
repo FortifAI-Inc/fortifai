@@ -9,16 +9,7 @@ async function collectFlowLogs() {
     const ec2 = new AWS.EC2();
 
     try {
-        // Get VPCs
-        const vpcs = await ec2.describeVpcs().promise();
-        const vpcIds = vpcs.Vpcs.map(vpc => vpc.VpcId);
-
-        // Get Flow Logs for each VPC
-        for (const vpcId of vpcIds) {
-            const flowLogs = await ec2.describeFlowLogs({ Filter: [{ Name: 'resource-id', Values: [vpcId] }] }).promise();
-            console.log(`Flow Logs for VPC ${vpcId}:`, flowLogs.FlowLogs);
-            getS3FlowLogs(flowLogs.FlowLogs[0].FlowLogId);
-        }
+	getS3FlowLogs();
     } catch (error) {
         console.error("Error collecting flow logs:", error);
     }
@@ -48,14 +39,13 @@ async function enableFlowLogs(IfId) {
         console.error("Error enabling flow logs:", error);
     }
 }
-async function getS3FlowLogs(flowLogId) {
-    console.log(`Retrieving flow logs for FlowLogId ${flowLogId} from S3...`);
+async function getS3FlowLogs() {
+    console.log(`Retrieving flow logs from S3...`);
     const s3 = new AWS.S3();
 
     try {
         const params = {
             Bucket: 'hilikloggerbucket',
-            //Prefix: `AWSLogs/${flowLogId}/`
             Prefix: `AWSLogs/058264435853/`
         };
 
