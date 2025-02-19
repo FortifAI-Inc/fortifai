@@ -25,14 +25,14 @@ async function collectFlowLogs() {
 }
 
 // This function should enable VPC flow logs for a given VPC
-async function enableFlowLogs(vpcId) {
-    console.log(`Enabling flow logs for VPC ${vpcId}...`);
+async function enableFlowLogs(IfId) {
+    console.log(`Enabling flow logs for Network Interface ${IfId}...`);
     const ec2 = new AWS.EC2();
 
     try {
         const flowLog = await ec2.createFlowLogs({
-            ResourceIds: [vpcId],
-            ResourceType: 'VPC',
+            ResourceIds: [IfId],
+            ResourceType: 'NetworkInterface',
             TrafficType: 'ALL',
             //DeliverLogsPermissionArn: 'arn:aws:iam::058264435853:role/VPCFlowLogs-Cloudwatch-1739715485175',
             //LogDestination: 'arn:aws:logs:us-east-1:058264435853:log-group:MyLog',
