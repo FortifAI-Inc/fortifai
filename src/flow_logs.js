@@ -2,6 +2,8 @@
 const AWS = require('aws-sdk');
 const zlib = require('zlib');
 const dns = require('dns');
+const llms_registry = require('./llms_registry');
+
 
 // This function should interface with AWS's infrastructure and obtain flow logs for all VPCs
 async function collectFlowLogs() {
@@ -72,13 +74,10 @@ async function getS3FlowLogs() {
                     if (parsedLog.dir == "egress")  {
                         if (!uniqueIPs[parsedLog.dstaddr]) {
                             uniqueIPs[parsedLog.dstaddr] = true;
-                            dns.reverse(parsedLog.dstaddr, (err, hostnames) => {
-                                if (err) {
-                                    //console.error(`DNS lookup failed for ${parsedLog.dstaddr}:`, err);
-                                } else {
-                                    console.log(`DNS name for ${parsedLog.dstaddr}:`, hostnames[0]);
-                                }
-                            });
+                            const hostname = llms_registry.lookupService(parsedLog.dstaddr);
+                            if (hostname !== "unknown") {
+                                console.log(`Identified connection to `, hostname);
+                            }
                         }
                         //console.log(parsedLog);
                     }
