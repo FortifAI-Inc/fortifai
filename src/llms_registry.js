@@ -32,6 +32,12 @@ const llmProviders = {
 
 const llmIPRegistry = {};
 
+function listIPAddresses() {
+    for (const [ip, provider] of Object.entries(llmIPRegistry)) {
+        console.log(`IP Address: ${ip}, Provider: ${provider}`);
+    }
+}
+
 function init() {
     for (const [provider, address] of Object.entries(llmProviders)) {
         dns.lookup(address, (err, ip) => {
@@ -53,6 +59,7 @@ function lookupService(ip) {
 init();
 
 module.exports = {
-    lookupService, 
+    lookupService,
+    listIPAddresses, 
     init
 };
