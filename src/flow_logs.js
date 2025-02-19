@@ -37,8 +37,10 @@ async function enableFlowLogs(vpcId) {
             //DeliverLogsPermissionArn: 'arn:aws:iam::058264435853:role/VPCFlowLogs-Cloudwatch-1739715485175',
             //LogDestination: 'arn:aws:logs:us-east-1:058264435853:log-group:MyLog',
             LogDestination: 'arn:aws:s3:::hilikloggerbucket',
-	    LogDestinationType: 's3',
+	        LogDestinationType: 's3',
             //LogGroupName: 'MyLog',
+            LogFormat: '${flow-direction} ${instance-id} ${interface-id} ${pkt-srcaddr} ${pkt-dstaddr} ${protocol} ${dstport} ${action}'
+
             MaxAggregationInterval: 60
         }).promise();
         console.log("Flow Log created:", flowLog);
