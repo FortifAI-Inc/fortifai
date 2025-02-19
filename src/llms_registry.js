@@ -42,6 +42,7 @@ function init() {
             }
         });
     }
+    console.log("LLM IP registry: \n", llmIPRegistry);
 }
 
 function lookupService(ip) {
