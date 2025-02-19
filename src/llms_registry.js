@@ -1,33 +1,33 @@
 const dns = require('dns');
 
 const llmProviders = {
-    "OpenAI": "api.openai.com",
-    "Anthropic": "api.anthropic.com",
-    "Google": "us-central1-aiplatform.googleapis.com",
-    "Microsoft Azure OpenAI": ".openai.azure.com", // this is a per-account address. TBD
-    "Cohere": "api.cohere.ai",
     "AI21 Labs": "api.ai21.com",
-    "Hugging Face": "api-inference.huggingface.co",
-    "Amazon Bedrock": "bedrock-runtime.amazonaws.com",
-    "Mistral AI": "api.mistral.ai",
-    "Groq": "api.groq.com",
-    "Scale AI": "api.scale.com",
-    "Meta Llama": "api.meta.com",
-    "NVIDIA": "api.nvidia.com",
-    "Together.ai": "api.together.xyz",
-    "DeepInfra": "api.deepinfra.com",
-    "Replicate": "api.replicate.com",
-    "Perplexity": "api.perplexity.ai",
-    "Anyscale": "api.endpoints.anyscale.com",
-    "Databricks": "*.cloud.databricks.com", // This is a per-account addres. TBD
-    "Inflection AI": "api.inflection.ai",
-    "xAI": "api.x.ai",
-    "Eden AI": "api.edenai.co",
-    "Stability AI": "api.stability.ai",
-    "Fireworks AI": "api.fireworks.ai",
     "Aleph Alpha": "api.aleph-alpha.com",
+    "Amazon Bedrock": "bedrock-runtime.amazonaws.com",
+    "Anthropic": "api.anthropic.com",
+    "Anyscale": "api.endpoints.anyscale.com",
+    "Cohere": "api.cohere.ai",
+    "Databricks": "*.cloud.databricks.com", // This is a per-account addres. TBD
+    "DeepInfra": "api.deepinfra.com",
+    "DeepSeek": "api.deepseek.com",
+    "Eden AI": "api.edenai.co",
+    "Fireworks AI": "api.fireworks.ai",
+    "Google": "us-central1-aiplatform.googleapis.com",
+    "Groq": "api.groq.com",
+    "Hugging Face": "api-inference.huggingface.co",
+    "Inflection AI": "api.inflection.ai",
+    "Meta Llama": "api.meta.com",
+    "Microsoft Azure OpenAI": ".openai.azure.com", // this is a per-account address. TBD
+    "Mistral AI": "api.mistral.ai",
     "MosaicML": "api.mosaicml.com",
-    "DeepSeek": "api.deepseek.com"
+    "NVIDIA": "api.nvidia.com",
+    "OpenAI": "api.openai.com",
+    "Perplexity": "api.perplexity.ai",
+    "Replicate": "api.replicate.com",
+    "Scale AI": "api.scale.com",
+    "Stability AI": "api.stability.ai",
+    "Together.ai": "api.together.xyz",
+    "xAI": "api.x.ai"
 };
 
 const llmIPRegistry = {};
