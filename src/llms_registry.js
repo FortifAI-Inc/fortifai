@@ -16,7 +16,7 @@ const llmProviders = {
     "Groq": "api.groq.com",
     "Hugging Face": "api-inference.huggingface.co",
     "Inflection AI": "layercake.pubwestus3.inf7ks8.com",
-    "Meta Llama": "api.meta.com",
+    //"Meta Llama": "api.meta.com",
     //"Microsoft Azure OpenAI": ".openai.azure.com", // this is a per-account address. TBD
     "Mistral AI": "api.mistral.ai",
     "MosaicML": "api.mosaicml.com",
