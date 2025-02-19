@@ -71,7 +71,7 @@ function BuildRegistry() {
             console.error(`Failed to resolve DNS for ${address}: ${err.message}`);
         });
     }
-    console.log("LLM IP registry: \n", llmIPRegistry);
+    //console.log("LLM IP registry: \n", llmIPRegistry);
 }
 
 

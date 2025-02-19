@@ -46,7 +46,7 @@ async function getS3FlowLogs() {
     const s3 = new AWS.S3();
 
     llms_registry.BuildRegistry();
-    llms_registry.listIPAddresses();
+    //llms_registry.listIPAddresses();
     try {
         const params = {
             Bucket: 'hilikloggerbucket',
