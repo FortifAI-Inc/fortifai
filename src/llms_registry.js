@@ -54,9 +54,22 @@ async function resolveDNS(domain) {
         } catch (err) {
             console.error(`DNS resolution failed for ${domain}: ${err.message}`);
         }
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 10));
     }
     return Array.from(uniqueIPs);
+}
+
+function BuildRegistry() {
+    for (const [provider, address] of Object.entries(llmProviders)) {
+        resolveDNS(address).then(ips => {
+            ips.forEach(ip => {
+                llmIPRegistry[ip] = provider;
+            });
+        }).catch(err => {
+            console.error(`Failed to resolve DNS for ${address}: ${err.message}`);
+        });
+    }
+    console.log("LLM IP registry: \n", llmIPRegistry);
 }
 
 
@@ -82,6 +95,7 @@ init();
 
 module.exports = {
     lookupService,
+    BuildRegistry,
     listIPAddresses, 
     init
 };
