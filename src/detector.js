@@ -27,6 +27,10 @@ async function inventoryAWSEnvironment() {
         //console.log("EC2 Instances:", instanceList);
         console.log("EC2 Instances count:", instanceList.length);
 
+        // get instance's network interface ID 
+        const networkInterfaceId = instanceList[0].NetworkInterfaces[0].NetworkInterfaceId;
+        console.log("Network Interface ID:", instanceList[0].NetworkInterfaces[0].NetworkInterfaceId);
+
         // Get VPCs
         const vpcs = await ec2.describeVpcs().promise();
         //console.log("VPCs:", vpcs.Vpcs);
