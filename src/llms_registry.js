@@ -1,5 +1,7 @@
 const dns = require('dns');
 
+// TODO: This should be an async service that populates some in-memory DB.
+
 const llmProviders = {
     "AI21 Labs": "api.ai21.com",
     "Aleph Alpha": "api.aleph-alpha.com",
