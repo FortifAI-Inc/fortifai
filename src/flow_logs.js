@@ -39,7 +39,7 @@ async function enableFlowLogs(vpcId) {
             LogDestination: 'arn:aws:s3:::hilikloggerbucket',
 	        LogDestinationType: 's3',
             //LogGroupName: 'MyLog',
-            LogFormat: '${flow-direction} ${instance-id} ${interface-id} ${pkt-srcaddr} ${pkt-dstaddr} ${protocol} ${dstport} ${action}'
+            LogFormat: '${flow-direction} ${instance-id} ${interface-id} ${pkt-srcaddr} ${pkt-dstaddr} ${protocol} ${dstport} ${action}',
 
             MaxAggregationInterval: 60
         }).promise();
