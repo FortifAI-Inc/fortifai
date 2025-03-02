@@ -18,16 +18,16 @@ async function writeData(type, subtype, data) {
                 case 'EC2':
                     try {
                         const ec2Schema = {
-                            instanceId: { type: 'string' },
-                            instanceType: { type: 'string' },
-                            instanceState: { type: 'string' },
-                            launchTime: { type: 'string' },
-                            privateIpAddress: { type: 'string' },
-                            publicIpAddress: { type: 'string' },
-                            subnetId: { type: 'string' },
-                            vpcId: { type: 'string' },
-                            securityGroups: { type: 'string' },
-                            tags: { type: 'string' }
+                            instanceId: { type: 'UTF8', optional: false },
+                            instanceType: { type: 'UTF8', optional: true },
+                            instanceState: { type: 'UTF8', optional: true },
+                            launchTime: { type: 'UTF8', optional: true },
+                            privateIpAddress: { type: 'UTF8', optional: true },
+                            publicIpAddress: { type: 'UTF8', optional: true },
+                            subnetId: { type: 'UTF8', optional: true },
+                            vpcId: { type: 'UTF8', optional: true },
+                            securityGroups: { type: 'UTF8', optional: true },
+                            tags: { type: 'UTF8', optional: true }
                         };
                         const filePath = 'tmp/ec2inventory.parquet';
                         try {
@@ -58,7 +58,7 @@ async function writeData(type, subtype, data) {
                               records[index] = data; // Update record
                             } else {
                               console.log(`Adding new instance: ${data.InstanceId}`);
-                              records.push(data); // Insert new record
+                              records.push({data.InstanceId, data.InstanceType, data.State, data.LaunvhTime, data.PrivateIpAddress, data.PublicIpAddress, data.SubnetId, data.VpcId, stringify(data.SecurityGroups), stringify(data.Tags)}); // Insert new record
                             }
                         
                             // Write data back to Parquet file
