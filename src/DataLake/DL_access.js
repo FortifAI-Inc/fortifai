@@ -44,7 +44,7 @@ async function writeData(type, subtype, data) {
                                     Body: require('fs').readFileSync('tmp/temp.parquet')
                                 };
                                 await s3.putObject(uploadParams).promise();
-                                return;
+                                exit;
                             }
                         } catch (error) {
                             if (error.code === 'NoSuchKey') {
