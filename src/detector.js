@@ -1,5 +1,6 @@
 const AWS = require('aws-sdk');
 const flow_logs = require('./flow_logs');
+const DL_access = require('./DataLake/DL_access');
 
 
 AWS.config.update({ region: 'us-east-1' }); // Update to your region
@@ -24,7 +25,7 @@ async function inventoryAWSEnvironment() {
         // Get EC2 instances
         const ec2Instances = await ec2.describeInstances().promise();
         const instanceList = ec2Instances.Reservations.map(reservation => reservation.Instances).flat();
-        //console.log("EC2 Instances:", instanceList);
+        console.log("EC2 Instances:", instanceList);
         console.log("EC2 Instances count:", instanceList.length);
 
         // get instance's network interface ID 
