@@ -1,5 +1,5 @@
 const AWS = require('aws-sdk');
-const hyparquet = require('hyparquet');
+const parquet = require('parquetjs-lite');
 const fs = require('fs');
 //const fileContent = require('fs').readFileSync('tmp/temp.parquet');
 
@@ -10,7 +10,7 @@ const bucketName = 'hilikdatalake';
 async function writeData(type, subtype, data) {
 
 
-    const writer = await ('tmp/temp.parquet', schema);
+    //const writer = await ('tmp/temp.parquet', schema);
 
     switch (type) {
         case 'asset':
