@@ -1,98 +1,72 @@
 const AWS = require('aws-sdk');
 const parquet = require('parquetjs-lite');
-const fileContent = require('fs').readFileSync('tmp/temp.parquet');
+const fs = require('fs');
+//const fileContent = require('fs').readFileSync('tmp/temp.parquet');
 
 const s3 = new AWS.S3();
 
 const bucketName = 'hilikdatalake';
 
 async function writeData(type, subtype, data) {
-    const schema = new parquet.ParquetSchema({
-        type: { type: 'UTF8' },
-        subtype: { type: 'UTF8', optional: true },
-        data: { type: 'JSON' }
-    });
 
-    const writer = await parquet.ParquetWriter.openFile(schema, 'tmp/temp.parquet');
+
+    //const writer = await parquet.ParquetWriter.openFile(schema, 'tmp/temp.parquet');
 
     switch (type) {
         case 'asset':
             switch (subtype) {
                 case 'EC2':
-                    try {
-                        const parquetFilePath = 'assets/compute/ec2/inventory.parquet';
-                        
-                        // Download the existing parquet file from S3
-                        const params = {
-                            Bucket: bucketName,
-                            Key: parquetFilePath
-                        };
-                        let existingFile;
-                        try {
-                            existingFile = await s3.getObject(params).promise();
-                            if (existingFile.ContentLength === 0) {
-                                console.log("File exists but is empty, initializing new file.");
-                                await writer.appendRow({
-                                    type: type,
-                                    subtype: subtype,
-                                    data: JSON.stringify(data)
-                                });
-                                await writer.close();
-                                const uploadParams = {
-                                    Bucket: bucketName,
-                                    Key: parquetFilePath,
-                                    Body: require('fs').readFileSync('tmp/temp.parquet')
-                                };
-                                await s3.putObject(uploadParams).promise();
-                                exit;
-                            }
-                        } catch (error) {
-                            if (error.code === 'NoSuchKey') {
-                                console.log("File does not exist, initializing new file.");
-                                await writer.appendRow({
-                                    type: type,
-                                    subtype: subtype,
-                                    data: JSON.stringify(data)
-                                });
-                                await writer.close();
-                                const uploadParams = {
-                                    Bucket: bucketName,
-                                    Key: parquetFilePath,
-                                    Body: require('fs').readFileSync('tmp/temp.parquet')
-                                };
-                                await s3.putObject(uploadParams).promise();
-                                return;
-                            } else {
-                                throw error;
-                            }
-                        }
-                        const reader = await parquet.ParquetReader.openBuffer(existingFile.Body);
+                    const ec2Schema = new parquet.ParquetSchema({
+                        instanceId: { type: 'UTF8' },
+                        instanceType: { type: 'UTF8' },
+                        instanceState: { type: 'UTF8' },
+                        launchTime: { type: 'UTF8' },
+                        privateIpAddress: { type: 'UTF8' },
+                        publicIpAddress: { type: 'UTF8' },
+                        subnetId: { type: 'UTF8' },
+                        vpcId: { type: 'UTF8' },
+                        securityGroups: { type: 'UTF8' },
+                        tags: { type: 'UTF8' }
+                    });
+                    const filePath = 'tmp/ec2inventory.parquet';
+
+                    let writer;
+                    if (fs.existsSync(filePath) && fs.statSync(filePath).size > 0) {
+                        const reader = await parquet.ParquetReader.openFile(filePath);
                         const cursor = reader.getCursor();
                         let record = null;
-                        let instanceExists = false;
+                        let exists = false;
 
-                        // Check if the instance ID already exists
                         while (record = await cursor.next()) {
-                            if (record.data && JSON.parse(record.data).InstanceId === data.InstanceId) {
-                                console.log("Instance already exists: " + data.InstanceId);
-                                instanceExists = true;
+                            if (record.instanceId === data.InstanceId) {
+                                exists = true;
                                 break;
                             }
                         }
+
                         await reader.close();
 
-                        // If the instance ID does not exist, append the new data
-                        if (!instanceExists) {
-                            console.log("Adding new instance to data lake: " + data.InstanceId);
-                            await writer.appendRow({
-                                type: type,
-                                subtype: subtype,
-                                data: JSON.stringify(data)
-                            });
+                        if (exists) {
+                            return; // InstanceId already exists, no need to append
                         }
-                    } catch (error) {
-                        console.error("Error processing EC2 data: ", error);
+
+                        writer = await parquet.ParquetWriter.openFile(ec2Schema, filePath);
+                    } else {
+                        writer = await parquet.ParquetWriter.openFile(ec2Schema, filePath);
                     }
+
+                    await writer.appendRow({
+                        instanceId: data.InstanceId,
+                        instanceType: data.InstanceType,
+                        instanceState: data.InstanceState,
+                        launchTime: data.LaunchTime,
+                        privateIpAddress: data.PrivateIpAddress,
+                        publicIpAddress: data.PublicIpAddress,
+                        subnetId: data.SubnetId,
+                        vpcId: data.VpcId,
+                        securityGroups: JSON.stringify(data.SecurityGroups),
+                        tags: JSON.stringify(data.Tags)
+                    });
                     break;
                 case 'S3Bucket':
                 case 'SG':
