@@ -9,6 +9,7 @@
   "author": "Your Name",
   "license": "MIT",
   "dependencies": {
-    "aws-sdk": "^2.814.0"
+    "aws-sdk": "^2.814.0",
+    "parquetjs-lite": "^0.15.0"
   }
 }

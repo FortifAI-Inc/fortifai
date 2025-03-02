@@ -4,7 +4,7 @@ const fileContent = require('fs').readFileSync('/tmp/temp.parquet');
 
 const s3 = new AWS.S3();
 
-const bucketName = 'your-s3-bucket-name';
+const bucketName = 'hilikdatalake';
 const parquetFilePath = 'path/to/your/parquet/file.parquet';
 
 async function writeData(type, subtype, data) {
@@ -20,6 +20,7 @@ async function writeData(type, subtype, data) {
         case 'asset':
             switch (subtype) {
                 case 'EC2':
+                    parquetFilePath = 'assets/compute/ec2/inventory.parquet';
                 case 'S3Bucket':
                 case 'SG':
                 case 'VPC':
