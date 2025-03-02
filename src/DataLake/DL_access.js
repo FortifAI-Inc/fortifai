@@ -27,7 +27,45 @@ async function writeData(type, subtype, data) {
                             Bucket: bucketName,
                             Key: parquetFilePath
                         };
-                        const existingFile = await s3.getObject(params).promise();
+                        let existingFile;
+                        try {
+                            existingFile = await s3.getObject(params).promise();
+                            if (existingFile.ContentLength === 0) {
+                                console.log("File exists but is empty, initializing new file.");
+                                await writer.appendRow({
+                                    type: type,
+                                    subtype: subtype,
+                                    data: JSON.stringify(data)
+                                });
+                                await writer.close();
+                                const uploadParams = {
+                                    Bucket: bucketName,
+                                    Key: parquetFilePath,
+                                    Body: require('fs').readFileSync('tmp/temp.parquet')
+                                };
+                                await s3.putObject(uploadParams).promise();
+                                return;
+                            }
+                        } catch (error) {
+                            if (error.code === 'NoSuchKey') {
+                                console.log("File does not exist, initializing new file.");
+                                await writer.appendRow({
+                                    type: type,
+                                    subtype: subtype,
+                                    data: JSON.stringify(data)
+                                });
+                                await writer.close();
+                                const uploadParams = {
+                                    Bucket: bucketName,
+                                    Key: parquetFilePath,
+                                    Body: require('fs').readFileSync('tmp/temp.parquet')
+                                };
+                                await s3.putObject(uploadParams).promise();
+                                return;
+                            } else {
+                                throw error;
+                            }
+                        }
                         const reader = await parquet.ParquetReader.openBuffer(existingFile.Body);
                         const cursor = reader.getCursor();
                         let record = null;
