@@ -10,6 +10,6 @@
   "license": "MIT",
   "dependencies": {
     "aws-sdk": "^2.814.0",
-    "hyparquet": "^1.0.0"
+    "parquetjs-lite": "^1.5.0"
   }
 }
