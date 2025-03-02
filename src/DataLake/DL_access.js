@@ -97,15 +97,6 @@ async function writeData(type, subtype, data) {
             throw new Error(`Unsupported type: ${type}`);
     }
 
-    await writer.close();
-
-    const params = {
-        Bucket: bucketName,
-        Key: parquetFilePath,
-        Body: fileContent
-    };
-
-    await s3.putObject(params).promise();
 }
 
 async function readData() {
