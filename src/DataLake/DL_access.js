@@ -5,7 +5,6 @@ const fileContent = require('fs').readFileSync('tmp/temp.parquet');
 const s3 = new AWS.S3();
 
 const bucketName = 'hilikdatalake';
-const parquetFilePath = 'path/to/your/parquet/file.parquet';
 
 async function writeData(type, subtype, data) {
     const schema = new parquet.ParquetSchema({
