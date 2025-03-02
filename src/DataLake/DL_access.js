@@ -1,5 +1,5 @@
 const AWS = require('aws-sdk');
-const parquet = require('@dsnp/parquetjs');
+const hyparquet = require('hyparquet');
 const fs = require('fs');
 //const fileContent = require('fs').readFileSync('tmp/temp.parquet');
 
@@ -10,25 +10,25 @@ const bucketName = 'hilikdatalake';
 async function writeData(type, subtype, data) {
 
 
-    //const writer = await parquet.ParquetWriter.openFile(schema, 'tmp/temp.parquet');
+    const writer = await ('tmp/temp.parquet', schema);
 
     switch (type) {
         case 'asset':
             switch (subtype) {
                 case 'EC2':
                     try {
-                        const ec2Schema = new parquet.ParquetSchema({
-                            instanceId: { type: 'UTF8' },
-                            instanceType: { type: 'UTF8' },
-                            instanceState: { type: 'UTF8' },
-                            launchTime: { type: 'UTF8' },
-                            privateIpAddress: { type: 'UTF8' },
-                            publicIpAddress: { type: 'UTF8' },
-                            subnetId: { type: 'UTF8' },
-                            vpcId: { type: 'UTF8' },
-                            securityGroups: { type: 'UTF8' },
-                            tags: { type: 'UTF8' }
-                        });
+                        const ec2Schema = {
+                            instanceId: { type: 'string' },
+                            instanceType: { type: 'string' },
+                            instanceState: { type: 'string' },
+                            launchTime: { type: 'string' },
+                            privateIpAddress: { type: 'string' },
+                            publicIpAddress: { type: 'string' },
+                            subnetId: { type: 'string' },
+                            vpcId: { type: 'string' },
+                            securityGroups: { type: 'string' },
+                            tags: { type: 'string' }
+                        };
                         const filePath = 'tmp/ec2inventory.parquet';
 
                         let writer;
@@ -53,7 +53,7 @@ async function writeData(type, subtype, data) {
 
                             writer = await parquet.ParquetWriter.openFile(ec2Schema, filePath);
                         } else */{
-                            writer = await parquet.ParquetWriter.openFile(ec2Schema, filePath);
+                            writer = await hyparquet.writer.openFile(filePath,ec2Schema);
                         }
 
                         await writer.appendRow({
