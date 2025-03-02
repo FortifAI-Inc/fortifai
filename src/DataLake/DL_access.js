@@ -1,5 +1,5 @@
 const AWS = require('aws-sdk');
-const parquet = require('parquetjs-lite');
+const parquet = require('@dsnp/parquetjs');
 const fs = require('fs');
 //const fileContent = require('fs').readFileSync('tmp/temp.parquet');
 
