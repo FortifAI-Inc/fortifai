@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk');
 const parquet = require('parquetjs-lite');
-const fileContent = require('fs').readFileSync('/tmp/temp.parquet');
+const fileContent = require('fs').readFileSync('tmp/temp.parquet');
 
 const s3 = new AWS.S3();
 
@@ -14,7 +14,7 @@ async function writeData(type, subtype, data) {
         data: { type: 'JSON' }
     });
 
-    const writer = await parquet.ParquetWriter.openFile(schema, '/tmp/temp.parquet');
+    const writer = await parquet.ParquetWriter.openFile(schema, 'tmp/temp.parquet');
 
     switch (type) {
         case 'asset':
