@@ -30,49 +30,53 @@ async function writeData(type, subtype, data) {
                             tags: { type: 'string' }
                         };
                         const filePath = 'tmp/ec2inventory.parquet';
-
-                        let writer;
-                        /*if (fs.existsSync(filePath) && fs.statSync(filePath).size > 4) {
-                            const reader = await parquet.ParquetReader.openFile(filePath);
-                            const cursor = reader.getCursor();
-                            let record = null;
-                            let exists = false;
-
-                            while (record = await cursor.next()) {
-                                if (record.instanceId === data.InstanceId) {
-                                    exists = true;
-                                    break;
+                        try {
+                            let records = [];
+                        
+                            // Check if file exists
+                            if (fs.existsSync(filePath)) {
+                              try {
+                                const reader = await parquet.ParquetReader.openFile(filePath);
+                                const cursor = reader.getCursor();
+                                let record;
+                        
+                                // Read existing records into an array
+                                while ((record = await cursor.next())) {
+                                  records.push(record);
                                 }
+                                await reader.close();
+                              } catch (err) {
+                                console.error('Error reading existing Parquet file (corrupt or empty). Recreating file.', err);
+                                records = []; // Treat file as new
+                              }
                             }
-
-                            await reader.close();
-
-                            if (exists) {
-                                return; // InstanceId already exists, no need to append
+                        
+                            // Check if InstanceId already exists
+                            const index = records.findIndex(rec => rec.InstanceId === data.InstanceId);
+                            if (index !== -1) {
+                              console.log(`Updating existing instance: ${data.InstanceId}`);
+                              records[index] = data; // Update record
+                            } else {
+                              console.log(`Adding new instance: ${data.InstanceId}`);
+                              records.push(data); // Insert new record
                             }
-
-                            writer = await parquet.ParquetWriter.openFile(ec2Schema, filePath);
-                        } else */{
-                            writer = await hyparquet.writer.openFile(filePath,ec2Schema);
+                        
+                            // Write data back to Parquet file
+                            const writer = await parquet.ParquetWriter.openFile(ec2Schema, filePath);
+                            for (const record of records) {
+                              await writer.appendRow(record);
+                            }
+                            await writer.close();
+                        
+                            console.log('Parquet file updated successfully.');
+                          } catch (err) {
+                            console.error('Error writing data to Parquet file:', err);
+                          }
+                        } catch (error) {   
+                            console.error("Error writing EC2 asset:", error);
+                            throw error;
                         }
 
-                        await writer.appendRow({
-                            instanceId: data.InstanceId,
-                            instanceType: data.InstanceType,
-                            instanceState: data.InstanceState,
-                            launchTime: data.LaunchTime,
-                            privateIpAddress: data.PrivateIpAddress,
-                            publicIpAddress: data.PublicIpAddress,
-                            subnetId: data.SubnetId,
-                            vpcId: data.VpcId,
-                            securityGroups: JSON.stringify(data.SecurityGroups),
-                            tags: JSON.stringify(data.Tags)
-                        });
-
-                        await writer.close();
-                    } catch (error) {
-                        console.error(`Error processing EC2 data: ${error.message}`);
-                    }
                     break;
                 case 'S3Bucket':
                 case 'SG':
