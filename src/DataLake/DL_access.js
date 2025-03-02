@@ -32,7 +32,7 @@ async function writeData(type, subtype, data) {
                         const filePath = 'tmp/ec2inventory.parquet';
 
                         let writer;
-                        if (fs.existsSync(filePath) && fs.statSync(filePath).size > 0) {
+                        /*if (fs.existsSync(filePath) && fs.statSync(filePath).size > 4) {
                             const reader = await parquet.ParquetReader.openFile(filePath);
                             const cursor = reader.getCursor();
                             let record = null;
@@ -52,7 +52,7 @@ async function writeData(type, subtype, data) {
                             }
 
                             writer = await parquet.ParquetWriter.openFile(ec2Schema, filePath);
-                        } else {
+                        } else */{
                             writer = await parquet.ParquetWriter.openFile(ec2Schema, filePath);
                         }
 
@@ -68,6 +68,8 @@ async function writeData(type, subtype, data) {
                             securityGroups: JSON.stringify(data.SecurityGroups),
                             tags: JSON.stringify(data.Tags)
                         });
+
+                        await writer.close();
                     } catch (error) {
                         console.error(`Error processing EC2 data: ${error.message}`);
                     }
