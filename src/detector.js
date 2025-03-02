@@ -25,7 +25,10 @@ async function inventoryAWSEnvironment() {
         // Get EC2 instances
         const ec2Instances = await ec2.describeInstances().promise();
         const instanceList = ec2Instances.Reservations.map(reservation => reservation.Instances).flat();
-        console.log("EC2 Instances:", instanceList);
+        for (const instance of instanceList) {
+            DL_access.writeData('asset', 'EC2', instance);
+        }   
+        //console.log("EC2 Instances:", instanceList);
         console.log("EC2 Instances count:", instanceList.length);
 
         // get instance's network interface ID 

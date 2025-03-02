@@ -21,6 +21,21 @@ async function writeData(type, subtype, data) {
             switch (subtype) {
                 case 'EC2':
                     parquetFilePath = 'assets/compute/ec2/inventory.parquet';
+                    const schema = new parquet.ParquetSchema({
+                        type: { type: 'UTF8' },
+                        subtype: { type: 'UTF8', optional: true },
+                        data: { type: 'JSON' }
+                    });
+                    console.log("EC2 data: "+JSON.stringify(data));
+                    break;
+                    const writer = await parquet.ParquetWriter.openFile(schema, parquetFilePath);
+                    await writer.appendRow({
+                        type: type,
+                        subtype: subtype,
+                        data: JSON.stringify(data)
+                    });
+                    await writer.close();
+                    break;  
                 case 'S3Bucket':
                 case 'SG':
                 case 'VPC':
