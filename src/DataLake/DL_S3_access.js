@@ -4,8 +4,8 @@ const fs = require('fs');
 const stream = require("stream");
 const util = require("util");
 
-const { GetObjectCommand, PutObjectCommand } = require("@aws-sdk/client-s3");
-const s3 = new AWS.S3();
+const { S3Client, GetObjectCommand, PutObjectCommand } = require("@aws-sdk/client-s3");
+const s3 = new S3Client( {region: "us-east-1"} );
 
 const bucketName = 'hilikdatalake';
 
@@ -67,7 +67,7 @@ async function fetchParquetFromS3(S3_KEY) {
     try {
       console.log("\n💾 Writing updated records to Parquet...");
   
-      const tempFilePath = "/tmp/S3TMP_ec2_instances.parquet";
+      const tempFilePath = "tmp/S3TMP_ec2_instances.parquet";
       const writer = await parquet.ParquetWriter.openFile(schema, tempFilePath);
       
       for (const record of records) {
@@ -76,7 +76,7 @@ async function fetchParquetFromS3(S3_KEY) {
       await writer.close();
   
       // Read the written Parquet file
-      const fileData = await fs.readFile(tempFilePath);
+      const fileData = await fs.readFileSync(tempFilePath);
   
       // Upload file to S3
       const putObjectParams = {
