@@ -37,6 +37,10 @@ async function writeData(type, subtype, data) {
                             securityGroups: { type: 'UTF8', optional: true },
                             tags: { type: 'UTF8', optional: true }*/
                         });
+                        IfIDs = []
+                        for (const networkInterface of data.NetworkInterfaces) {
+                            IfIDs.push(networkInterface.NetworkInterfaceId);
+                        }
                         const ec2Data = {instanceId: data.InstanceId, 
                             instanceType: data.InstanceType, 
                             instanceState: data.State.Name, 
@@ -49,7 +53,7 @@ async function writeData(type, subtype, data) {
                             clientToken: data.ClientToken,
                             elasticGpuAssociations: data.ElasticGpuAssociations,
                             elasticInferenceAcceleratorAssociations: data.ElasticInferenceAcceleratorAssociations,
-                            networkInterfaces: [ data.NetworkInterfaces[0].NetworkInterfaceId, data.NetworkInterfaces[1].NetworkInterfaceId], // for now save only the IfID, later figure out how to store an object
+                            networkInterfaces: IfIDs, // for now save only the IfID, later figure out how to store an object
                             cpuOptions: data.CpuOptions,
                             platformDetails: data.PlatformDetails
                         }
