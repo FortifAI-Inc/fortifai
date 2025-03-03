@@ -73,6 +73,7 @@ async function writeData(type, subtype, data) {
                             // Write data back to Parquet file
                             const writer = await parquet.ParquetWriter.openFile(ec2Schema, filePath);
                             for (const record of records) {
+                                console.log('Writing record:', record);
                               await writer.appendRow(record);
                             }
                             await writer.close();
