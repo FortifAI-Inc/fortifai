@@ -7,6 +7,21 @@ const s3 = new AWS.S3();
 
 const bucketName = 'hilikdatalake';
 
+
+// Queue to serialize write operations
+let writeQueue = Promise.resolve();
+
+/**
+ * Adds a write operation to the queue to ensure writes are serialized.
+ * @param {Object} data - JSON representing EC2 instance parameters.
+ */
+function enqueueWrite(type, subtype, data) {
+  writeQueue = writeQueue.then(() => writeData(type, subtype, data)).catch(err => {
+    console.error("Error processing write queue:", err);
+  });
+}
+
+
 async function writeData(type, subtype, data) {
 
 
@@ -141,6 +156,7 @@ async function getDataStatistics() {
 }
 
 module.exports = {
+    enqueueWrite,
     writeData,
     readData,
     queryData,
