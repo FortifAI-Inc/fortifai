@@ -30,7 +30,7 @@ function enqueueS3Write(type, subtype, data) {
  */
 async function fetchParquetFromS3(S3_KEY) {
     try {
-      console.log("\n🔹 Fetching Parquet file from S3...");
+      //console.log("\n🔹 Fetching Parquet file from S3...");
   
       const getObjectParams = { Bucket: bucketName, Key: S3_KEY };
       const response = await s3.send(new GetObjectCommand(getObjectParams));
@@ -46,7 +46,7 @@ async function fetchParquetFromS3(S3_KEY) {
       let records = [];
       let record;
   
-      console.log("\n📌 Scanning Parquet file for existing InstanceIds...");
+      //console.log("\n📌 Scanning Parquet file for existing InstanceIds...");
       while ((record = await cursor.next())) {
           records.push(record);
       }
@@ -65,7 +65,7 @@ async function fetchParquetFromS3(S3_KEY) {
    */
   async function uploadParquetToS3(schema, records, S3_KEY) {
     try {
-      console.log("\n💾 Writing updated records to Parquet...");
+      //console.log("\n💾 Writing updated records to Parquet...");
   
       const tempFilePath = "tmp/S3TMP_ec2_instances.parquet";
       const writer = await parquet.ParquetWriter.openFile(schema, tempFilePath);
@@ -87,7 +87,7 @@ async function fetchParquetFromS3(S3_KEY) {
       };
   
       await s3.send(new PutObjectCommand(putObjectParams));
-      console.log("✅ Parquet file successfully updated on S3.");
+      //console.log("✅ Parquet file successfully updated on S3.");
     } catch (err) {
       console.error("❌ Error uploading Parquet file to S3:", err);
     }
@@ -171,8 +171,6 @@ async function writeS3Data(type, subtype, data) {
                     break;
                 case 'VPC':
                   try {
-                    console.log("Writing VPC asset to S3...");
-                    console.log("Received data is "+JSON.stringify(data))
                     const vpcSchema = new parquet.ParquetSchema({
                         uniqueId: { type: 'UTF8', optional: false },
                         vpcId: { type: 'UTF8', optional: false },
