@@ -95,11 +95,6 @@ async function writeData(type, subtype, data) {
                 case 'Lambda':
                 case 'DataBase':
                 case 'InternetGateway':
-                    await writer.appendRow({
-                        type: type,
-                        subtype: subtype,
-                        data: JSON.stringify(data)
-                    });
                     break;
                 default:
                     throw new Error(`Unsupported asset subtype: ${subtype}`);
