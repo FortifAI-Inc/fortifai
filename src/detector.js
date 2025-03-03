@@ -31,10 +31,6 @@ async function inventoryAWSEnvironment() {
         //console.log("EC2 Instances:", instanceList);
         console.log("EC2 Instances count:", instanceList.length);
 
-        // get instance's network interface ID 
-        const networkInterfaceId = instanceList[0].NetworkInterfaces[0].NetworkInterfaceId;
-        console.log("Network Interface ID:", instanceList[0].NetworkInterfaces[0].NetworkInterfaceId);
-
         // Get VPCs
         const vpcs = await ec2.describeVpcs().promise();
         //console.log("VPCs:", vpcs.Vpcs);
@@ -43,7 +39,8 @@ async function inventoryAWSEnvironment() {
         for (const vpc of vpcs.Vpcs) {
             // Enable VPC flow logs
             //flow_logs.enableFlowLogs(vpc.VpcId);
-            console.log(`Enabled logs for VPC ${vpc.VpcId}`);
+            //console.log(`Enabled logs for VPC ${vpc.VpcId}`);
+            DL_access.writeData('asset', 'VPC', vpc);
         }
 
         // Get S3 buckets

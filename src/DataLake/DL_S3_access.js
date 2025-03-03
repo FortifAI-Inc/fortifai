@@ -166,9 +166,81 @@ async function writeS3Data(type, subtype, data) {
                         }
 
                     break;
+                case 'VPC':
+                  try {
+                    console.log("Writing VPC asset to S3...");
+                    console.log("Received data is "+data)
+                    break;
+                    const vpcSchema = new parquet.ParquetSchema({
+                        instanceId: { type: 'UTF8', optional: false },
+                        instanceType: { type: 'UTF8', optional: true },
+                        instanceState: { type: 'UTF8', optional: true },
+                        launchTime: { type: 'UTF8', optional: true },
+                        privateIpAddress: { type: 'UTF8', optional: true },
+                        publicIpAddress: { type: 'UTF8', optional: true },
+                        subnetId: { type: 'UTF8', optional: true },
+                        vpcId: { type: 'UTF8', optional: true },
+                        architecture: { type: 'UTF8', optional: true},
+                        clientToke: { type: 'UTF8', optional: true},
+                        elasticGpuAssociations: { type: 'UTF8', optional: true},
+                        elasticInferenceAcceleratorAssociations: { type: 'UTF8', optional: true},
+                        networkInterfaces: { type: 'UTF8', repeated: true}, // for now save only the IfID, later figure out how to store an object
+                        cpuOptions: { type: 'UTF8', optional: true},
+                        platformDetails: { type: 'UTF8', optional: true},
+                        /*,
+                        securityGroups: { type: 'UTF8', optional: true },
+                        tags: { type: 'UTF8', optional: true }*/
+                    });
+                    IfIDs = []
+                    for (const networkInterface of data.NetworkInterfaces) {
+                        IfIDs.push(networkInterface.NetworkInterfaceId);
+                    }
+                    const ec2Data = {instanceId: data.InstanceId, 
+                        instanceType: data.InstanceType, 
+                        instanceState: data.State.Name, 
+                        launchTime: data.LaunchTime, 
+                        privateIpAddress: data.PrivateIpAddress, 
+                        publicIpAddress: data.PublicIpAddress, 
+                        subnetId: data.SubnetId, 
+                        vpcId: data.VpcId,
+                        architecture: data.Architecure,
+                        clientToken: data.ClientToken,
+                        elasticGpuAssociations: data.ElasticGpuAssociations,
+                        elasticInferenceAcceleratorAssociations: data.ElasticInferenceAcceleratorAssociations,
+                        networkInterfaces: IfIDs, // for now save only the IfID, later figure out how to store an object
+                        cpuOptions: data.CpuOptions.CoreCount * data.CpuOptions.ThreadsPerCore+" threads total",
+                        platformDetails: data.PlatformDetails
+                    }
+                    const S3_KEY = 'ec2inventory.parquet';
+                    try {
+                        let records = await fetchParquetFromS3(S3_KEY);
+                    
+                        // Check if InstanceId already exists
+            
+                        const index = records.findIndex(rec => rec.instanceId === data.InstanceId);
+                        if (index !== -1) {
+                          console.log(`Updating existing instance: ${data.InstanceId}`);
+                          records[index] = ec2Data; // Update record
+                        } else {
+                          console.log(`Adding new instance: ${data.InstanceId}`);
+                          records.push(ec2Data); // Insert new record
+                        }
+                    
+                        await uploadParquetToS3(ec2Schema, records, S3_KEY);
+                    
+                        console.log('Parquet file updated successfully.');
+                      } catch (err) {
+                        console.error('Error writing data to Parquet file:', err);
+                      }
+                    } catch (error) {   
+                        console.error("Error writing EC2 asset:", error);
+                        throw error;
+                    }
+
+                break;
+
                 case 'S3Bucket':
                 case 'SG':
-                case 'VPC':
                 case 'ECS':
                 case 'EKS':
                 case 'Lambda':
