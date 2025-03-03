@@ -83,19 +83,10 @@ async function writeData(type, subtype, data) {
                             const index = records.findIndex(rec => rec.InstanceId === data.InstanceId);
                             if (index !== -1) {
                               console.log(`Updating existing instance: ${data.InstanceId}`);
-                              records[index] = data; // Update record
+                              records[index] = ec2Data; // Update record
                             } else {
                               console.log(`Adding new instance: ${data.InstanceId}`);
-                              records.push({instanceId: data.InstanceId, 
-                                    instanceType: data.InstanceType, 
-                                    instanceState: data.State.Name, 
-                                    launchTime: data.LaunchTime, 
-                                    privateIpAddress: data.PrivateIpAddress, 
-                                    publicIpAddress: data.PublicIpAddress, 
-                                    subnetId: data.SubnetId, 
-                                    vpcId: data.VpcId/*, 
-                                    securityGroups: data.SecurityGroups, 
-                                    tags: data.Tags*/}); // Insert new record
+                              records.push(ec2Data); // Insert new record
                             }
                         
                             // Write data back to Parquet file
