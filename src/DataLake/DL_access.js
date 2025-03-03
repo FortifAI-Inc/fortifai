@@ -85,6 +85,7 @@ async function writeData(type, subtype, data) {
                         
                                 // Read existing records into an array
                                 while ((record = await cursor.next())) {
+				  //console.log(`📄 Found record: ${JSON.stringify(record, null, 2)}`);
                                   records.push(record);
                                 }
                                 await reader.close();
@@ -95,7 +96,8 @@ async function writeData(type, subtype, data) {
                             }
                         
                             // Check if InstanceId already exists
-                            const index = records.findIndex(rec => rec.InstanceId === data.InstanceId);
+			    
+                            const index = records.findIndex(rec => rec.instanceId === data.InstanceId);
                             if (index !== -1) {
                               console.log(`Updating existing instance: ${data.InstanceId}`);
                               records[index] = ec2Data; // Update record
