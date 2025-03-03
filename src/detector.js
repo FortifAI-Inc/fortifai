@@ -26,7 +26,7 @@ async function inventoryAWSEnvironment() {
         const ec2Instances = await ec2.describeInstances().promise();
         const instanceList = ec2Instances.Reservations.map(reservation => reservation.Instances).flat();
         for (const instance of instanceList) {
-            DL_access.enqueueWrite('asset', 'EC2', instance);
+            DL_access.writeData('asset', 'EC2', instance);
         }   
         //console.log("EC2 Instances:", instanceList);
         console.log("EC2 Instances count:", instanceList.length);
