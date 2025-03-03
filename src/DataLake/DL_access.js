@@ -30,7 +30,7 @@ async function writeData(type, subtype, data) {
                             clientToke: { type: 'UTF8', optional: true},
                             elasticGpuAssociations: { type: 'UTF8', optional: true},
                             elasticInferenceAcceleratorAssociations: { type: 'UTF8', optional: true},
-                            networkInterfaces: { type: 'UTF8', optional: true}, // for now save only the IfID, later figure out how to store an object
+                            networkInterfaces: { type: 'UTF8', repeated: true}, // for now save only the IfID, later figure out how to store an object
                             cpuOptions: { type: 'UTF8', optional: true},
                             platformDetails: { type: 'UTF8', optional: true},
                             /*,
@@ -41,7 +41,6 @@ async function writeData(type, subtype, data) {
                         for (const networkInterface of data.NetworkInterfaces) {
                             IfIDs.push(networkInterface.NetworkInterfaceId);
                         }
-                        console.log("CPU Options cores "+data.CpuOptions.CoreCount+" Threads "+data.CpuOptions.ThreadsPerCore)
                         const ec2Data = {instanceId: data.InstanceId, 
                             instanceType: data.InstanceType, 
                             instanceState: data.State.Name, 
@@ -93,7 +92,6 @@ async function writeData(type, subtype, data) {
                             // Write data back to Parquet file
                             const writer = await parquet.ParquetWriter.openFile(ec2Schema, filePath);
                             for (const record of records) {
-                                console.log('Writing record:', record);
                               await writer.appendRow(record);
                             }
                             await writer.close();
