@@ -25,9 +25,9 @@ async function writeData(type, subtype, data) {
                             privateIpAddress: { type: 'UTF8', optional: true },
                             publicIpAddress: { type: 'UTF8', optional: true },
                             subnetId: { type: 'UTF8', optional: true },
-                            vpcId: { type: 'UTF8', optional: true },
+                            vpcId: { type: 'UTF8', optional: true }/*,
                             securityGroups: { type: 'UTF8', optional: true },
-                            tags: { type: 'UTF8', optional: true }
+                            tags: { type: 'UTF8', optional: true }*/
                         });
                         const filePath = 'tmp/ec2inventory.parquet';
                         try {
@@ -60,14 +60,14 @@ async function writeData(type, subtype, data) {
                               console.log(`Adding new instance: ${data.InstanceId}`);
                               records.push({instanceId: data.InstanceId, 
                                     instanceType: data.InstanceType, 
-                                    instanceState: data.State, 
+                                    instanceState: data.State.Name, 
                                     launchTime: data.LaunchTime, 
                                     privateIpAddress: data.PrivateIpAddress, 
                                     publicIpAddress: data.PublicIpAddress, 
                                     subnetId: data.SubnetId, 
-                                    vpcId: data.VpcId, 
+                                    vpcId: data.VpcId/*, 
                                     securityGroups: data.SecurityGroups, 
-                                    tags: data.Tags}); // Insert new record
+                                    tags: data.Tags*/}); // Insert new record
                             }
                         
                             // Write data back to Parquet file
