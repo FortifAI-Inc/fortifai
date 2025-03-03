@@ -17,7 +17,7 @@ async function writeData(type, subtype, data) {
             switch (subtype) {
                 case 'EC2':
                     try {
-                        const ec2Schema = {
+                        const ec2Schema = new parquet.ParquetSchema({
                             instanceId: { type: 'UTF8', optional: false },
                             instanceType: { type: 'UTF8', optional: true },
                             instanceState: { type: 'UTF8', optional: true },
@@ -28,7 +28,7 @@ async function writeData(type, subtype, data) {
                             vpcId: { type: 'UTF8', optional: true },
                             securityGroups: { type: 'List', optional: true },
                             tags: { type: 'List', optional: true }
-                        };
+                        });
                         const filePath = 'tmp/ec2inventory.parquet';
                         try {
                             let records = [];
@@ -65,7 +65,7 @@ async function writeData(type, subtype, data) {
                                     privateIpAddress: data.PrivateIpAddress, 
                                     publicIpAddress: data.PublicIpAddress, 
                                     subnetId: data.SubnetId, 
-                                    vpcId:data.VpcId, 
+                                    vpcId: data.VpcId, 
                                     securityGroups: data.SecurityGroups, 
                                     tags: data.Tags}); // Insert new record
                             }
