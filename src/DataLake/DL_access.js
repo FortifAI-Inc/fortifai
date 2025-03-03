@@ -58,7 +58,16 @@ async function writeData(type, subtype, data) {
                               records[index] = data; // Update record
                             } else {
                               console.log(`Adding new instance: ${data.InstanceId}`);
-                              records.push([data.InstanceId, data.InstanceType, data.State, data.LaunvhTime, data.PrivateIpAddress, data.PublicIpAddress, data.SubnetId, data.VpcId, data.SecurityGroups, data.Tags]); // Insert new record
+                              records.push({instanceId: data.InstanceId, 
+                                    instanceType: data.InstanceType, 
+                                    instanceState: data.State, 
+                                    launchTime: data.LaunchTime, 
+                                    privateIpAddress: data.PrivateIpAddress, 
+                                    publicIpAddress: data.PublicIpAddress, 
+                                    subnetId: data.SubnetId, 
+                                    vpcId:data.VpcId, 
+                                    securityGroups: data.SecurityGroups, 
+                                    tags: data.Tags}); // Insert new record
                             }
                         
                             // Write data back to Parquet file
