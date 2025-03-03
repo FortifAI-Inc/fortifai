@@ -26,8 +26,8 @@ async function writeData(type, subtype, data) {
                             publicIpAddress: { type: 'UTF8', optional: true },
                             subnetId: { type: 'UTF8', optional: true },
                             vpcId: { type: 'UTF8', optional: true },
-                            securityGroups: { type: 'List', optional: true },
-                            tags: { type: 'List', optional: true }
+                            securityGroups: { type: 'UTF8', optional: true },
+                            tags: { type: 'UTF8', optional: true }
                         });
                         const filePath = 'tmp/ec2inventory.parquet';
                         try {
