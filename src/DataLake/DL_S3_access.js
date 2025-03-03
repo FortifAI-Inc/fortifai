@@ -150,16 +150,16 @@ async function writeS3Data(type, subtype, data) {
                 
                             const index = records.findIndex(rec => rec.uniqueId === data.InstanceId);
                             if (index !== -1) {
-                              console.log(`Updating existing instance: ${data.InstanceId}`);
+                              //console.log(`Updating existing instance: ${data.InstanceId}`);
                               records[index] = ec2Data; // Update record
                             } else {
-                              console.log(`Adding new instance: ${data.InstanceId}`);
+                              //console.log(`Adding new instance: ${data.InstanceId}`);
                               records.push(ec2Data); // Insert new record
                             }
                         
                             await uploadParquetToS3(ec2Schema, records, S3_KEY);
                         
-                            console.log('Parquet file updated successfully.');
+                            //console.log('EC2 Parquet file updated successfully.');
                           } catch (err) {
                             console.error('Error writing data to Parquet file:', err);
                           }
@@ -199,7 +199,7 @@ async function writeS3Data(type, subtype, data) {
                     
                         await uploadParquetToS3(vpcSchema, records, S3_KEY);
                     
-                        console.log('VPC Parquet file updated successfully.');
+                        //console.log('VPC Parquet file updated successfully.');
                       } catch (err) {
                         console.error('Error writing data to VPC Parquet file:', err);
                       }
