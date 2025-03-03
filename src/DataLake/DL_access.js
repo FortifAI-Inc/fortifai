@@ -55,7 +55,7 @@ async function writeData(type, subtype, data) {
                             elasticGpuAssociations: data.ElasticGpuAssociations,
                             elasticInferenceAcceleratorAssociations: data.ElasticInferenceAcceleratorAssociations,
                             networkInterfaces: IfIDs, // for now save only the IfID, later figure out how to store an object
-                            cpuOptions: toString(data.CpuOptions.CoreCount * data.CpuOptions.ThreadsPerCore)+" threads total",
+                            cpuOptions: data.CpuOptions.CoreCount * data.CpuOptions.ThreadsPerCore+" threads total",
                             platformDetails: data.PlatformDetails
                         }
                         const filePath = 'tmp/ec2inventory.parquet';
