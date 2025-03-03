@@ -25,10 +25,34 @@ async function writeData(type, subtype, data) {
                             privateIpAddress: { type: 'UTF8', optional: true },
                             publicIpAddress: { type: 'UTF8', optional: true },
                             subnetId: { type: 'UTF8', optional: true },
-                            vpcId: { type: 'UTF8', optional: true }/*,
+                            vpcId: { type: 'UTF8', optional: true },
+                            architecture: { type: 'UTF8', optional: true},
+                            clientToke: { type: 'UTF8', optional: true},
+                            elasticGpuAssociations: { type: 'UTF8', optional: true},
+                            elasticInferenceAcceleratorAssociations: { type: 'UTF8', optional: true},
+                            networkInterfaces: { type: 'UTF8', optional: true}, // for now save only the IfID, later figure out how to store an object
+                            cpuOptions: { type: 'UTF8', optional: true},
+                            platformDetails: { type: 'UTF8', optional: true},
+                            /*,
                             securityGroups: { type: 'UTF8', optional: true },
                             tags: { type: 'UTF8', optional: true }*/
                         });
+                        const ec2Data = {instanceId: data.InstanceId, 
+                            instanceType: data.InstanceType, 
+                            instanceState: data.State.Name, 
+                            launchTime: data.LaunchTime, 
+                            privateIpAddress: data.PrivateIpAddress, 
+                            publicIpAddress: data.PublicIpAddress, 
+                            subnetId: data.SubnetId, 
+                            vpcId: data.VpcId,
+                            architecture: data.Architecure,
+                            clientToken: data.ClientToken,
+                            elasticGpuAssociations: data.ElasticGpuAssociations,
+                            elasticInferenceAcceleratorAssociations: data.ElasticInferenceAcceleratorAssociations,
+                            networkInterfaces: [ data.NetworkInterfaces[0].NetworkInterfaceId, data.NetworkInterfaces[1].NetworkInterfaceId], // for now save only the IfID, later figure out how to store an object
+                            cpuOptions: data.CpuOptions,
+                            platformDetails: data.PlatformDetails
+                        }
                         const filePath = 'tmp/ec2inventory.parquet';
                         try {
                             let records = [];
