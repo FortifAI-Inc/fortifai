@@ -41,6 +41,7 @@ async function writeData(type, subtype, data) {
                         for (const networkInterface of data.NetworkInterfaces) {
                             IfIDs.push(networkInterface.NetworkInterfaceId);
                         }
+                        console.log("CPU Options cores "+data.CpuOptions.CoreCount+" Threads "+data.CpuOptions.ThreadsPerCore)
                         const ec2Data = {instanceId: data.InstanceId, 
                             instanceType: data.InstanceType, 
                             instanceState: data.State.Name, 
