@@ -213,40 +213,40 @@ async function writeS3Data(type, subtype, data) {
                 case 'S3Bucket':
                   try {
                     console.log("Received S3Bucket"+JSON.stringify(data))
-                    const vpcSchema = new parquet.ParquetSchema({
+                    const S3Schema = new parquet.ParquetSchema({
                         uniqueId: { type: 'UTF8', optional: false },
-                        vpcId: { type: 'UTF8', optional: false },
-                        cidrBlock: { type: 'UTF8', optional: false }
+                        name: { type: 'UTF8', optional: false },
+                        creationDate: { type: 'UTF8', optional: false }
                         //tags: { type: 'UTF8', optional: true }*/
                     });
-                    const vpcData = {
-                      uniqueId: data.VpcId, 
-                      vpcId: data.VpcId, 
-                      cidrBlock: data.CidrBlock 
+                    const S3Data = {
+                      uniqueId: data.Name, 
+                      name: data.Name, 
+                      creationDate: data.CreationDate 
                     }
-                    const S3_KEY = 'vpcinventory.parquet';
+                    const S3_KEY = 'S3Bucketinventory.parquet';
                     try {
                         let records = await fetchParquetFromS3(S3_KEY);
                     
                         // Check if InstanceId already exists
             
-                        const index = records.findIndex(rec => rec.uniqueId === data.VpcId);
+                        const index = records.findIndex(rec => rec.uniqueId === data.Name);
                         if (index !== -1) {
-                          console.log(`Updating existing instance: ${data.VpcId}`);
-                          records[index] = vpcData; // Update record
+                          console.log(`Updating existing instance: ${data.Name}`);
+                          records[index] = S3Data; // Update record
                         } else {
-                          console.log(`Adding new instance: ${data.VpcId}`);
-                          records.push(vpcData); // Insert new record
+                          console.log(`Adding new instance: ${data.Name}`);
+                          records.push(S3Data); // Insert new record
                         }
                     
-                        await uploadParquetToS3(vpcSchema, records, S3_KEY);
+                        await uploadParquetToS3(S3Schema, records, S3_KEY);
                     
                         //console.log('VPC Parquet file updated successfully.');
                       } catch (err) {
-                        console.error('Error writing data to VPC Parquet file:', err);
+                        console.error('Error writing data to S3 Parquet file:', err);
                       }
                     } catch (error) {   
-                        console.error("Error writing VPC asset:", error);
+                        console.error("Error writing S3 asset:", error);
                         throw error;
                     }
 
