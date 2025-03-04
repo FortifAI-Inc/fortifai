@@ -255,7 +255,7 @@ async function writeS3Data(type, subtype, data) {
                     const IGWSchema = new parquet.ParquetSchema({
                         UniqueId: { type: 'UTF8', optional: false },
                         InternetGatewayId: { type: 'UTF8', optional: false },
-                        VpcId: { type: 'UTF8', optional: false }
+                        VpcId: { type: 'UTF8', optional: true }
                         //tags: { type: 'UTF8', optional: true }*/
                     });
                     const IGWData = {

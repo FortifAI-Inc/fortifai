@@ -68,7 +68,7 @@ async function inventoryAWSEnvironment() {
 
         // Get security groups
         const securityGroups = await ec2.describeSecurityGroups();
-        console.log("Security Groups count:", securityGroups.SecurityGroups.length);\
+        console.log("Security Groups count:", securityGroups.SecurityGroups.length);
         for (const sg of securityGroups.SecurityGroups) {
             DL_access.writeData('asset', 'SG', sg);
         }
