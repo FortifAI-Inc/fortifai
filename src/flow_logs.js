@@ -1,5 +1,10 @@
 // flow_logs.js
-const AWS = require('aws-sdk');
+
+
+const { CloudWatchLogs } = require('@aws-sdk/client-cloudwatch-logs');
+const { EC2 } = require('@aws-sdk/client-ec2');
+const { S3 } = require('@aws-sdk/client-s3');
+
 const zlib = require('zlib');
 const dns = require('dns');
 const llms_registry = require('./llms_registry');
@@ -8,7 +13,7 @@ const llms_registry = require('./llms_registry');
 // This function should interface with AWS's infrastructure and obtain flow logs for all VPCs
 async function collectFlowLogs() {
     console.log("Collecting flow logs...");
-    const ec2 = new AWS.EC2();
+    const ec2 = new EC2();
 
     try {
 	getS3FlowLogs();
@@ -20,7 +25,7 @@ async function collectFlowLogs() {
 // This function should enable VPC flow logs for a given VPC
 async function enableFlowLogs(IfId) {
     console.log(`Enabling flow logs for Network Interface ${IfId}...`);
-    const ec2 = new AWS.EC2();
+    const ec2 = new EC2();
 
     try {
         const flowLog = await ec2.createFlowLogs({
@@ -35,7 +40,7 @@ async function enableFlowLogs(IfId) {
             LogFormat: '${flow-direction} ${instance-id} ${interface-id} ${pkt-srcaddr} ${pkt-dstaddr} ${protocol} ${dstport} ${action}',
 
             MaxAggregationInterval: 60
-        }).promise();
+        });
         console.log("Flow Log created:", flowLog);
     } catch (error) {
         console.error("Error enabling flow logs:", error);
@@ -43,7 +48,7 @@ async function enableFlowLogs(IfId) {
 }
 async function getS3FlowLogs() {
     console.log(`Retrieving flow logs from S3...`);
-    const s3 = new AWS.S3();
+    const s3 = new S3();
 
     llms_registry.BuildRegistry();
     //llms_registry.listIPAddresses();
@@ -53,12 +58,12 @@ async function getS3FlowLogs() {
             Prefix: `AWSLogs/058264435853/`
         };
 
-        const data = await s3.listObjectsV2(params).promise();
+        const data = await s3.listObjectsV2(params);
         for (const obj of data.Contents) {
             if (obj.Size === 0) { // skip directory
                 continue
             }
-            const objectData = await s3.getObject({ Bucket: params.Bucket, Key: obj.Key }).promise();
+            const objectData = await s3.getObject({ Bucket: params.Bucket, Key: obj.Key });
             const decompressedData = zlib.gunzipSync(objectData.Body);
             const logEntries = decompressedData.toString('utf-8').split('\n');
             const uniqueIPs = {}; // Global dictionary to store unique IP addresses
@@ -92,7 +97,7 @@ async function getS3FlowLogs() {
 }
 async function getCloudWatchFlowLogs(flowLogId) {
     console.log(`Retrieving flow logs for FlowLogId ${flowLogId}...`);
-    const cloudwatchlogs = new AWS.CloudWatchLogs();
+    const cloudwatchlogs = new CloudWatchLogs();
 
     try {
         const params = {
@@ -100,7 +105,7 @@ async function getCloudWatchFlowLogs(flowLogId) {
             filterPattern: `{ $.flowLogId = "${flowLogId}" }`
         };
 
-        const logEvents = await cloudwatchlogs.filterLogEvents(params).promise();
+        const logEvents = await cloudwatchlogs.filterLogEvents(params);
         logEvents.events.forEach(event => {
             const log = JSON.parse(event.message);
             const parsedLog = parseFlowLog(log);

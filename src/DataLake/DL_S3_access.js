@@ -1,4 +1,3 @@
-const AWS = require('aws-sdk');
 const parquet = require('parquetjs-lite');
 const fs = require('fs');
 const stream = require("stream");
@@ -58,40 +57,40 @@ async function fetchParquetFromS3(S3_KEY) {
       return []; // Return empty list if file doesn't exist or is corrupt
     }
   }
-  
-  /**
-   * Uploads the given Parquet records back to S3.
-   * @param {Array} records - Array of JSON objects representing EC2 instances.
-   */
-  async function uploadParquetToS3(schema, records, S3_KEY) {
-    try {
-      //console.log("\n💾 Writing updated records to Parquet...");
-  
-      const tempFilePath = "tmp/S3TMP_ec2_instances.parquet";
-      const writer = await parquet.ParquetWriter.openFile(schema, tempFilePath);
-      
-      for (const record of records) {
-        await writer.appendRow(record);
-      }
-      await writer.close();
-  
-      // Read the written Parquet file
-      const fileData = await fs.readFileSync(tempFilePath);
-  
-      // Upload file to S3
-      const putObjectParams = {
-        Bucket: bucketName,
-        Key: S3_KEY,
-        Body: fileData,
-        ContentType: "application/octet-stream",
-      };
-  
-      await s3.send(new PutObjectCommand(putObjectParams));
-      //console.log("✅ Parquet file successfully updated on S3.");
-    } catch (err) {
-      console.error("❌ Error uploading Parquet file to S3:", err);
+
+/**
+ * Uploads the given Parquet records back to S3.
+ * @param {Array} records - Array of JSON objects representing EC2 instances.
+ */
+async function uploadParquetToS3(schema, records, S3_KEY) {
+  try {
+    //console.log("\n💾 Writing updated records to Parquet...");
+
+    const tempFilePath = "tmp/S3TMP_ec2_instances.parquet";
+    const writer = await parquet.ParquetWriter.openFile(schema, tempFilePath);
+    
+    for (const record of records) {
+      await writer.appendRow(record);
     }
+    await writer.close();
+
+    // Read the written Parquet file
+    const fileData = await fs.readFileSync(tempFilePath);
+
+    // Upload file to S3
+    const putObjectParams = {
+      Bucket: bucketName,
+      Key: S3_KEY,
+      Body: fileData,
+      ContentType: "application/octet-stream",
+    };
+
+    await s3.send(new PutObjectCommand(putObjectParams));
+    //console.log("✅ Parquet file successfully updated on S3.");
+  } catch (err) {
+    console.error("❌ Error uploading Parquet file to S3:", err);
   }
+}
 
 async function writeS3Data(type, subtype, data) {
     switch (type) {
