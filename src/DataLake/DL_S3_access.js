@@ -383,10 +383,10 @@ async function writeS3Data(type, subtype, data) {
                     }
 
                 break;
+                case 'Lambda':
                 case 'RDS':
                 case 'ECS':
                 case 'EKS':
-                case 'Lambda':
                 case 'DataBase':
                   console.log("Received "+subtype+JSON.stringify(data))
                   break;

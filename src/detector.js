@@ -80,15 +80,19 @@ async function inventoryAWSEnvironment() {
             DL_access.writeData('asset', 'NI', ni);
         }
 
+        // Get Lambda functions
+        const lambdaFunctions = await lambda.listFunctions();
+        //console.log("Lambda Functions:", lambdaFunctions.Functions);
+        console.log("Lambda Functions count:", lambdaFunctions.Functions.length);  
+        for (const lambdaFunction of lambdaFunctions.Functions) {
+            DL_access.writeData('asset', 'Lambda', lambdaFunction);
+        }
+
         // Get RDS instances
         const rdsInstances = await rds.describeDBInstances();
         //console.log("RDS Instances:", rdsInstances.DBInstances);
         console.log("RDS Instances count:", rdsInstances.DBInstances.length);
 
-        // Get Lambda functions
-        const lambdaFunctions = await lambda.listFunctions();
-        //console.log("Lambda Functions:", lambdaFunctions.Functions);
-        console.log("Lambda Functions count:", lambdaFunctions.Functions.length);
 
      
         // Compile the inventory
