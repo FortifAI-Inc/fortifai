@@ -251,12 +251,16 @@ async function writeS3Data(type, subtype, data) {
 
                 break;
 
+                case 'IGW':
                 case 'SG':
+                case 'NI':
+                  console.log("Received "+subtype+JSON.stringify(data))
+                  break;
+                case 'RDS':
                 case 'ECS':
                 case 'EKS':
                 case 'Lambda':
                 case 'DataBase':
-                case 'InternetGateway':
                     break;
                 default:
                     throw new Error(`Unsupported asset subtype: ${subtype}`);

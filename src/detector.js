@@ -42,28 +42,43 @@ async function inventoryAWSEnvironment() {
         for (const instance of instanceList) {
             DL_access.writeData('asset', 'EC2', instance);
         }   
-        //console.log("EC2 Instances:", instanceList);
         console.log("EC2 Instances count:", instanceList.length);
 
         // Get VPCs
         const vpcs = await ec2.describeVpcs();
-        //console.log("VPCs:", vpcs.Vpcs);
         console.log("VPCs count:", vpcs.Vpcs.length);
 
         for (const vpc of vpcs.Vpcs) {
-            // Enable VPC flow logs
-            //flow_logs.enableFlowLogs(vpc.VpcId);
-            //console.log(`Enabled logs for VPC ${vpc.VpcId}`);
-            DL_access.writeData('asset', 'VPC', vpc);
+             DL_access.writeData('asset', 'VPC', vpc);
         }
 
         // Get S3 buckets
         const s3Buckets = await s3.listBuckets();
-        //console.log("S3 Buckets:", s3Buckets.Buckets);
         for (const bucket of s3Buckets.Buckets) {
             DL_access.writeData('asset', 'S3Bucket', bucket);
         }
         console.log("S3 Buckets count:", s3Buckets.Buckets.length);
+
+        // Get internet gateways
+        const internetGateways = await ec2.describeInternetGateways();
+        console.log("Internet Gateways count:", internetGateways.InternetGateways.length);
+        for (const igw of internetGateways.InternetGateways) {
+            DL_access.writeData('asset', 'IGW', igw);
+        }
+
+        // Get security groups
+        const securityGroups = await ec2.describeSecurityGroups();
+        console.log("Security Groups count:", securityGroups.SecurityGroups.length);\
+        for (const sg of securityGroups.SecurityGroups) {
+            DL_access.writeData('asset', 'SG', sg);
+        }
+
+        // Get network interfaces
+        const networkInterfaces = await ec2.describeNetworkInterfaces();
+        console.log("Network Interfaces count:", networkInterfaces.NetworkInterfaces.length);
+        for (const ni of networkInterfaces.NetworkInterfaces) {
+            DL_access.writeData('asset', 'NI', ni);
+        }
 
         // Get RDS instances
         const rdsInstances = await rds.describeDBInstances();
