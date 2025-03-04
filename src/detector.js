@@ -46,6 +46,9 @@ async function inventoryAWSEnvironment() {
         // Get S3 buckets
         const s3Buckets = await s3.listBuckets().promise();
         //console.log("S3 Buckets:", s3Buckets.Buckets);
+        for (const bucket of s3Buckets.Buckets) {
+            DL_access.writeData('asset', 'S3Bucket', bucket);
+        }
         console.log("S3 Buckets count:", s3Buckets.Buckets.length);
 
         // Get RDS instances

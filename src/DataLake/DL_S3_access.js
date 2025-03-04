@@ -211,6 +211,47 @@ async function writeS3Data(type, subtype, data) {
                 break;
 
                 case 'S3Bucket':
+                  try {
+                    console.log("Received S3Bucket"+JSON.stringify(data))
+                    const vpcSchema = new parquet.ParquetSchema({
+                        uniqueId: { type: 'UTF8', optional: false },
+                        vpcId: { type: 'UTF8', optional: false },
+                        cidrBlock: { type: 'UTF8', optional: false }
+                        //tags: { type: 'UTF8', optional: true }*/
+                    });
+                    const vpcData = {
+                      uniqueId: data.VpcId, 
+                      vpcId: data.VpcId, 
+                      cidrBlock: data.CidrBlock 
+                    }
+                    const S3_KEY = 'vpcinventory.parquet';
+                    try {
+                        let records = await fetchParquetFromS3(S3_KEY);
+                    
+                        // Check if InstanceId already exists
+            
+                        const index = records.findIndex(rec => rec.uniqueId === data.VpcId);
+                        if (index !== -1) {
+                          console.log(`Updating existing instance: ${data.VpcId}`);
+                          records[index] = vpcData; // Update record
+                        } else {
+                          console.log(`Adding new instance: ${data.VpcId}`);
+                          records.push(vpcData); // Insert new record
+                        }
+                    
+                        await uploadParquetToS3(vpcSchema, records, S3_KEY);
+                    
+                        //console.log('VPC Parquet file updated successfully.');
+                      } catch (err) {
+                        console.error('Error writing data to VPC Parquet file:', err);
+                      }
+                    } catch (error) {   
+                        console.error("Error writing VPC asset:", error);
+                        throw error;
+                    }
+
+                break;
+
                 case 'SG':
                 case 'ECS':
                 case 'EKS':
