@@ -272,16 +272,16 @@ async function writeS3Data(type, subtype, data) {
                         const index = records.findIndex(rec => rec.UniqueId === data.InternetGatewayId);
                         if (index !== -1) {
                           console.log(`Updating existing instance: ${data.InternetGatewayId}`);
-                          records[index] = S3Data; // Update record
+                          records[index] = IGWData; // Update record
                         } else {
                           console.log(`Adding new instance: ${data.InternetGatewayId}`);
-                          records.push(S3Data); // Insert new record
+                          records.push(IGWData); // Insert new record
                         }
                     
                         await uploadParquetToS3(IGWSchema, records, S3_KEY);
                     
                       } catch (err) {
-                        console.error('Error writing data to '+subtype+'IGW Parquet file:', err);
+                        console.error('Error writing data to '+subtype+' Parquet file:', err);
                       }
                     } catch (error) {   
                         console.error("Error writing "+subtype+" asset:", error);
@@ -292,14 +292,13 @@ async function writeS3Data(type, subtype, data) {
 
                 case 'SG':
                 case 'NI':
-                  console.log("Received "+subtype+JSON.stringify(data))
-                  break;
                 case 'RDS':
                 case 'ECS':
                 case 'EKS':
                 case 'Lambda':
                 case 'DataBase':
-                    break;
+                  console.log("Received "+subtype+JSON.stringify(data))
+                  break;
                 default:
                     throw new Error(`Unsupported asset subtype: ${subtype}`);
             }
