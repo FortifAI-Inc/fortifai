@@ -287,11 +287,102 @@ async function writeS3Data(type, subtype, data) {
                         console.error("Error writing "+subtype+" asset:", error);
                         throw error;
                     }
+                break;
+                case 'SG':
+                  try {
+                    //console.log("Received "+subtype+JSON.stringify(data))
+                    const SGSchema = new parquet.ParquetSchema({
+                        UniqueId: { type: 'UTF8', optional: false },
+                        GroupId: { type: 'UTF8', optional: false },
+                        VpcId: { type: 'UTF8', optional: false }
+                        //tags: { type: 'UTF8', optional: true }*/
+                    });
+                    const SGData = {
+                      UniqueId: data.GroupId, 
+                      GroupId: data.GroupId, 
+                      VpcId: data.VpcId 
+                    }
+                    const S3_KEY = 'SGBucketinventory.parquet';
+                    try {
+                        let records = await fetchParquetFromS3(S3_KEY);
+                    
+                        // Check if InstanceId already exists
+            
+                        const index = records.findIndex(rec => rec.UniqueId === data.GroupId);
+                        if (index !== -1) {
+                          console.log(`Updating existing instance: ${data.GroupId}`);
+                          records[index] = SGData; // Update record
+                        } else {
+                          console.log(`Adding new instance: ${data.GroupId}`);
+                          records.push(SGData); // Insert new record
+                        }
+                    
+                        await uploadParquetToS3(SGSchema, records, S3_KEY);
+                    
+                      } catch (err) {
+                        console.error('Error writing data to '+subtype+' Parquet file:', err);
+                      }
+                    } catch (error) {   
+                        console.error("Error writing "+subtype+" asset:", error);
+                        throw error;
+                    }
+                break;
+                case 'NI':
+                  try {
+                    //console.log("Received "+subtype+JSON.stringify(data))
+                    const NISchema = new parquet.ParquetSchema({
+                        UniqueId: { type: 'UTF8', optional: false },
+                        NetworkInterfaceId: { type: 'UTF8', optional: false },
+                        AvailabilityZone: { type: 'UTF8', optional: false },
+                        PrivateIpAddress: { type: 'UTF8', optional: false },
+                        PublicIp: { type: 'UTF8', optional: true },
+                        Description: { type: 'UTF8', optional: true },
+                        AttachmentId: { type: 'UTF8', optional: true },
+                        InstanceId: { type: 'UTF8', optional: true },
+                        VpcId: { type: 'UTF8', optional: false }, 
+                        SubnetId: { type: 'UTF8', optional: false },
+                        GroupId: { type: 'UTF8', optional: true },
+                        //tags: { type: 'UTF8', optional: true }*/
+                    });
+                    const NIData = {
+                      UniqueId: data.NetworkInterfaceId, 
+                      NetworkInterfaceId: data.NetworkInterfaceId,
+                      AvailabilityZone: data.AvailabilityZone,
+                      PrivateIpAddress: data.PrivateIpAddress,
+                      PublicIp: data.Association ? data.Association.PublicIp : null,
+                      Description: data.Description,
+                      AttachmentId: data.Attachment ? data.Attachment.AttachmentId : null,
+                      InstanceId: data.Attachment ? data.Attachment.InstanceId : null,
+                      VpcId: data.VpcId,
+                      SubnetId: data.SubnetId,
+                      GroupId: data.Groups ? data.Groups.map(group => group.GroupId).join(',') : null
+                    }
+                    const S3_KEY = 'NIBucketinventory.parquet';
+                    try {
+                        let records = await fetchParquetFromS3(S3_KEY);
+                    
+                        // Check if InstanceId already exists
+            
+                        const index = records.findIndex(rec => rec.UniqueId === data.NetworkInterfaceId);
+                        if (index !== -1) {
+                          console.log(`Updating existing instance: ${data.NetworkInterfaceId}`);
+                          records[index] = NIData; // Update record
+                        } else {
+                          console.log(`Adding new instance: ${data.NetworkInterfaceId}`);
+                          records.push(NIData); // Insert new record
+                        }
+                    
+                        await uploadParquetToS3(NISchema, records, S3_KEY);
+                    
+                      } catch (err) {
+                        console.error('Error writing data to '+subtype+' Parquet file:', err);
+                      }
+                    } catch (error) {   
+                        console.error("Error writing "+subtype+" asset:", error);
+                        throw error;
+                    }
 
                 break;
-
-                case 'SG':
-                case 'NI':
                 case 'RDS':
                 case 'ECS':
                 case 'EKS':
