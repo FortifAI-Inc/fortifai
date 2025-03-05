@@ -17,8 +17,8 @@ let writeQueue = Promise.resolve();
  * Adds a write operation to the queue to ensure writes are serialized.
  * @param {Object} data - JSON representing EC2 instance parameters.
  */
-function enqueueS3Write(type, subtype, data) {
-  writeQueue = writeQueue.then(() => writeS3Data(type, subtype, data)).catch(err => {
+function enqueueS3Write(type, subtype, data, moredata = null) {
+  writeQueue = writeQueue.then(() => writeS3Data(type, subtype, data, moredata)).catch(err => {
     console.error("Error processing write queue:", err);
   });
 }
@@ -92,7 +92,7 @@ async function uploadParquetToS3(schema, records, S3_KEY) {
   }
 }
 
-async function writeS3Data(type, subtype, data) {
+async function writeS3Data(type, subtype, data, moredata=null) {
     switch (type) {
         case 'asset':
             switch (subtype) {
@@ -472,14 +472,16 @@ async function writeS3Data(type, subtype, data) {
                         PolicyId: { type: 'UTF8', optional: false },
                         PolicyName: { type: 'UTF8', optional: false },
                         AttachmentCount: { type: 'INT32', optional: false },
-                        PermissionsBoundaryUsageCount: {type: 'INT32', optional: false}
+                        PermissionsBoundaryUsageCount: {type: 'INT32', optional: false},
+                        Document: {type: 'UTF8', optional: false}
                     });
                     const IAMPolicyData = {
                       UniqueId: data.PolicyId, 
                       PolicyId: data.PolicyId, 
                       PolicyName: data.PolicyName,
                       AttachmentCount: data.AttachmentCount,
-                      PermissionsBoundaryUsageCount: data.PermissionsBoundaryUsageCount 
+                      PermissionsBoundaryUsageCount: data.PermissionsBoundaryUsageCount,
+                      Document: moredata.Document 
                     }
                     const S3_KEY = 'IAMPolicyBucketinventory.parquet';
                     try {
@@ -506,7 +508,6 @@ async function writeS3Data(type, subtype, data) {
                         throw error;
                     }
                     break;
-                case 'IAMPolicyPermissions':
                 case 'RDS':
                 case 'ECS':
                 case 'EKS':

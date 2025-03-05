@@ -2,8 +2,8 @@ const DL_S3_access = require('./DL_S3_access');
 
 
 // Abstract underlying storage - replace S3 call with DB call if needed.
-async function writeData(type, subtype, data) {
-  return (DL_S3_access.enqueueS3Write(type, subtype, data))
+async function writeData(type, subtype, data, moredata = null) {
+    return DL_S3_access.enqueueS3Write(type, subtype, data, moredata);
 }
 
 async function readData() {
