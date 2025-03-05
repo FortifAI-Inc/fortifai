@@ -8,7 +8,7 @@ async function main() {
     try {
         //await llm_registry.init();
         //await CloudCollector.CollectAssets();
-        await CloudCollector.CollectCredentials();
+        await CloudCollector.CollectUsers();
         //await flow_logs.collectFlowLogs();
     } catch (error) {
         console.error("Error in main function:", error);
