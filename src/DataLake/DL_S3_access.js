@@ -23,6 +23,8 @@ function enqueueS3Write(type, subtype, data) {
   });
 }
 
+const tempFilePath = "tmp/S3TMPFile.parquet";
+
 /**
  * Fetches the Parquet file from S3 and returns it as an array of records.
  * If the file is missing or corrupt, returns an empty array.
@@ -36,7 +38,6 @@ async function fetchParquetFromS3(S3_KEY) {
   
       // Convert stream to buffer
       const pipeline = util.promisify(stream.pipeline);
-      const tempFilePath = "tmp/S3TMP_ec2_instances.parquet";
       await pipeline(response.Body, fs.createWriteStream(tempFilePath));
   
       // Read Parquet file
@@ -66,7 +67,6 @@ async function uploadParquetToS3(schema, records, S3_KEY) {
   try {
     //console.log("\n💾 Writing updated records to Parquet...");
 
-    const tempFilePath = "tmp/S3TMP_ec2_instances.parquet";
     const writer = await parquet.ParquetWriter.openFile(schema, tempFilePath);
     
     for (const record of records) {
