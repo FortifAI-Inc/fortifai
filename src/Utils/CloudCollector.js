@@ -177,7 +177,7 @@ async function CollectUsers() {
             InlinePolicies: inlinePolicies.PolicyNames
             };
 
-            console.log(`Consolidated user data for ${user.UserName}:`, JSON.stringify(consolidatedUser, null, 2));
+            //console.log(`Consolidated user data for ${user.UserName}:`, JSON.stringify(consolidatedUser, null, 2));
             DL_access.writeData('asset', 'User', consolidatedUser);
         }
         return users.Users;
