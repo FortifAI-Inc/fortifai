@@ -436,7 +436,7 @@ async function writeS3Data(type, subtype, data) {
                     const IAMRoleData = {
                       UniqueId: data.RoleId, 
                       RoleId: data.RoleId, 
-                      Rolename: data.RoleName,
+                      RoleName: data.RoleName,
                       AssumeRolePolicyDocument: data.AssumeRolePolicyDocument 
                     }
                     const S3_KEY = 'IAMRoleBucketinventory.parquet';
