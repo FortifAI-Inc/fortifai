@@ -146,6 +146,33 @@ async function CollectPolicies() {
         console.error("Error retrieving IAM policies:", error);
         throw error;
     }
+    CollectPermissions()
+}
+
+// This function should interface with AWS's infrastructure and obtain a list of all permissions
+async function CollectPermissions() {
+    const iam = new IAM({
+        region: 'us-east-1',
+    });
+
+    try {
+        // Get IAM policies
+        const policies = await iam.listPolicies({ Scope: 'Local' });
+        console.log("IAM Policies count:", policies.Policies.length);
+
+        // Get permissions for each policy
+        for (const policy of policies.Policies) {
+            const policyDetails = await iam.getPolicy({ PolicyArn: policy.Arn });
+            const policyVersion = await iam.getPolicyVersion({
+                PolicyArn: policy.Arn,
+                VersionId: policyDetails.Policy.DefaultVersionId
+            });
+            DL_access.writeData('asset', 'IAMPolicyPermissions', policyVersion.PolicyVersion);
+        }
+    } catch (error) {
+        console.error("Error retrieving IAM permissions:", error);
+        throw error;
+    }
 }
 
 module.exports = {
