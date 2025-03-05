@@ -430,13 +430,13 @@ async function writeS3Data(type, subtype, data) {
                     const IAMRoleSchema = new parquet.ParquetSchema({
                         UniqueId: { type: 'UTF8', optional: false },
                         RoleId: { type: 'UTF8', optional: false },
-                        Rolename: { type: 'UTF8', optional: false },
+                        RoleName: { type: 'UTF8', optional: false },
                         AssumeRolePolicyDocument: { type: 'UTF8', optional: false }
                     });
                     const IAMRoleData = {
                       UniqueId: data.RoleId, 
                       RoleId: data.RoleId, 
-                      Rolename: data.Rolename,
+                      Rolename: data.RoleName,
                       AssumeRolePolicyDocument: data.AssumeRolePolicyDocument 
                     }
                     const S3_KEY = 'IAMRoleBucketinventory.parquet';
