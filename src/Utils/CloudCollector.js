@@ -4,6 +4,7 @@ const { RDS } = require("@aws-sdk/client-rds");
 const { S3 } = require("@aws-sdk/client-s3");
 
 const DL_access = require('../DataLake/DL_access');
+const { IAM } = require("@aws-sdk/client-iam");
 
 
 
@@ -105,6 +106,25 @@ async function CollectAssets() {
         throw error;
     }
 
+}
+
+async function CollectRoles() {
+    const iam = new IAM({
+        region: 'us-east-1',
+    });
+
+    try {
+        // Get IAM roles
+        const roles = await iam.listRoles();
+        console.log("IAM Roles count:", roles.Roles.length);
+        for (const role of roles.Roles) {
+            DL_access.writeData('asset', 'IAMRole', role);
+        }
+        return roles.Roles;
+    } catch (error) {
+        console.error("Error retrieving IAM roles:", error);
+        throw error;
+    }
 }
 
 
