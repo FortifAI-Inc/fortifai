@@ -424,6 +424,7 @@ async function writeS3Data(type, subtype, data) {
                         throw error;
                     }
                 break;
+                case 'IAMRole':
                 case 'RDS':
                 case 'ECS':
                 case 'EKS':
