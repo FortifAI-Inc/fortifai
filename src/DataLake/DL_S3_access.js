@@ -465,6 +465,47 @@ async function writeS3Data(type, subtype, data) {
                     }
                 break;
                 case 'IAMPolicy':
+                  try {
+                    //console.log("Received "+subtype+JSON.stringify(data))
+                    const IAMPolicySchema = new parquet.ParquetSchema({
+                        UniqueId: { type: 'UTF8', optional: false },
+                        PolicyId: { type: 'UTF8', optional: false },
+                        PolicyName: { type: 'UTF8', optional: false },
+                        AttachmentCount: { type: 'UTF8', optional: false },
+                        PermissionsBoundaryUsageCount: {type: 'UTF8', optional: false}
+                    });
+                    const IAMPolicyData = {
+                      UniqueId: data.PolicyId, 
+                      PolicyId: data.PolicyId, 
+                      PolicyName: data.PolicyName,
+                      AttachmentCount: data.AttachmentCount,
+                      PermissionsBoundaryUsageCount: data.PermissionsBoundaryUsageCount 
+                    }
+                    const S3_KEY = 'IAMPolicyBucketinventory.parquet';
+                    try {
+                        let records = await fetchParquetFromS3(S3_KEY);
+                    
+                        // Check if InstanceId already exists
+            
+                        const index = records.findIndex(rec => rec.UniqueId === data.PolicyId);
+                        if (index !== -1) {
+                          console.log(`Updating existing instance: ${data.PolicyId}`);
+                          records[index] = IAPolicyData; // Update record
+                        } else {
+                          console.log(`Adding new instance: ${data.PolicyId}`);
+                          records.push(IAMPolicyData); // Insert new record
+                        }
+                    
+                        await uploadParquetToS3(IAMPolicySchema, records, S3_KEY);
+                    
+                      } catch (err) {
+                        console.error('Error writing data to '+subtype+' Parquet file:', err);
+                      }
+                    } catch (error) {   
+                        console.error("Error writing "+subtype+" asset:", error);
+                        throw error;
+                    }
+                    break;
                 case 'RDS':
                 case 'ECS':
                 case 'EKS':
