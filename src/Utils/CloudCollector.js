@@ -175,6 +175,7 @@ async function CollectUsers() {
                     attachedPolicies: policies.AttachedPolicies,
                     inlinePolicies: inlinePolicies.PolicyNames
                 };
+                console.log(`Permissions for user ${user.UserName}:`, JSON.stringify(permissions, null, 2));
                 //DL_access.writeData('asset', 'IAMUserAccessKey', { user, accessKey, permissions });
             }
         }
