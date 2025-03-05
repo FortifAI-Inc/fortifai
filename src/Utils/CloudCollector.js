@@ -108,6 +108,7 @@ async function CollectAssets() {
 
 }
 
+// This function should interface with AWS's infrastructure and obtain a list of all IAM roles
 async function CollectRoles() {
     const iam = new IAM({
         region: 'us-east-1',
@@ -127,6 +128,25 @@ async function CollectRoles() {
     }
 }
 
+// This function should interface with AWS's infrastructure and obtain a list of all policies
+async function CollectPolicies() {
+    const iam = new IAM({
+        region: 'us-east-1',
+    });
+
+    try {
+        // Get IAM policies
+        const policies = await iam.listPolicies({ Scope: 'Local' });
+        console.log("IAM Policies count:", policies.Policies.length);
+        for (const policy of policies.Policies) {
+            DL_access.writeData('asset', 'IAMPolicy', policy);
+        }
+        return policies.Policies;
+    } catch (error) {
+        console.error("Error retrieving IAM policies:", error);
+        throw error;
+    }
+}
 
 module.exports = {
     CollectAssets, 
