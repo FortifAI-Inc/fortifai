@@ -165,19 +165,20 @@ async function CollectUsers() {
         const users = await iam.listUsers();
         console.log("IAM Users count:", users.Users.length);
         for (const user of users.Users) {
-            console.log("User: ",user);
+            console.log("User: ", user);
             const accessKeys = await iam.listAccessKeys({ UserName: user.UserName });
-            for (const accessKey of accessKeys.AccessKeyMetadata) {
-                console.log("AccessKey: ", accessKey)
-                const policies = await iam.listAttachedUserPolicies({ UserName: user.UserName });
-                const inlinePolicies = await iam.listUserPolicies({ UserName: user.UserName });
-                const permissions = {
-                    attachedPolicies: policies.AttachedPolicies,
-                    inlinePolicies: inlinePolicies.PolicyNames
-                };
-                console.log(`Permissions for user ${user.UserName}:`, JSON.stringify(permissions, null, 2));
-                //DL_access.writeData('asset', 'IAMUserAccessKey', { user, accessKey, permissions });
-            }
+            const attachedPolicies = await iam.listAttachedUserPolicies({ UserName: user.UserName });
+            const inlinePolicies = await iam.listUserPolicies({ UserName: user.UserName });
+
+            const consolidatedUser = {
+            ...user,
+            accessKeys: accessKeys.AccessKeyMetadata,
+            attachedPolicies: attachedPolicies.AttachedPolicies,
+            inlinePolicies: inlinePolicies.PolicyNames
+            };
+
+            console.log(`Consolidated user data for ${user.UserName}:`, JSON.stringify(consolidatedUser, null, 2));
+            DL_access.writeData('asset', 'User', consolidatedUser);
         }
         return users.Users;
     } catch (error) {
