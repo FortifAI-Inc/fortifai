@@ -3,7 +3,7 @@ const { Lambda } = require("@aws-sdk/client-lambda");
 const { RDS } = require("@aws-sdk/client-rds");
 const { S3 } = require("@aws-sdk/client-s3");
 
-const DL_access = require('./DataLake/DL_access');
+const DL_access = require('../DataLake/DL_access');
 
 
 
