@@ -508,6 +508,7 @@ async function writeS3Data(type, subtype, data, moredata=null) {
                         throw error;
                     }
                     break;
+                case 'IAMUserAccessKey':
                 case 'RDS':
                 case 'ECS':
                 case 'EKS':

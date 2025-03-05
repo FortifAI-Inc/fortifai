@@ -154,8 +154,32 @@ async function CollectPolicies() {
     CollectPermissions()
 }
 
+// This function should interface with AWS's infrastructure and obtain a list of all IAM users and their associated access keys
+async function CollectCredentials() {
+    const iam = new IAM({
+        region: 'us-east-1',
+    });
+
+    try {
+        // Get IAM users
+        const users = await iam.listUsers();
+        console.log("IAM Users count:", users.Users.length);
+        for (const user of users.Users) {
+            const accessKeys = await iam.listAccessKeys({ UserName: user.UserName });
+            for (const accessKey of accessKeys.AccessKeyMetadata) {
+                DL_access.writeData('asset', 'IAMUserAccessKey', { user, accessKey });
+            }
+        }
+        return users.Users;
+    } catch (error) {
+        console.error("Error retrieving IAM users and access keys:", error);
+        throw error;
+    }
+}
+
 module.exports = {
     CollectAssets, 
     CollectRoles,
-    CollectPolicies
+    CollectPolicies,
+    CollectCredentials
 };
