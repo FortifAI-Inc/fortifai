@@ -509,6 +509,63 @@ async function writeS3Data(type, subtype, data, moredata=null) {
                     }
                     break;
                 case 'User':
+                  try {
+                    //console.log("Received "+subtype+JSON.stringify(data))
+                    const UserSchema = new parquet.ParquetSchema({
+                        UniqueId: { type: 'UTF8', optional: false },
+                        UserId: { type: 'UTF8', optional: false },
+                        UserName: { type: 'UTF8', optional: false },
+                        AccessKeyIds: { type: 'UTF8', repeated: true },
+                        AttachedPolicyNames: {type: 'UTF8', repeated: true},
+                        InlinePolicyNames: {type: 'UTF8', repeated: true}
+                    });
+                    AccessKeys = []
+                    for (const accessKey of data.AccessKeys) {
+                        AccessKeys.push(accessKey.AccessKeyId);
+                    }
+                    PolicyNames = []
+                    for (const policy of data.AttachedPolicies) {
+                        PolicyNames.push(policy.PolicyName);
+                    }
+                    InlinePolicies = []
+                    for (const policy of data.InlinePolicies) {
+                        InlinePolicies.push(policy);
+                    }
+
+                    const UserData = {
+                      UniqueId: data.UserId, 
+                      UserId: data.UserId, 
+                      UserName: data.UserName,
+                      AccessKeyIds: AccessKeys,
+                      AttachedPolicyNames: PolicyNames,
+                      InlinePolicyNames: InlinePolicies 
+                    }
+                    const S3_KEY = 'UserBucketinventory.parquet';
+                    try {
+                        let records = await fetchParquetFromS3(S3_KEY);
+                    
+                        // Check if InstanceId already exists
+            
+                        const index = records.findIndex(rec => rec.UniqueId === data.UserId);
+                        if (index !== -1) {
+                          console.log(`Updating existing instance: ${data.UserId}`);
+                          records[index] = UserData; // Update record
+                        } else {
+                          console.log(`Adding new instance: ${data.UserId}`);
+                          records.push(UserData); // Insert new record
+                        }
+                    
+                        await uploadParquetToS3(UserSchema, records, S3_KEY);
+                    
+                      } catch (err) {
+                        console.error('Error writing data to '+subtype+' Parquet file:', err);
+                      }
+                    } catch (error) {   
+                        console.error("Error writing "+subtype+" asset:", error);
+                        throw error;
+                    }
+                    break;
+
                 case 'RDS':
                 case 'ECS':
                 case 'EKS':

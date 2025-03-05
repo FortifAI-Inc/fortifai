@@ -172,9 +172,9 @@ async function CollectUsers() {
 
             const consolidatedUser = {
             ...user,
-            accessKeys: accessKeys.AccessKeyMetadata,
-            attachedPolicies: attachedPolicies.AttachedPolicies,
-            inlinePolicies: inlinePolicies.PolicyNames
+            AccessKeys: accessKeys.AccessKeyMetadata,
+            AttachedPolicies: attachedPolicies.AttachedPolicies,
+            InlinePolicies: inlinePolicies.PolicyNames
             };
 
             console.log(`Consolidated user data for ${user.UserName}:`, JSON.stringify(consolidatedUser, null, 2));
