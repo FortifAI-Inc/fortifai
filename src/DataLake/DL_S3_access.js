@@ -471,8 +471,8 @@ async function writeS3Data(type, subtype, data) {
                         UniqueId: { type: 'UTF8', optional: false },
                         PolicyId: { type: 'UTF8', optional: false },
                         PolicyName: { type: 'UTF8', optional: false },
-                        AttachmentCount: { type: 'UTF8', optional: false },
-                        PermissionsBoundaryUsageCount: {type: 'UTF8', optional: false}
+                        AttachmentCount: { type: 'INT32', optional: false },
+                        PermissionsBoundaryUsageCount: {type: 'INT32', optional: false}
                     });
                     const IAMPolicyData = {
                       UniqueId: data.PolicyId, 
@@ -490,7 +490,7 @@ async function writeS3Data(type, subtype, data) {
                         const index = records.findIndex(rec => rec.UniqueId === data.PolicyId);
                         if (index !== -1) {
                           console.log(`Updating existing instance: ${data.PolicyId}`);
-                          records[index] = IAPolicyData; // Update record
+                          records[index] = IAMPolicyData; // Update record
                         } else {
                           console.log(`Adding new instance: ${data.PolicyId}`);
                           records.push(IAMPolicyData); // Insert new record
