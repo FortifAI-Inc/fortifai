@@ -425,6 +425,46 @@ async function writeS3Data(type, subtype, data) {
                     }
                 break;
                 case 'IAMRole':
+                  try {
+                    //console.log("Received "+subtype+JSON.stringify(data))
+                    const IAMRoleSchema = new parquet.ParquetSchema({
+                        UniqueId: { type: 'UTF8', optional: false },
+                        RoleId: { type: 'UTF8', optional: false },
+                        Rolename: { type: 'UTF8', optional: false },
+                        AssumeRolePolicyDocument: { type: 'UTF8', optional: false }
+                    });
+                    const IAMRoleData = {
+                      UniqueId: data.RoleId, 
+                      RoleId: data.RoleId, 
+                      Rolename: data.Rolename,
+                      AssumeRolePolicyDocument: data.AssumeRolePolicyDocument 
+                    }
+                    const S3_KEY = 'IAMRoleBucketinventory.parquet';
+                    try {
+                        let records = await fetchParquetFromS3(S3_KEY);
+                    
+                        // Check if InstanceId already exists
+            
+                        const index = records.findIndex(rec => rec.UniqueId === data.RoleId);
+                        if (index !== -1) {
+                          console.log(`Updating existing instance: ${data.RoleId}`);
+                          records[index] = IAMRoleData; // Update record
+                        } else {
+                          console.log(`Adding new instance: ${data.RoleId}`);
+                          records.push(IAMRoleData); // Insert new record
+                        }
+                    
+                        await uploadParquetToS3(IAMRoleSchema, records, S3_KEY);
+                    
+                      } catch (err) {
+                        console.error('Error writing data to '+subtype+' Parquet file:', err);
+                      }
+                    } catch (error) {   
+                        console.error("Error writing "+subtype+" asset:", error);
+                        throw error;
+                    }
+                break;
+
                 case 'RDS':
                 case 'ECS':
                 case 'EKS':
