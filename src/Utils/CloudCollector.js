@@ -129,5 +129,6 @@ async function CollectRoles() {
 
 
 module.exports = {
-    CollectAssets
+    CollectAssets, 
+    CollectRoles
 };
