@@ -150,5 +150,6 @@ async function CollectPolicies() {
 
 module.exports = {
     CollectAssets, 
-    CollectRoles
+    CollectRoles,
+    CollectPolicies
 };
