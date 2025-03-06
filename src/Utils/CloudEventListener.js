@@ -66,6 +66,7 @@ async function getAllEvents() {
                 const eventLog = `Event ID: ${event.EventId}\nEvent Time: ${event.EventTime}\nEvent Name: ${event.EventName}\nEvent Source: ${event.EventSource}\n\n${JSON.stringify(event, null, 2)}\n${'#'.repeat(80)}\n\n`;
 
                 if (!fs.existsSync(eventFilePath)) {
+                    fs.mkdirSync(path.dirname(eventFilePath), { recursive: true });
                     fs.writeFileSync(eventFilePath, '', 'utf8');
                 }
                 fs.appendFileSync(eventFilePath, eventLog, 'utf8');
