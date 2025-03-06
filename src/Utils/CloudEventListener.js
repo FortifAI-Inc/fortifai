@@ -55,7 +55,7 @@ async function getAllEvents() {
                     throw error;
                 }
             }
-            console.log(`Number of received events so far: `, events.length);
+            //console.log(`Number of received events so far: `, events.length);
             if (data.Events) {
                 events = events.concat(data.Events);
                 for (const event of data.Events) {
