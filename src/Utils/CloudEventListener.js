@@ -1,6 +1,8 @@
 const { CloudWatchLogs } = require("@aws-sdk/client-cloudwatch-logs");
 const { S3Client, ListObjectsV2Command } = require("@aws-sdk/client-s3");
 const { CloudTrailClient, LookupEventsCommand } = require("@aws-sdk/client-cloudtrail");
+const fs = require('fs');
+const path = require('path');
 
 const logGroupName = 'your-log-group-name';
 const logStreamName = 'your-log-stream-name';
@@ -43,23 +45,36 @@ async function getAllEvents() {
         let data;
         do {
             try {
-                data = await cloudTrail.send(new LookupEventsCommand(params));
+            data = await cloudTrail.send(new LookupEventsCommand(params));
             } catch (error) {
-                if (error.name === 'ThrottlingException') {
-                    console.warn("ThrottlingException encountered, continuing...");
-                    await new Promise(resolve => setTimeout(resolve, 1000))
-                    continue;
-                } else {
-                    throw error;
-                }
+            if (error.name === 'ThrottlingException') {
+                console.warn("ThrottlingException encountered, continuing...");
+                await new Promise(resolve => setTimeout(resolve, 1000))
+                continue;
+            } else {
+                throw error;
             }
-            console.log(`Number of received events so far: `,events.length);
+            }
+            console.log(`Number of received events so far: `, events.length);
             if (data.Events) {
-                events = events.concat(data.Events);
-                for (const event of data.Events) {
-                    uniqueEventNames.add(event.EventName);
-                    eventCounts[event.EventName] = (eventCounts[event.EventName] || 0) + 1;
-                }
+            events = events.concat(data.Events);
+            for (const event of data.Events) {
+                uniqueEventNames.add(event.EventName);
+                eventCounts[event.EventName] = (eventCounts[event.EventName] || 0) + 1;
+
+                const eventFilePath = path.join(__dirname, `${event.EventName}.log`);
+                const eventLog = `Event ID: ${event.EventId}\nEvent Time: ${event.EventTime}\nEvent Name: ${event.EventName}\nEvent Source: ${event.EventSource}\n\n${JSON.stringify(event, null, 2)}\n${'#'.repeat(80)}\n\n`;
+
+                fs.appendFileSync(eventFilePath, eventLog, 'utf8');
+            }
+
+            // Append summary to the beginning of each file
+            for (const eventName of uniqueEventNames) {
+                const eventFilePath = path.join(__dirname, `${eventName}.log`);
+                const summaryLine = `Total number of ${eventName} events: ${eventCounts[eventName]}\n${'#'.repeat(80)}\n\n`;
+                const fileContent = fs.readFileSync(eventFilePath, 'utf8');
+                fs.writeFileSync(eventFilePath, summaryLine + fileContent, 'utf8');
+            }
             }
             params.NextToken = data.NextToken;
             await new Promise(resolve => setTimeout(resolve, 550))
