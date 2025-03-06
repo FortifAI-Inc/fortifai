@@ -6,7 +6,7 @@ const { LambdaClient, CreateFunctionCommand, AddPermissionCommand } = require("@
 const { EventBridgeClient, PutRuleCommand, PutTargetsCommand } = require("@aws-sdk/client-eventbridge");
 const { IAMClient, CreateRoleCommand, AttachRolePolicyCommand } = require("@aws-sdk/client-iam");
 const fs = require("fs");
-const uuidv4 = require("uuid");
+const {v4: uuidv4} = require("uuid");
 
 const region = "us-east-1"; // Change to your AWS region
 
@@ -17,7 +17,8 @@ const iamClient = new IAMClient({ region });
 const lambdaRoleName = "FAICloudTrailLambdaExecutionRole";
 const lambdaFunctionName = "FAICloudTrailEventLogger";
 const ruleName = "ModifyInstanceAttributeRule";
-const ruleArn = `arn:aws:events:${region}:058264435853:rule/${ruleName}`; // TODO: Replace with your AWS Account ID
+const accountId = "058264435853";
+const ruleArn = `arn:aws:events:${region}:${accountId}:rule/${ruleName}`; // TODO: Replace with your AWS Account ID
 
 async function createIamRole() {
     try {
@@ -51,7 +52,8 @@ async function createIamRole() {
 
         return roleResponse.Role.Arn;
     } catch (error) {
-        if (error.name === 'EntityAlreadyExists') {
+	    console.log ("Caught Error, ",error);
+        if (error.name === 'EntityAlreadyExistsException') {
             console.log('IAM Role already exists, proceeding...');
             return `arn:aws:iam::${accountId}:role/${lambdaRoleName}`;
         } else {
@@ -86,14 +88,19 @@ async function createLambdaFunction(roleArn) {
         archive.pipe(output);
         archive.append(lambdaCode, { name: 'index.js' });
         await archive.finalize();
+        await new Promise(resolve => setTimeout(resolve, 5000))
 
+
+        const Buf =  fs.readFileSync("/tmp/lambda_function.zip")
+	console.log("Buffer is ",Buf, Buf.length)
         const functionCommand = new CreateFunctionCommand({
             FunctionName: lambdaFunctionName,
             Runtime: "nodejs18.x",
             Role: roleArn,
             Handler: "index.handler",
             Code: {
-                ZipFile: fs.readFileSync("/tmp/lambda_function.zip")
+                //ZipFile: fs.readFileSync("/tmp/lambda_function.zip")
+                ZipFile: Buf//Buffer.from("/tmp/lambda_function.zip")
             },
             Timeout: 10
         });
