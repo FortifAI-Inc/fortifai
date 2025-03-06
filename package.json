@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node index.js"
   },
-  "author": "Your Name",
-  "license": "MIT",
+  "author": "Hilik Stein",
+  "license": "Commercial",
   "dependencies": {
     "@aws-sdk/client-s3": "^3.758.0",
     "@aws-sdk/client-ec2": "^3.758.0",
@@ -16,7 +16,9 @@
     "@aws-sdk/client-iam": "^3.758.0",
     "@aws-sdk/client-cloudwatch-logs": "^3.758.0",
     "@aws-sdk/client-cloudtrail": "^3.758.0",
-    "aws-sdk": "^2.814.0",
-    "parquetjs-lite": ""
+    "parquetjs-lite": "",
+    "@aws-sdk/client-eventbridge": "^3.758.0",
+    "fs": "^0.0.1-security",
+    "uuid": "^8.3.2"
   }
 }
