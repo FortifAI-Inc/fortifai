@@ -1,6 +1,6 @@
 const { CloudWatchLogs } = require("@aws-sdk/client-cloudwatch-logs");
 const { S3Client, ListObjectsV2Command } = require("@aws-sdk/client-s3");
-const { CloudTrailClient, LookupEventsCommand } = require("@aws-sdk/client-cloudtrail");
+const { CloudTrailClient, LookupEventsCommand, PutEventSelectorsCommand } = require("@aws-sdk/client-cloudtrail");
 const fs = require('fs');
 const path = require('path');
 
@@ -162,9 +162,9 @@ function logEvent(message) {
         }
     });
 }
-const cloudtrail = new CloudTrailClient({ region: 'us-east-1' });
 
 function registerModifyInstanceAttributesCallback(callback) {
+    const cloudTrail = new CloudTrailClient({ region: 'us-east-1' });
     const params = {
         EventSelectors: [
             {
@@ -183,15 +183,9 @@ function registerModifyInstanceAttributesCallback(callback) {
         ],
     };
 
-    cloudtrail.putEventSelectors(params, (err, data) => {
-        if (err) {
-            console.error("Error setting event selectors:", err);
-        } else {
-            console.log("Event selectors set successfully:", data);
-        }
-    });
+    data = cloudTrail.send(new PutEventSelectorsCommand (params));
 
-    cloudtrail.on('event', (event) => {
+    cloudTrail.on('event', (event) => {
         if (event.eventName === 'ModifyInstanceAttribute') {
             callback(event);
         }

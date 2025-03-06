@@ -1,70 +1,12 @@
 // This module creates a Lambda Function and registers it to a specifica CloudTrail Event through EventBridge
 // The Lambda Function logs the event to CloudWatch Logs
-//
 
-
-/**
- * Creates an IAM Role for Lambda execution with the necessary permissions.
- * 
- * @returns {Promise<string>} The ARN of the created IAM Role.
- */
-async function createIamRole() {}
-
-/**
- * Creates a Lambda function with the specified IAM Role.
- * 
- * @param {string} roleArn - The ARN of the IAM Role to be assumed by the Lambda function.
- * @returns {Promise<string>} The ARN of the created Lambda function.
- */
-async function createLambdaFunction(roleArn) {}
-
-/**
- * Creates an EventBridge rule to capture specific CloudTrail events.
- * 
- * @returns {Promise<string>} The ARN of the created EventBridge rule.
- */
-async function createEventBridgeRule() {}
-
-/**
- * Adds permission to the Lambda function to allow EventBridge to invoke it.
- * 
- * @param {string} lambdaArn - The ARN of the Lambda function.
- * @returns {Promise<void>}
- */
-async function addLambdaPermission(lambdaArn) {}
-
-/**
- * Adds the Lambda function as a target to the EventBridge rule.
- * 
- * @param {string} lambdaArn - The ARN of the Lambda function.
- * @returns {Promise<void>}
- */
-async function addEventBridgeTarget(lambdaArn) {}
-
-/**
- * Main function to set up the CloudTrail event handling by creating IAM Role, Lambda function,
- * EventBridge rule, and configuring permissions and targets.
- * 
- * @returns {Promise<void>}
- */
-async function main() {}
-
-import {
-    CloudTrailClient,
-  } from "@aws-sdk/client-cloudtrail";
-  import {
-    LambdaClient,
-    CreateFunctionCommand,
-    AddPermissionCommand
-  } from "@aws-sdk/client-lambda";
-  import {
-    EventBridgeClient,
-    PutRuleCommand,
-    PutTargetsCommand
-  } from "@aws-sdk/client-eventbridge";
-  import { IAMClient, CreateRoleCommand, AttachRolePolicyCommand } from "@aws-sdk/client-iam";
-  import fs from "fs";
-  import { v4 as uuidv4 } from "uuid";
+const { CloudTrailClient, } =require( "@aws-sdk/client-cloudtrail" );
+  const { LambdaClient, CreateFunctionCommand, AddPermissionCommand } =require( "@aws-sdk/client-lambda" );
+  const { EventBridgeClient, PutRuleCommand, PutTargetsCommand } =require( "@aws-sdk/client-eventbridge" );
+  const { IAMClient, CreateRoleCommand, AttachRolePolicyCommand } =require( "@aws-sdk/client-iam" );
+  const fs =require( "fs" );
+  const uuidv4  =require( "uuid" );
   
   const region = "us-east-1"; // Change to your AWS region
   
@@ -79,7 +21,7 @@ import {
   
   async function createIamRole() {
     const assumeRolePolicy = {
-      Version: "2025-03-06",
+      Version: "2012-10-17",
       Statement: [
         {
           Effect: "Allow",
