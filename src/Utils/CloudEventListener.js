@@ -45,40 +45,41 @@ async function getAllEvents() {
         let data;
         do {
             try {
-            data = await cloudTrail.send(new LookupEventsCommand(params));
+                data = await cloudTrail.send(new LookupEventsCommand(params));
             } catch (error) {
-            if (error.name === 'ThrottlingException') {
-                console.warn("ThrottlingException encountered, continuing...");
-                await new Promise(resolve => setTimeout(resolve, 1000))
-                continue;
-            } else {
-                throw error;
-            }
+                if (error.name === 'ThrottlingException') {
+                    console.warn("ThrottlingException encountered, continuing...");
+                    await new Promise(resolve => setTimeout(resolve, 1000))
+                    continue;
+                } else {
+                    throw error;
+                }
             }
             console.log(`Number of received events so far: `, events.length);
             if (data.Events) {
-            events = events.concat(data.Events);
-            for (const event of data.Events) {
-                uniqueEventNames.add(event.EventName);
-                eventCounts[event.EventName] = (eventCounts[event.EventName] || 0) + 1;
+                events = events.concat(data.Events);
+                for (const event of data.Events) {
+                    uniqueEventNames.add(event.EventName);
+                    eventCounts[event.EventName] = (eventCounts[event.EventName] || 0) + 1;
 
-                const eventFilePath = path.join(__dirname, `EventLogs/${event.EventName}.log`);
-                const eventLog = `Event ID: ${event.EventId}\nEvent Time: ${event.EventTime}\nEvent Name: ${event.EventName}\nEvent Source: ${event.EventSource}\n\n${JSON.stringify(event, null, 2)}\n${'#'.repeat(80)}\n\n`;
+                    const eventFilePath = path.join(__dirname, `EventLogs/${event.EventName}.log`);
+                    const eventLog = `Event ID: ${event.EventId}\nEvent Time: ${event.EventTime}\nEvent Name: ${event.EventName}\nEvent Source: ${event.EventSource}\n\n${JSON.stringify(event, null, 2)}\n${'#'.repeat(80)}\n\n`;
 
-                if (!fs.existsSync(eventFilePath)) {
-                    fs.mkdirSync(path.dirname(eventFilePath), { recursive: true });
-                    fs.writeFileSync(eventFilePath, '', 'utf8');
+                    if (!fs.existsSync(eventFilePath)) {
+                        console.log("creating file ", eventFilePath)
+                        fs.mkdirSync(path.dirname(eventFilePath), { recursive: true });
+                        fs.writeFileSync(eventFilePath, '', 'utf8');
+                    }
+                    fs.appendFileSync(eventFilePath, eventLog, 'utf8');
                 }
-                fs.appendFileSync(eventFilePath, eventLog, 'utf8');
-            }
 
-            // Append summary to the beginning of each file
-            for (const eventName of uniqueEventNames) {
-                const eventFilePath = path.join(__dirname, `EventLogs/${eventName}.log`);
-                const summaryLine = `Total number of ${eventName} events: ${eventCounts[eventName]}\n${'#'.repeat(80)}\n\n`;
-                const fileContent = fs.readFileSync(eventFilePath, 'utf8');
-                fs.writeFileSync(eventFilePath, summaryLine + fileContent, 'utf8');
-            }
+                // Append summary to the beginning of each file
+                for (const eventName of uniqueEventNames) {
+                    const eventFilePath = path.join(__dirname, `EventLogs/${eventName}.log`);
+                    const summaryLine = `Total number of ${eventName} events: ${eventCounts[eventName]}\n${'#'.repeat(80)}\n\n`;
+                    const fileContent = fs.readFileSync(eventFilePath, 'utf8');
+                    fs.writeFileSync(eventFilePath, summaryLine + fileContent, 'utf8');
+                }
             }
             if (events.length >= 1000) {
                 exit()
@@ -105,7 +106,7 @@ async function listenForEvents() {
                     AttributeValue: 'ConsoleLogin',
                 },*/
             ],
-	    MaxResults: 100,
+            MaxResults: 100,
         };
 
         const data = await cloudTrail.send(new LookupEventsCommand(params));
