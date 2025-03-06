@@ -36,7 +36,7 @@ async function getAllEvents() {
     let eventCounts = {};
 
     let params = {
-        MaxResults: 100,
+        MaxResults: 1000,
     };
 
     try {
@@ -51,6 +51,7 @@ async function getAllEvents() {
                 }
             }
             params.NextToken = data.NextToken;
+            await new Promise(resolve => setTimeout(resolve, 500))
         } while (data.NextToken);
 
         console.log(`Total number of events: ${events.length}`);
