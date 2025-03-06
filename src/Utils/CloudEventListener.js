@@ -42,8 +42,18 @@ async function getAllEvents() {
     try {
         let data;
         do {
-            data = await cloudTrail.send(new LookupEventsCommand(params));
-            console.log(`Number of received events: ${data.Events ? data.Events.length : 0}`);
+            try {
+                data = await cloudTrail.send(new LookupEventsCommand(params));
+            } catch (error) {
+                if (error.name === 'ThrottlingException') {
+                    console.warn("ThrottlingException encountered, continuing...");
+                    await new Promise(resolve => setTimeout(resolve, 1000))
+                    continue;
+                } else {
+                    throw error;
+                }
+            }
+            console.log(`Number of received events so far: `,events.length);
             if (data.Events) {
                 events = events.concat(data.Events);
                 for (const event of data.Events) {
@@ -52,7 +62,7 @@ async function getAllEvents() {
                 }
             }
             params.NextToken = data.NextToken;
-            await new Promise(resolve => setTimeout(resolve, 600))
+            await new Promise(resolve => setTimeout(resolve, 550))
         } while (data.NextToken);
 
         console.log(`Total number of events: ${events.length}`);
