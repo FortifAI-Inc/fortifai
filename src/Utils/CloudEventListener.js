@@ -36,13 +36,14 @@ async function getAllEvents() {
     let eventCounts = {};
 
     let params = {
-        MaxResults: 1000,
+        MaxResults: 2000,
     };
 
     try {
         let data;
         do {
             data = await cloudTrail.send(new LookupEventsCommand(params));
+	    console.log("received 2000 events");
             if (data.Events) {
                 events = events.concat(data.Events);
                 for (const event of data.Events) {
@@ -51,7 +52,7 @@ async function getAllEvents() {
                 }
             }
             params.NextToken = data.NextToken;
-            await new Promise(resolve => setTimeout(resolve, 500))
+            await new Promise(resolve => setTimeout(resolve, 550))
         } while (data.NextToken);
 
         console.log(`Total number of events: ${events.length}`);
