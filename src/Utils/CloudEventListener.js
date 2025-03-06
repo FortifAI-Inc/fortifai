@@ -59,6 +59,9 @@ async function getAllEvents() {
             if (data.Events) {
                 events = events.concat(data.Events);
                 for (const event of data.Events) {
+                    if event.EventName === 'LookupEvents') { // Skip over the cloudtrail lookup events (these accumulate in this loop)
+                        continue;
+                    }
                     uniqueEventNames.add(event.EventName);
                     eventCounts[event.EventName] = (eventCounts[event.EventName] || 0) + 1;
 
