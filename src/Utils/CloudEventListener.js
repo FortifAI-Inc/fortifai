@@ -62,7 +62,7 @@ async function getAllEvents() {
                 uniqueEventNames.add(event.EventName);
                 eventCounts[event.EventName] = (eventCounts[event.EventName] || 0) + 1;
 
-                const eventFilePath = path.join(__dirname, `${event.EventName}.log`);
+                const eventFilePath = path.join(__dirname, `EventLogs/${event.EventName}.log`);
                 const eventLog = `Event ID: ${event.EventId}\nEvent Time: ${event.EventTime}\nEvent Name: ${event.EventName}\nEvent Source: ${event.EventSource}\n\n${JSON.stringify(event, null, 2)}\n${'#'.repeat(80)}\n\n`;
 
                 fs.appendFileSync(eventFilePath, eventLog, 'utf8');
@@ -70,11 +70,14 @@ async function getAllEvents() {
 
             // Append summary to the beginning of each file
             for (const eventName of uniqueEventNames) {
-                const eventFilePath = path.join(__dirname, `${eventName}.log`);
+                const eventFilePath = path.join(__dirname, `EventLogs/${eventName}.log`);
                 const summaryLine = `Total number of ${eventName} events: ${eventCounts[eventName]}\n${'#'.repeat(80)}\n\n`;
                 const fileContent = fs.readFileSync(eventFilePath, 'utf8');
                 fs.writeFileSync(eventFilePath, summaryLine + fileContent, 'utf8');
             }
+            }
+            if (events.length >= 1000) {
+                exit()
             }
             params.NextToken = data.NextToken;
             await new Promise(resolve => setTimeout(resolve, 550))
@@ -123,6 +126,7 @@ async function startListening() {
         console.log("Listening for events...");
         await getAllEvents();
         await new Promise(resolve => setTimeout(resolve, 60000)); // Wait for 1 minute before checking again
+        exit();
     }
 }
 
