@@ -35,11 +35,12 @@ async function listenForEvents() {
     try {
         const params = {
             LookupAttributes: [
-                {
+                /*{
                     AttributeKey: 'EventName',
                     AttributeValue: 'ConsoleLogin',
-                },
+                },*/
             ],
+	    MaxResults: 100,
         };
 
         const data = await cloudTrail.send(new LookupEventsCommand(params));
@@ -51,7 +52,7 @@ async function listenForEvents() {
                     accessKeyId: eventData.userIdentity.accessKeyId,
                     resources: eventData.resources,
                 };
-                await logEvent(message);
+                console.log(message);//await logEvent(message);
             }
         }
     } catch (error) {
@@ -72,4 +73,5 @@ startListening();
 module.exports = {
     logEvent,
     listenForEvents,
+    startListening
 };

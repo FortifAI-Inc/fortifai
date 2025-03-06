@@ -15,6 +15,7 @@
     "@aws-sdk/client-rds": "^3.758.0",
     "@aws-sdk/client-iam": "^3.758.0",
     "@aws-sdk/client-cloudwatch-logs": "^3.758.0",
+    "@aws-sdk/client-cloudtrail": "^3.758.0",
     "aws-sdk": "^2.814.0",
     "parquetjs-lite": ""
   }
