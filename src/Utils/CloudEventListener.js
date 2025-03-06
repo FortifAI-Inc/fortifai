@@ -29,6 +29,37 @@ async function logEvent(message) {
     }
 }
 
+async function getAllEvents() {
+    const cloudTrail = new CloudTrailClient({ region: 'us-east-1' });
+    let events = [];
+    let uniqueEventNames = new Set();
+    let eventCounts = {};
+
+    let params = {
+        MaxResults: 100,
+    };
+
+    try {
+        let data;
+        do {
+            data = await cloudTrail.send(new LookupEventsCommand(params));
+            if (data.Events) {
+                events = events.concat(data.Events);
+                for (const event of data.Events) {
+                    uniqueEventNames.add(event.EventName);
+                    eventCounts[event.EventName] = (eventCounts[event.EventName] || 0) + 1;
+                }
+            }
+            params.NextToken = data.NextToken;
+        } while (data.NextToken);
+
+        console.log(`Total number of events: ${events.length}`);
+        console.log(`Unique event names: ${Array.from(uniqueEventNames).join(', ')}`);
+        console.log(`Event counts: ${JSON.stringify(eventCounts, null, 2)}`);
+    } catch (error) {
+        console.error("Error retrieving events:", error);
+    }
+}
 async function listenForEvents() {
     const cloudTrail = new CloudTrailClient({ region: 'us-east-1' });
 
@@ -63,7 +94,7 @@ async function listenForEvents() {
 async function startListening() {
     while (true) {
         console.log("Listening for events...");
-        await listenForEvents();
+        await getAllEvents();
         await new Promise(resolve => setTimeout(resolve, 60000)); // Wait for 1 minute before checking again
     }
 }
