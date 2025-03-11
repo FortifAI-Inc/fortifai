@@ -168,40 +168,6 @@ function logEvent(message) {
     });
 }
 
-function registerModifyInstanceAttributesCallback(callback) {
-    const cloudTrail = new CloudTrailClient({ region: 'us-east-1' });
-    const params = {
-        EventSelectors: [
-            {
-                ReadWriteType: 'WriteOnly',
-                IncludeManagementEvents: true,
-                /*DataResources: [
-                    {
-                        Type: 'AWS::EC2::Instance',
-                        Values: ['arn:aws:ec2:us-east-1::instance/*'],
-                    },
-                ],*/
-                EventTypes: [
-                    'ModifyInstanceAttribute',
-                ],
-            },
-        ],
-    };
-
-    data = cloudTrail.send(new PutEventSelectorsCommand (params));
-
-    cloudTrail.on('event', (event) => {
-        if (event.eventName === 'ModifyInstanceAttribute') {
-            callback(event);
-        }
-    });
-}
-
-function modifyInstanceAttributesCallback(event) {
-    console.log("ModifyInstanceAttribute event received:", event);
-}
-
-registerModifyInstanceAttributesCallback(logEvent);
 
 module.exports = {
     logEvent,
