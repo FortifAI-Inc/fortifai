@@ -43,7 +43,7 @@ async function getAllEvents() {
     for (const attribute of Attributes) {
         console.log("Retrieving event ", attribute.AttributeValue)
         let params = {
-            LookupAttributes: Attribute,
+            LookupAttributes: [attribute],
             //StartTime: new Date(new Date().getTime() - 1000 * 60 * 60 * 24), // 24 hours ago
             MaxResults: 50,
         };
