@@ -40,64 +40,67 @@ async function getAllEvents() {
 
     let Attributes = EventRegistration.buildLookupAttributes()
 
-    let params = {
-        LookupAttributes: Attributes,
-        //StartTime: new Date(new Date().getTime() - 1000 * 60 * 60 * 24), // 24 hours ago
-        MaxResults: 50,
-    };
+    for (const attribute of Attributes) {
+        console.log("Retrieving event ", attribute.AttributeValue)
+        let params = {
+            LookupAttributes: Attribute,
+            //StartTime: new Date(new Date().getTime() - 1000 * 60 * 60 * 24), // 24 hours ago
+            MaxResults: 50,
+        };
 
-    try {
-        let data;
-        do {
-            try {
-                data = await cloudTrail.send(new LookupEventsCommand(params));
-            } catch (error) {
-                if (error.name === 'ThrottlingException') {
-                    console.warn("ThrottlingException encountered, continuing...");
-                    await new Promise(resolve => setTimeout(resolve, 1000))
-                    continue;
-                } else {
-                    throw error;
-                }
-            }
-            console.log(`Number of received events so far: `, events.length);
-            if (data.Events) {
-                events = events.concat(data.Events);
-                for (const event of data.Events) {
-                    if (event.EventName === 'LookupEvents') { // Skip over the cloudtrail lookup events (these accumulate in this loop)
+        try {
+            let data;
+            do {
+                try {
+                    data = await cloudTrail.send(new LookupEventsCommand(params));
+                } catch (error) {
+                    if (error.name === 'ThrottlingException') {
+                        console.warn("ThrottlingException encountered, continuing...");
+                        await new Promise(resolve => setTimeout(resolve, 1000))
                         continue;
+                    } else {
+                        throw error;
                     }
-                    uniqueEventNames.add(event.EventName);
-                    eventCounts[event.EventName] = (eventCounts[event.EventName] || 0) + 1;
-
-                    const eventFilePath = path.join(__dirname, `EventLogs/${event.EventName}.log`);
-                    const eventLog = `Event ID: ${event.EventId}\nEvent Time: ${event.EventTime}\nEvent Name: ${event.EventName}\nEvent Source: ${event.EventSource}\n\n${JSON.stringify(event, null, 2)}\n${'#'.repeat(80)}\n\n`;
-
-                    if (!fs.existsSync(eventFilePath)) {
-                        console.log("creating file ", eventFilePath)
-                        fs.mkdirSync(path.dirname(eventFilePath), { recursive: true });
-                        fs.writeFileSync(eventFilePath, '', 'utf8');
-                    }
-                    fs.appendFileSync(eventFilePath, eventLog, 'utf8');
                 }
+                console.log(`Number of received events so far: `, events.length);
+                if (data.Events) {
+                    events = events.concat(data.Events);
+                    for (const event of data.Events) {
+                        if (event.EventName === 'LookupEvents') { // Skip over the cloudtrail lookup events (these accumulate in this loop)
+                            continue;
+                        }
+                        uniqueEventNames.add(event.EventName);
+                        eventCounts[event.EventName] = (eventCounts[event.EventName] || 0) + 1;
 
+                        const eventFilePath = path.join(__dirname, `EventLogs/${event.EventName}.log`);
+                        const eventLog = `Event ID: ${event.EventId}\nEvent Time: ${event.EventTime}\nEvent Name: ${event.EventName}\nEvent Source: ${event.EventSource}\n\n${JSON.stringify(event, null, 2)}\n${'#'.repeat(80)}\n\n`;
+
+                        if (!fs.existsSync(eventFilePath)) {
+                            console.log("creating file ", eventFilePath)
+                            fs.mkdirSync(path.dirname(eventFilePath), { recursive: true });
+                            fs.writeFileSync(eventFilePath, '', 'utf8');
+                        }
+                        fs.appendFileSync(eventFilePath, eventLog, 'utf8');
+                    }
+
+                }
+                params.NextToken = data.NextToken;
+                await new Promise(resolve => setTimeout(resolve, 550))
+            } while (data.NextToken);
+            // Append summary to the beginning of each file
+            for (const eventName of uniqueEventNames) {
+                const eventFilePath = path.join(__dirname, `EventLogs/${eventName}.log`);
+                const summaryLine = `Total number of ${eventName} events: ${eventCounts[eventName]}\n${'#'.repeat(80)}\n\n`;
+                const fileContent = fs.readFileSync(eventFilePath, 'utf8');
+                fs.writeFileSync(eventFilePath, summaryLine + fileContent, 'utf8');
             }
-            params.NextToken = data.NextToken;
-            await new Promise(resolve => setTimeout(resolve, 550))
-        } while (data.NextToken);
-        // Append summary to the beginning of each file
-        for (const eventName of uniqueEventNames) {
-            const eventFilePath = path.join(__dirname, `EventLogs/${eventName}.log`);
-            const summaryLine = `Total number of ${eventName} events: ${eventCounts[eventName]}\n${'#'.repeat(80)}\n\n`;
-            const fileContent = fs.readFileSync(eventFilePath, 'utf8');
-            fs.writeFileSync(eventFilePath, summaryLine + fileContent, 'utf8');
-        }
 
-        console.log(`Total number of events: ${events.length}`);
-        console.log(`Unique event names: ${Array.from(uniqueEventNames).join(', ')}`);
-        console.log(`Event counts: ${JSON.stringify(eventCounts, null, 2)}`);
-    } catch (error) {
-        console.error("Error retrieving events:", error);
+            console.log(`Total number of events: ${events.length}`);
+            console.log(`Unique event names: ${Array.from(uniqueEventNames).join(', ')}`);
+            console.log(`Event counts: ${JSON.stringify(eventCounts, null, 2)}`);
+        } catch (error) {
+            console.error("Error retrieving events:", error);
+        }
     }
 }
 async function listenForEvents() {
