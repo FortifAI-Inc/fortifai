@@ -274,5 +274,6 @@ async function main() {
     }
 }
 
-main();
+module.exports = { buildLookupAttributes };
+//main();
 
