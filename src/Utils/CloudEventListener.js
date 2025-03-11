@@ -65,24 +65,23 @@ async function getAllEvents() {
                 console.log(`Number of received events so far: `, events.length);
                 if (data.Events) {
                     events = events.concat(data.Events);
+                    const eventName = attribute.AttributeValue;
+                    uniqueEventNames.add(eventName);
+                    eventCounts[eventName] = (eventCounts[eventName] || 0) + data.Events.length;
+
+                    const eventFilePath = path.join(__dirname, `EventLogs/${eventName}.log`);
+                    let eventLog = '';
+
                     for (const event of data.Events) {
-                        if (event.EventName === 'LookupEvents') { // Skip over the cloudtrail lookup events (these accumulate in this loop)
-                            continue;
-                        }
-                        uniqueEventNames.add(event.EventName);
-                        eventCounts[event.EventName] = (eventCounts[event.EventName] || 0) + 1;
-
-                        const eventFilePath = path.join(__dirname, `EventLogs/${event.EventName}.log`);
-                        const eventLog = `Event ID: ${event.EventId}\nEvent Time: ${event.EventTime}\nEvent Name: ${event.EventName}\nEvent Source: ${event.EventSource}\n\n${JSON.stringify(event, null, 2)}\n${'#'.repeat(80)}\n\n`;
-
-                        if (!fs.existsSync(eventFilePath)) {
-                            console.log("creating file ", eventFilePath)
-                            fs.mkdirSync(path.dirname(eventFilePath), { recursive: true });
-                            fs.writeFileSync(eventFilePath, '', 'utf8');
-                        }
-                        fs.appendFileSync(eventFilePath, eventLog, 'utf8');
+                        eventLog += `Event ID: ${event.EventId}\nEvent Time: ${event.EventTime}\nEvent Name: ${event.EventName}\nEvent Source: ${event.EventSource}\n\n${JSON.stringify(event, null, 2)}\n${'#'.repeat(80)}\n\n`;
                     }
 
+                    if (!fs.existsSync(eventFilePath)) {
+                        console.log("creating file ", eventFilePath)
+                        fs.mkdirSync(path.dirname(eventFilePath), { recursive: true });
+                        fs.writeFileSync(eventFilePath, '', 'utf8');
+                    }
+                    fs.appendFileSync(eventFilePath, eventLog, 'utf8');
                 }
                 params.NextToken = data.NextToken;
                 await new Promise(resolve => setTimeout(resolve, 550))

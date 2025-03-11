@@ -140,7 +140,7 @@ const readOnlyEvents = {
     glue: ["GetDatabases", "GetTables", "GetPartitions", "GetCrawlers"],
     athena: ["ListWorkGroups", "ListDataCatalogs", "ListDatabases", "ListNamedQueries"],
     emr: ["DescribeCluster", "ListClusters", "ListSteps", "DescribeStep"],
-    cloudtrail: ["DescribeTrails", "GetTrailStatus", "ListTrails", "LookupEvents"]
+    cloudtrail: ["DescribeTrails", "GetTrailStatus", "ListTrails"]//, "LookupEvents"]
 };
 
 const writeEvents = {
