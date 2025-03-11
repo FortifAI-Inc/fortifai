@@ -95,9 +95,9 @@ async function getAllEvents() {
                 fs.writeFileSync(eventFilePath, summaryLine + fileContent, 'utf8');
             }
 
-            console.log(`Total number of events: ${events.length}`);
-            console.log(`Unique event names: ${Array.from(uniqueEventNames).join(', ')}`);
-            console.log(`Event counts: ${JSON.stringify(eventCounts, null, 2)}`);
+            //console.log(`Total number of events: ${events.length}`);
+            //console.log(`Unique event names: ${Array.from(uniqueEventNames).join(', ')}`);
+            //console.log(`Event counts: ${JSON.stringify(eventCounts, null, 2)}`);
         } catch (error) {
             console.error("Error retrieving events:", error);
         }

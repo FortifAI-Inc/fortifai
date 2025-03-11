@@ -188,8 +188,8 @@ function buildLookupAttributes() {
     return lookupAttributes;
 }
 
-const lookupAttributes = buildLookupAttributes();
-console.log(lookupAttributes);
+//const lookupAttributes = buildLookupAttributes();
+//console.log(lookupAttributes);
 async function createEventBridgeRule() {
     try {
         const ruleCommand = new PutRuleCommand({
