@@ -41,15 +41,15 @@ async function getAllEvents() {
     let Attributes = EventRegistration.buildLookupAttributes()
 
     for (const attribute of Attributes) {
-        console.log("Retrieving event ", attribute.AttributeValue)
+        //console.log("Retrieving event ", attribute.AttributeValue)
         let params = {
             LookupAttributes: [attribute],
-            //StartTime: new Date(new Date().getTime() - 1000 * 60 * 60 * 24), // 24 hours ago
             MaxResults: 50,
         };
 
         try {
             let data;
+            let eventCountForThisAttribute = 0;
             do {
                 try {
                     data = await cloudTrail.send(new LookupEventsCommand(params));
@@ -62,9 +62,9 @@ async function getAllEvents() {
                         throw error;
                     }
                 }
-                console.log(`Number of received events so far: `, events.length);
                 if (data.Events) {
                     events = events.concat(data.Events);
+                    eventCountForThisAttribute += data.Events.length;
                     const eventName = attribute.AttributeValue;
                     uniqueEventNames.add(eventName);
                     eventCounts[eventName] = (eventCounts[eventName] || 0) + data.Events.length;
@@ -86,6 +86,7 @@ async function getAllEvents() {
                 params.NextToken = data.NextToken;
                 await new Promise(resolve => setTimeout(resolve, 550))
             } while (data.NextToken);
+            console.log(`Number of events received for ${attribute.AttributeValue}: ${eventCountForThisAttribute}`);
             // Append summary to the beginning of each file
             for (const eventName of uniqueEventNames) {
                 const eventFilePath = path.join(__dirname, `EventLogs/${eventName}.log`);
@@ -102,6 +103,7 @@ async function getAllEvents() {
         }
     }
 }
+
 async function listenForEvents() {
     const cloudTrail = new CloudTrailClient({ region: 'us-east-1' });
 
