@@ -3,6 +3,7 @@ const { S3Client, ListObjectsV2Command } = require("@aws-sdk/client-s3");
 const { CloudTrailClient, LookupEventsCommand, PutEventSelectorsCommand } = require("@aws-sdk/client-cloudtrail");
 const fs = require('fs');
 const path = require('path');
+const EventRegistration = require('./EventRegistration');
 
 const logGroupName = 'your-log-group-name';
 const logStreamName = 'your-log-stream-name';
@@ -37,8 +38,12 @@ async function getAllEvents() {
     let uniqueEventNames = new Set();
     let eventCounts = {};
 
+    let Attributes = EventRegistration.buildLookupAttributes()
+
     let params = {
-        MaxResults: 2000,
+        LookupAttributes: Attributes,
+        //StartTime: new Date(new Date().getTime() - 1000 * 60 * 60 * 24), // 24 hours ago
+        MaxResults: 50,
     };
 
     try {
@@ -55,7 +60,7 @@ async function getAllEvents() {
                     throw error;
                 }
             }
-            //console.log(`Number of received events so far: `, events.length);
+            console.log(`Number of received events so far: `, events.length);
             if (data.Events) {
                 events = events.concat(data.Events);
                 for (const event of data.Events) {

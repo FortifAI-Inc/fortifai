@@ -167,6 +167,29 @@ const writeEvents = {
     emr: ["RunJobFlow", "TerminateJobFlows", "AddJobFlowSteps", "CancelSteps"],
     cloudtrail: ["CreateTrail", "DeleteTrail", "StartLogging", "StopLogging", "UpdateTrail"]
 };
+
+function buildLookupAttributes() {
+    const lookupAttributes = [];
+
+    const addAttributes = (events) => {
+        for (const service in events) {
+            events[service].forEach(event => {
+                lookupAttributes.push({
+                    AttributeKey: "EventName",
+                    AttributeValue: event
+                });
+            });
+        }
+    };
+
+    addAttributes(readOnlyEvents);
+    addAttributes(writeEvents);
+
+    return lookupAttributes;
+}
+
+const lookupAttributes = buildLookupAttributes();
+console.log(lookupAttributes);
 async function createEventBridgeRule() {
     try {
         const ruleCommand = new PutRuleCommand({
