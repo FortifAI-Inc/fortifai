@@ -143,6 +143,5 @@ function logEvent(message) {
 
 
 module.exports = {
-    listenForEvents,
     startListening
 };
