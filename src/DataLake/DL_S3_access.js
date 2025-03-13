@@ -73,7 +73,7 @@ async function fetchParquetFromS3(S3_KEY) {
     await reader.close();
     return records;
   } catch (err) {
-    console.warn("⚠️ File not found or corrupt, treating as new file:", S3_KEY);
+    console.warn("⚠️ File not found or corrupt, treating as new file:", S3_KEY,err);
     return []; // Return empty list on failure
   }
 }
