@@ -58,7 +58,7 @@ async function writeS3Log(commonSchema, commonData, eventSchema, eventData) {
     const hour = String(timestamp.getUTCHours()).padStart(2, '0');
     const eventName = commonData.EventName;
   
-    const partitionPath = path.join('EventLogger', year, month, day, hour);
+    const partitionPath = path.join('EventLogger', toString(year), toString(month), toString(day), toString(hour));
     const commonFilePath = path.join(partitionPath, 'common.parquet');
     const eventFilePath = path.join(partitionPath, `${eventName}.parquet`);
   
