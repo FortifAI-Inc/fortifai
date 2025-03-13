@@ -1,3 +1,5 @@
+const parquet = require('parquetjs-lite');
+
 const commonSchema = new parquet.ParquetSchema({
     EventId: { type: 'UTF8' },
     EventTime: { type: 'TIMESTAMP_MILLIS' },
