@@ -70,6 +70,8 @@ async function writeS3Logs(schema, data, filePath) {
     try {
         let records = await fetchParquetFromS3(filePath);
         records.push(data);
+        console.log(`Writing log data to Parquet file: ${filePath}`);
+        console.log(records)
         await enqueueS3Write(schema, records, filePath);
     } catch (err) {
         console.error(`Error writing log data to Parquet file:`, err);
