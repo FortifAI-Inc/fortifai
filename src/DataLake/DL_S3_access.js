@@ -15,16 +15,17 @@ const bucketName = 'hilikdatalake';
 let writeQueue = Promise.resolve();
 
 
-
-
 /**
  * Adds a write operation to the queue to ensure writes are serialized.
- * @param {Object} data - JSON representing EC2 instance parameters.
+ * @param {Object} schema - Parquet schema.
+ * @param {Array} records - Array of JSON objects representing records.
+ * @param {string} S3_KEY - S3 key for the Parquet file.
  */
 function enqueueS3Write(schema, records, S3_KEY) {
   writeQueue = writeQueue.then(() => uploadParquetToS3(schema, records, S3_KEY)).catch(err => {
     console.error("Error processing write queue:", err);
   });
+  return writeQueue; // Ensure the promise is returned
 }
 
 const tempFilePath = "tmp/S3TMPFile.parquet";
@@ -115,8 +116,8 @@ async function writeS3Log(commonSchema, commonData, eventSchema, eventData) {
   const commonFilePath = path.join(partitionPath, 'common.parquet');
   const eventFilePath = path.join(partitionPath, `${eventName}.parquet`);
 
-  await enqueueS3Write('log', 'common', commonSchema, commonData, commonFilePath);
-  await enqueueS3Write('log', eventName, eventSchema, eventData, eventFilePath);
+  await enqueueS3Write(commonSchema, [commonData], commonFilePath);
+  await enqueueS3Write(eventSchema, [eventData], eventFilePath);
 }
 
 async function writeS3Logs(schema, data, filePath) {
