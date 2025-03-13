@@ -53,3 +53,5 @@ const eventSchemas = {
         bucketName: { type: 'UTF8' }
     }),
 };
+
+module.exports = { commonSchema, eventSchemas };
