@@ -184,8 +184,6 @@ function buildLookupAttributes() {
 
     addAttributes(readOnlyEvents);
     addAttributes(writeEvents);
-    lookupAttributes = 
-
     return lookupAttributes;
 }
 
