@@ -1,5 +1,5 @@
 const { commonSchema, eventSchemas } = require('../DataLake/DL_S3_Logs_schema');
-const { enqueueS3Write } = require('../DataLake/DL_S3_access');
+const { enqueueS3Write, fetchParquetFromS3 } = require('../DataLake/DL_S3_access');
 const path = require('path');
 
 
@@ -72,7 +72,7 @@ async function writeS3Logs(schema, data, filePath) {
         records.push(data);
         await enqueueS3Write(schema, records, filePath);
     } catch (err) {
-        console.error(`Error writing log data to ${subtype} Parquet file:`, err);
+        console.error(`Error writing log data to Parquet file:`, err);
     }
 }
 
