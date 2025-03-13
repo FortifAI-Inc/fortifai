@@ -5,14 +5,35 @@ const util = require("util");
 
 const { S3Client, GetObjectCommand, PutObjectCommand } = require("@aws-sdk/client-s3");
 const path = require('path');
-const s3 = new S3Client( {region: "us-east-1"} );
+const s3 = new S3Client({ region: "us-east-1" });
 
 const bucketName = 'hilikdatalake';
 
 
+// Maintain a map of write queues for each S3 key
+const writeQueueMap = new Map();
 
+/**
+ * Ensures writes to the same S3 key are queued properly.
+ */
+function enqueueS3Write(schema, records, S3_KEY) {
+  if (!writeQueueMap.has(S3_KEY)) {
+    writeQueueMap.set(S3_KEY, Promise.resolve());
+  }
+
+  const fileQueue = writeQueueMap.get(S3_KEY);
+
+  // Chain the write operation
+  const newQueue = fileQueue
+    .then(() => uploadParquetToS3(schema, records, S3_KEY))
+    .catch(err => console.error("Error processing write queue for", S3_KEY, ":", err));
+
+  writeQueueMap.set(S3_KEY, newQueue);
+
+  return newQueue;
+}
 // Queue to serialize write operations
-let writeQueue = Promise.resolve();
+//let writeQueue = Promise.resolve();
 
 
 /**
@@ -21,59 +42,90 @@ let writeQueue = Promise.resolve();
  * @param {Array} records - Array of JSON objects representing records.
  * @param {string} S3_KEY - S3 key for the Parquet file.
  */
-function enqueueS3Write(schema, records, S3_KEY) {
+/*function enqueueS3Write(schema, records, S3_KEY) {
   writeQueue = writeQueue.then(() => uploadParquetToS3(schema, records, S3_KEY)).catch(err => {
     console.error("Error processing write queue:", err);
   });
   return writeQueue; // Ensure the promise is returned
+}*/
+
+
+
+async function fetchParquetFromS3(S3_KEY) {
+  try {
+    const tempFilePath = `tmp/${S3_KEY.replace(/\//g, "_")}.parquet`;
+
+    const getObjectParams = { Bucket: bucketName, Key: S3_KEY };
+    const response = await s3.send(new GetObjectCommand(getObjectParams));
+
+    // Convert stream to buffer safely
+    const pipeline = util.promisify(stream.pipeline);
+    await pipeline(response.Body, fs.createWriteStream(tempFilePath));
+
+    // Read Parquet file
+    const reader = await parquet.ParquetReader.openFile(tempFilePath);
+    const cursor = reader.getCursor();
+    let records = [];
+    let record;
+
+    while ((record = await cursor.next())) {
+      records.push(record);
+    }
+
+    await reader.close();
+    return records;
+  } catch (err) {
+    console.warn("⚠️ File not found or corrupt, treating as new file:", S3_KEY);
+    return []; // Return empty list on failure
+  }
 }
 
-const tempFilePath = "tmp/S3TMPFile.parquet";
+
+
+//const tempFilePath = "tmp/S3TMPFile.parquet";
 
 /**
  * Fetches the Parquet file from S3 and returns it as an array of records.
  * If the file is missing or corrupt, returns an empty array.
  */
-async function fetchParquetFromS3(S3_KEY) {
-    try {
-      //console.log("\n🔹 Fetching Parquet file from S3...");
-  
-      const getObjectParams = { Bucket: bucketName, Key: S3_KEY };
-      const response = await s3.send(new GetObjectCommand(getObjectParams));
-  
-      // Convert stream to buffer
-      const pipeline = util.promisify(stream.pipeline);
-      await pipeline(response.Body, fs.createWriteStream(tempFilePath));
-  
-      // Read Parquet file
-      const reader = await parquet.ParquetReader.openFile(tempFilePath);
-      const cursor = reader.getCursor();
-      let records = [];
-      let record;
-  
-      //console.log("\n📌 Scanning Parquet file for existing InstanceIds...");
-      while ((record = await cursor.next())) {
-          records.push(record);
-      }
-  
-      await reader.close();
-      return records;
-    } catch (err) {
-      console.error("⚠️ Error fetching Parquet file from S3. Treating as new file.", err);
-      return []; // Return empty list if file doesn't exist or is corrupt
-    }
-  }
-
-/**
- * Uploads the given Parquet records back to S3.
- * @param {Array} records - Array of JSON objects representing EC2 instances.
- */
- async function uploadParquetToS3(schema, records, S3_KEY) {
+/*async function fetchParquetFromS3(S3_KEY) {
   try {
-    //console.log("\n💾 Writing updated records to Parquet...");
+    //console.log("\n🔹 Fetching Parquet file from S3...");
 
+    const getObjectParams = { Bucket: bucketName, Key: S3_KEY };
+    const response = await s3.send(new GetObjectCommand(getObjectParams));
+
+    // Convert stream to buffer
+    const pipeline = util.promisify(stream.pipeline);
+    await pipeline(response.Body, fs.createWriteStream(tempFilePath));
+
+    // Read Parquet file
+    const reader = await parquet.ParquetReader.openFile(tempFilePath);
+    const cursor = reader.getCursor();
+    let records = [];
+    let record;
+
+    //console.log("\n📌 Scanning Parquet file for existing InstanceIds...");
+    while ((record = await cursor.next())) {
+      records.push(record);
+    }
+
+    await reader.close();
+    return records;
+  } catch (err) {
+    console.error("⚠️ Error fetching Parquet file from S3. Treating as new file.", err);
+    return []; // Return empty list if file doesn't exist or is corrupt
+  }
+}*/
+
+
+async function uploadParquetToS3(schema, records, S3_KEY) {
+  try {
+    // Use a unique temp file for each S3 key
+    const tempFilePath = `tmp/${S3_KEY.replace(/\//g, "_")}.parquet`;
+
+    // Write Parquet file
     const writer = await parquet.ParquetWriter.openFile(schema, tempFilePath);
-    
     for (const record of records) {
       await writer.appendRow(record);
     }
@@ -90,12 +142,47 @@ async function fetchParquetFromS3(S3_KEY) {
       ContentType: "application/octet-stream",
     };
 
-     await s3.send(new PutObjectCommand(putObjectParams));
-    //console.log("✅ Parquet file successfully updated on S3.");
+    await s3.send(new PutObjectCommand(putObjectParams));
+
+    // Remove temp file
+    fs.unlinkSync(tempFilePath);
+
   } catch (err) {
     console.error("❌ Error uploading Parquet file to S3:", err);
   }
 }
+/**
+ * Uploads the given Parquet records back to S3.
+ * @param {Array} records - Array of JSON objects representing EC2 instances.
+ */
+/*async function uploadParquetToS3(schema, records, S3_KEY) {
+  try {
+    //console.log("\n💾 Writing updated records to Parquet...");
+
+    const writer = await parquet.ParquetWriter.openFile(schema, tempFilePath);
+
+    for (const record of records) {
+      await writer.appendRow(record);
+    }
+    await writer.close();
+
+    // Read the written Parquet file
+    const fileData = await fs.readFileSync(tempFilePath);
+
+    // Upload file to S3
+    const putObjectParams = {
+      Bucket: bucketName,
+      Key: S3_KEY,
+      Body: fileData,
+      ContentType: "application/octet-stream",
+    };
+
+    await s3.send(new PutObjectCommand(putObjectParams));
+    //console.log("✅ Parquet file successfully updated on S3.");
+  } catch (err) {
+    console.error("❌ Error uploading Parquet file to S3:", err);
+  }
+}*/
 
 /**
  * Writes log data to S3 with partitioning based on timestamps.
