@@ -16,7 +16,7 @@ const writeLocks = new Map();
 /**
  * Ensures writes to the same S3 key are queued properly and mutually exclusive with reads.
  */
-function enqueueS3Write(schema, records, S3_KEY) {
+async function enqueueS3Write(schema, records, S3_KEY) {
   if (!writeQueueMap.has(S3_KEY)) {
     writeQueueMap.set(S3_KEY, Promise.resolve());
   }
@@ -28,6 +28,7 @@ function enqueueS3Write(schema, records, S3_KEY) {
     .then(async () => {
       writeLocks.set(S3_KEY, true); // Lock file for writing
       await uploadParquetToS3(schema, records, S3_KEY);
+      await new Promise(resolve => setTimeout(resolve, 100)); // Ensure file system flush
       writeLocks.delete(S3_KEY); // Unlock after writing
     })
     .catch(err => console.error("Error processing write queue for", S3_KEY, ":", err));
@@ -56,6 +57,9 @@ async function fetchParquetFromS3(S3_KEY) {
     const pipeline = util.promisify(stream.pipeline);
     await pipeline(response.Body, fs.createWriteStream(tempFilePath));
 
+    // Wait a bit to ensure the file system writes are fully committed
+    await new Promise(resolve => setTimeout(resolve, 100));
+
     // Read Parquet file
     const reader = await parquet.ParquetReader.openFile(tempFilePath);
     const cursor = reader.getCursor();
@@ -73,7 +77,6 @@ async function fetchParquetFromS3(S3_KEY) {
     return []; // Return empty list on failure
   }
 }
-
 /**
  * Uploads the given Parquet records back to S3 ensuring mutual exclusion.
  */
@@ -88,6 +91,9 @@ async function uploadParquetToS3(schema, records, S3_KEY) {
     }
     await writer.close();
 
+    // Ensure the file is fully written before reading it back
+    await new Promise(resolve => setTimeout(resolve, 100));
+
     // Read the written Parquet file
     const fileData = await fs.readFileSync(tempFilePath);
 
@@ -100,6 +106,9 @@ async function uploadParquetToS3(schema, records, S3_KEY) {
     };
 
     await s3.send(new PutObjectCommand(putObjectParams));
+
+    // Ensure the upload is completed before allowing a read
+    await new Promise(resolve => setTimeout(resolve, 100));
 
     // Remove temp file
     fs.unlinkSync(tempFilePath);
