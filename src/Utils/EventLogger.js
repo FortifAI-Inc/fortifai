@@ -62,8 +62,8 @@ async function writeS3Log(commonSchema, commonData, eventSchema, eventData) {
     const commonFilePath = path.join(partitionPath, 'common.parquet');
     const eventFilePath = path.join(partitionPath, `${eventName}.parquet`);
 
-    await writeS3Logs(commonSchema, [commonData], commonFilePath);
-    await writeS3Logs(eventSchema, [eventData], eventFilePath);
+    await writeS3Logs(commonSchema, commonData, commonFilePath);
+    await writeS3Logs(eventSchema, eventData, eventFilePath);
 }
 
 async function writeS3Logs(schema, data, filePath) {
