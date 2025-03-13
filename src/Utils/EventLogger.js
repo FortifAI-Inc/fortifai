@@ -69,9 +69,14 @@ async function writeS3Log(commonSchema, commonData, eventSchema, eventData) {
 async function writeS3Logs(schema, data, filePath) {
     try {
         let records = await fetchParquetFromS3(filePath);
-        records.push(data);
-        console.log(`Writing log data to Parquet file: ${filePath}`);
-        console.log(records)
+        const index = records.findIndex(rec => rec.EventId === data.eVentId);
+        if (index !== -1) {
+            console.log("Event is already in the DB");
+            return;
+        } else {
+            //console.log(`Adding new instance: ${ec2Data.InstanceId}`);
+            records.push(data); // Insert new record
+        }
         await enqueueS3Write(schema, records, filePath);
     } catch (err) {
         console.error(`Error writing log data to Parquet file:`, err);
