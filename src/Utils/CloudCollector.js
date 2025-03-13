@@ -4,6 +4,7 @@ const { RDS } = require("@aws-sdk/client-rds");
 const { S3 } = require("@aws-sdk/client-s3");
 
 const DL_access = require('../DataLake/DL_access');
+const DL_S3_access = require('../DataLake/DL_S3_access');
 const { IAM } = require("@aws-sdk/client-iam");
 const { ec2Schema, VpcSchema, S3Schema, IGWSchema, SGSchema, NISchema, LambdaSchema, IAMRoleSchema, IAMPolicySchema, UserSchema } = require('../DataLake/DL_S3_Assets_schema');
 
@@ -59,7 +60,7 @@ async function InventoryAssets() {
                 PlatformDetails: instance.PlatformDetails
             }
             const S3_KEY = 'ec2inventory.parquet';
-            let records = await fetchParquetFromS3(S3_KEY);
+            let records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
 
             // Check if InstanceId already exists
 
@@ -86,7 +87,7 @@ async function InventoryAssets() {
                 CidrBlock: vpc.CidrBlock
             }
             const S3_KEY = 'vpcinventory.parquet';
-            let records = await fetchParquetFromS3(S3_KEY);
+            let records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
 
             const index = records.findIndex(rec => rec.UniqueId === VpcData.VpcId);
             if (index !== -1) {
@@ -108,7 +109,7 @@ async function InventoryAssets() {
                 CreationDate: bucket.CreationDate
             }
             const S3_KEY = 'S3Bucketinventory.parquet';
-            let records = await fetchParquetFromS3(S3_KEY);
+            let records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
 
             // Check if InstanceId already exists
 
@@ -135,7 +136,7 @@ async function InventoryAssets() {
                 VpcId: igw.VpcId
             }
             const S3_KEY = 'IGWBucketinventory.parquet';
-            let records = await fetchParquetFromS3(S3_KEY);
+            let records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
 
             // Check if InstanceId already exists
 
@@ -160,7 +161,7 @@ async function InventoryAssets() {
                 VpcId: sg.VpcId
             }
             const S3_KEY = 'SGBucketinventory.parquet';
-            let records = await fetchParquetFromS3(S3_KEY);
+            let records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
 
             // Check if InstanceId already exists
 
@@ -193,7 +194,7 @@ async function InventoryAssets() {
                 GroupId: ni.Groups ? ni.Groups.map(group => group.GroupId).join(',') : null
             }
             const S3_KEY = 'NIBucketinventory.parquet';
-            let records = await fetchParquetFromS3(S3_KEY);
+            let records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
 
             // Check if InstanceId already exists
 
@@ -220,7 +221,7 @@ async function InventoryAssets() {
                 Role: lambdaFunction.Role
             }
             const S3_KEY = 'LambdaBucketinventory.parquet';
-            let records = await fetchParquetFromS3(S3_KEY);
+            let records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
 
             // Check if InstanceId already exists
 
@@ -272,7 +273,7 @@ async function CollectRoles() {
                 AssumeRolePolicyDocument: role.AssumeRolePolicyDocument
             }
             const S3_KEY = 'IAMRoleBucketinventory.parquet';
-            let records = await fetchParquetFromS3(S3_KEY);
+            let records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
 
             // Check if InstanceId already exists
 
@@ -319,7 +320,7 @@ async function CollectPolicies() {
                 Document: policyVersion.PolicyVersion.Document
             }
             const S3_KEY = 'IAMPolicyBucketinventory.parquet';
-            let records = await fetchParquetFromS3(S3_KEY);
+            let records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
 
             // Check if InstanceId already exists
 
@@ -387,7 +388,7 @@ async function CollectUsers() {
                 InlinePolicyNames: InlinePolicies
             }
             const S3_KEY = 'UserBucketinventory.parquet';
-            let records = await fetchParquetFromS3(S3_KEY);
+            let records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
 
             // Check if InstanceId already exists
 

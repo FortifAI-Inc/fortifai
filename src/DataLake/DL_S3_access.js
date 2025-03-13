@@ -135,5 +135,6 @@ async function writeS3Logs(schema, data, filePath) {
 
 module.exports = {
   enqueueS3Write,
+  fetchParquetFromS3,
   writeS3Log
 };
