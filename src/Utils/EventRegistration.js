@@ -169,8 +169,8 @@ const writeEvents = {
 };
 
 function buildLookupAttributes() {
-    const lookupAttributes = [];
-
+    const lookupAttributes = [ {AttributeKey: "EventName", AttributeValue: "TerminateInstance"}]//[];
+    return lookupAttributes;
     const addAttributes = (events) => {
         for (const service in events) {
             events[service].forEach(event => {
@@ -184,7 +184,7 @@ function buildLookupAttributes() {
 
     addAttributes(readOnlyEvents);
     addAttributes(writeEvents);
-    lookupAttributes = [ {AttributeKey: "EventName", AttributeValue: "TerminateInstance"}]
+    lookupAttributes = 
 
     return lookupAttributes;
 }
