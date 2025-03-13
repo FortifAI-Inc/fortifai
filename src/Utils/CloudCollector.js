@@ -6,7 +6,7 @@ const { S3 } = require("@aws-sdk/client-s3");
 const DL_access = require('../DataLake/DL_access');
 const { IAM } = require("@aws-sdk/client-iam");
 const { ec2Schema } = require("../DataLake/DL_S3_Assets_schema");
-const { ec2Schema, VpcSchema, S3Schema, IGWSchema, SGSchema, NISchema, LambdaSchema, IAMRoleSchema, IAMPolicySchema, UserSchema } = require('./DL_S3_Assets_schema');
+const { ec2Schema, VpcSchema, S3Schema, IGWSchema, SGSchema, NISchema, LambdaSchema, IAMRoleSchema, IAMPolicySchema, UserSchema } = require('../DataLake/DL_S3_Assets_schema');
 
 
 

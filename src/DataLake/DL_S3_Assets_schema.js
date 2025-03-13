@@ -1,3 +1,5 @@
+const parquet = require('parquetjs-lite');
+
 const ec2Schema = new parquet.ParquetSchema({
     UniqueId: { type: 'UTF8', optional: false}, // have a standard uniqueId for all assets, each of them will hold the relevant ID from AWS
     InstanceId: { type: 'UTF8', optional: false },
@@ -86,6 +88,7 @@ const UserSchema = new parquet.ParquetSchema({
     AttachedPolicyNames: {type: 'UTF8', repeated: true},
     InlinePolicyNames: {type: 'UTF8', repeated: true}
 });
+
 module.exports = {
     ec2Schema,
     VpcSchema,
