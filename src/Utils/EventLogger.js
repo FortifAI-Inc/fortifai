@@ -11,7 +11,7 @@ async function logEvent(eventName, event) {
             const CloudTrailEvent = JSON.parse(event.CloudTrailEvent);
             const EventCommonData = {
                 EventId: event.EventId,
-                EventTime: event.EventTime,
+                //EventTime: event.EventTime,
                 EventSource: event.EventSource,
                 EventName: event.EventName,
                 awsRegion: CloudTrailEvent.awsRegion,
@@ -58,7 +58,7 @@ async function writeS3Log(commonSchema, commonData, eventSchema, eventData) {
     const hour = String(timestamp.getUTCHours()).padStart(2, '0');
     const eventName = commonData.EventName;
 
-    const partitionPath = path.join('EventLogger', year, month, day, hour);
+    const partitionPath = 'EventLogger';//path.join('EventLogger', year, month, day, hour);
     const commonFilePath = path.join(partitionPath, 'common.parquet');
     const eventFilePath = path.join(partitionPath, `${eventName}.parquet`);
 
