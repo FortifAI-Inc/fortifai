@@ -67,16 +67,16 @@ async function fetchParquetFromS3(S3_KEY) {
  * Uploads the given Parquet records back to S3.
  * @param {Array} records - Array of JSON objects representing EC2 instances.
  */
- function uploadParquetToS3(schema, records, S3_KEY) {
+ async function uploadParquetToS3(schema, records, S3_KEY) {
   try {
     //console.log("\n💾 Writing updated records to Parquet...");
 
-    const writer = parquet.ParquetWriter.openFile(schema, tempFilePath);
+    const writer = await parquet.ParquetWriter.openFile(schema, tempFilePath);
     
     for (const record of records) {
-      writer.appendRow(record);
+      await writer.appendRow(record);
     }
-    writer.close();
+    await writer.close();
 
     // Read the written Parquet file
     const fileData = fs.readFileSync(tempFilePath);
