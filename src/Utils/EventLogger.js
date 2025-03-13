@@ -62,8 +62,8 @@ async function writeS3Log(commonSchema, commonData, eventSchema, eventData) {
     const commonFilePath = path.join(partitionPath, 'common.parquet');
     const eventFilePath = path.join(partitionPath, `${eventName}.parquet`);
   
-    await enqueueS3Write(commonSchema, [commonData], commonFilePath);
-    await enqueueS3Write(eventSchema, [eventData], eventFilePath);
+    await writeS3Logs(commonSchema, [commonData], commonFilePath);
+    await writeS3Logs(eventSchema, [eventData], eventFilePath);
   }
   
   async function writeS3Logs(schema, data, filePath) {
@@ -71,7 +71,7 @@ async function writeS3Log(commonSchema, commonData, eventSchema, eventData) {
       try {
         let records = await fetchParquetFromS3(filePath);
         records.push(data);
-        await uploadParquetToS3(schema, records, filePath);
+        await enqueueS3Write(schema, records, filePath);
       } catch (err) {
         console.error(`Error writing log data to ${subtype} Parquet file:`, err);
       }
