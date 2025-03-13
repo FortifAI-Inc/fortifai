@@ -4,14 +4,14 @@ async function logEvent(eventName, event){
             console.log("Terminate Instance event: ", event);
             const CloudTrailEvent = JSON.parse(event.CloudTrailEvent);
             const EventCommonData = {
-                EventId: event.eventID,
-                EventTime: event.eventTime,
-                EventSource: event.eventSource,
-                EventName: event.eventName, 
+                EventId: event.EventId,
+                EventTime: event.EventTime,
+                EventSource: event.EventSource,
+                EventName: event.EventName, 
                 awsRegion: CloudTrailEvent.awsRegion,
                 sourceIPAddress: CloudTrailEvent.sourceIPAddress, 
                 userAgent: CloudTrailEvent.userAgent,
-                readOnly: event.readOnly,
+                ReadOnly: event.ReadOnly,
                 eventType: CloudTrailEvent.eventType,
                 managementEvent: CloudTrailEvent.managementEvent,
                 recipientAccountId: CloudTrailEvent.recipientAccountId,

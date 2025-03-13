@@ -6,7 +6,7 @@ const commonSchema = new parquet.ParquetSchema({
     awsRegion: { type: 'UTF8' },
     sourceIPAddress: { type: 'UTF8' },
     userAgent: { type: 'UTF8' },
-    readOnly: { type: 'BOOLEAN' },
+    ReadOnly: { type: 'BOOLEAN' },
     eventType: { type: 'UTF8' },
     managementEvent: { type: 'BOOLEAN' },
     recipientAccountId: { type: 'UTF8' },
