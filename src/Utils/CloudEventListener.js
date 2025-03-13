@@ -88,12 +88,10 @@ async function getAllEvents() {
             } while (data.NextToken);
             console.log(`Number of events received for ${attribute.AttributeValue}: ${eventCountForThisAttribute}`);
             // Append summary to the beginning of each file
-            for (const eventName of uniqueEventNames) {
-                const eventFilePath = path.join(__dirname, `EventLogs/${eventName}.log`);
-                const summaryLine = `Total number of ${eventName} events: ${eventCounts[eventName]}\n${'#'.repeat(80)}\n\n`;
-                const fileContent = fs.readFileSync(eventFilePath, 'utf8');
-                fs.writeFileSync(eventFilePath, summaryLine + fileContent, 'utf8');
-            }
+            const eventFilePath = path.join(__dirname, `EventLogs/${attribute.AttributeValue}.log`);
+            const summaryLine = `Total number of ${attribute.AttributeValue} events: ${eventCountForThisAttribute}\n${'#'.repeat(80)}\n\n`;
+            const fileContent = fs.readFileSync(eventFilePath, 'utf8');
+            fs.writeFileSync(eventFilePath, summaryLine + fileContent, 'utf8');
 
             //console.log(`Total number of events: ${events.length}`);
             //console.log(`Unique event names: ${Array.from(uniqueEventNames).join(', ')}`);
