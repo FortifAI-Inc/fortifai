@@ -107,3 +107,5 @@ async function uploadParquetToS3(schema, records, S3_KEY) {
     console.error("❌ Error uploading Parquet file to S3:", err);
   }
 }
+
+module.exports = { enqueueS3Write, fetchParquetFromS3 };
