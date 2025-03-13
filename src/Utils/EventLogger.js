@@ -1,7 +1,11 @@
+const { commonSchema, eventSchemas } = require('../DataLake/DL_S3_Logs_schema');
+const { enqueueS3Write } = require('./DL_S3_access');
+
+
 async function logEvent(eventName, event){
     switch (eventName) {
         case "TerminateInstances":
-            console.log("Terminate Instance event: ", event);
+            //console.log("Terminate Instance event: ", event);
             const CloudTrailEvent = JSON.parse(event.CloudTrailEvent);
             const EventCommonData = {
                 EventId: event.EventId,
@@ -28,8 +32,8 @@ async function logEvent(eventName, event){
                 EventId: event.EventId,
                 instanceId: CloudTrailEvent.requestParameters.instancesSet.items[0].instanceId,
             }
-            console.log("EventCommonData: ", EventCommonData);
-            console.log("EventPrivateData: ", EventPrivateData);
+            //console.log("EventCommonData: ", EventCommonData);
+            //console.log("EventPrivateData: ", EventPrivateData);
             writeS3Log(commonSchema, EventCommonData, eventSchemas[eventName], EventPrivateData);
             break;
         default:
