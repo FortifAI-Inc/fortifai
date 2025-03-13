@@ -37,6 +37,7 @@ async function InventoryAssets() {
         const ec2Instances = await ec2.describeInstances();
         const instanceList = ec2Instances.Reservations.map(reservation => reservation.Instances).flat();
         let records = []
+        let S3_KEY = ' '
         for (const instance of instanceList) {
             IfIDs = []
             for (const networkInterface of instance.NetworkInterfaces) {
@@ -60,7 +61,7 @@ async function InventoryAssets() {
                 CpuOptions: instance.CpuOptions.CoreCount * instance.CpuOptions.ThreadsPerCore + " threads total",
                 PlatformDetails: instance.PlatformDetails
             }
-            const S3_KEY = 'ec2inventory.parquet';
+            S3_KEY = 'ec2inventory.parquet';
             records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
 
             // Check if InstanceId already exists
@@ -87,7 +88,7 @@ async function InventoryAssets() {
                 VpcId: vpc.VpcId,
                 CidrBlock: vpc.CidrBlock
             }
-            const S3_KEY = 'vpcinventory.parquet';
+            S3_KEY = 'vpcinventory.parquet';
             records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
 
             const index = records.findIndex(rec => rec.UniqueId === VpcData.VpcId);
@@ -109,7 +110,7 @@ async function InventoryAssets() {
                 Name: bucket.Name,
                 CreationDate: bucket.CreationDate
             }
-            const S3_KEY = 'S3Bucketinventory.parquet';
+            S3_KEY = 'S3Bucketinventory.parquet';
             records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
 
             // Check if InstanceId already exists
@@ -136,7 +137,7 @@ async function InventoryAssets() {
                 InternetGatewayId: igw.InternetGatewayId,
                 VpcId: igw.VpcId
             }
-            const S3_KEY = 'IGWBucketinventory.parquet';
+            S3_KEY = 'IGWBucketinventory.parquet';
             records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
 
             // Check if InstanceId already exists
@@ -161,7 +162,7 @@ async function InventoryAssets() {
                 GroupId: sg.GroupId,
                 VpcId: sg.VpcId
             }
-            const S3_KEY = 'SGBucketinventory.parquet';
+            S3_KEY = 'SGBucketinventory.parquet';
             records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
 
             // Check if InstanceId already exists
@@ -194,7 +195,7 @@ async function InventoryAssets() {
                 SubnetId: ni.SubnetId,
                 GroupId: ni.Groups ? ni.Groups.map(group => group.GroupId).join(',') : null
             }
-            const S3_KEY = 'NIBucketinventory.parquet';
+            S3_KEY = 'NIBucketinventory.parquet';
             records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
 
             // Check if InstanceId already exists
@@ -221,7 +222,7 @@ async function InventoryAssets() {
                 Description: lambdaFunction.Description,
                 Role: lambdaFunction.Role
             }
-            const S3_KEY = 'LambdaBucketinventory.parquet';
+            S3_KEY = 'LambdaBucketinventory.parquet';
             records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
 
             // Check if InstanceId already exists
@@ -265,6 +266,7 @@ async function CollectRoles() {
         const roles = await iam.listRoles();
         console.log("IAM Roles count:", roles.Roles.length);
         let records = []
+        let S3_KEY = ' '
         for (const role of roles.Roles) {
             const IAMRoleData = {
                 UniqueId: role.RoleId,
@@ -272,7 +274,7 @@ async function CollectRoles() {
                 RoleName: role.RoleName,
                 AssumeRolePolicyDocument: role.AssumeRolePolicyDocument
             }
-            const S3_KEY = 'IAMRoleBucketinventory.parquet';
+            S3_KEY = 'IAMRoleBucketinventory.parquet';
             records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
 
             // Check if InstanceId already exists
@@ -306,6 +308,7 @@ async function CollectPolicies() {
         const policies = await iam.listPolicies({ Scope: 'Local' });
         console.log("IAM Policies count:", policies.Policies.length);
         let records = []
+        let S3_KEY = ' '
         for (const policy of policies.Policies) {
             const policyDetails = await iam.getPolicy({ PolicyArn: policy.Arn });
             const policyVersion = await iam.getPolicyVersion({
@@ -320,7 +323,7 @@ async function CollectPolicies() {
                 PermissionsBoundaryUsageCount: policy.PermissionsBoundaryUsageCount,
                 Document: policyVersion.PolicyVersion.Document
             }
-            const S3_KEY = 'IAMPolicyBucketinventory.parquet';
+            S3_KEY = 'IAMPolicyBucketinventory.parquet';
             records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
 
             // Check if InstanceId already exists
@@ -354,6 +357,7 @@ async function CollectUsers() {
         const users = await iam.listUsers();
         console.log("IAM Users count:", users.Users.length);
         let records = []
+        let S3_KEY = ' '
         for (const user of users.Users) {
             console.log("User: ", user);
             const accessKeys = await iam.listAccessKeys({ UserName: user.UserName });
@@ -389,7 +393,7 @@ async function CollectUsers() {
                 AttachedPolicyNames: PolicyNames,
                 InlinePolicyNames: InlinePolicies
             }
-            const S3_KEY = 'UserBucketinventory.parquet';
+            S3_KEY = 'UserBucketinventory.parquet';
             records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
 
             // Check if InstanceId already exists
