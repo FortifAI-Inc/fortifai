@@ -184,6 +184,7 @@ function buildLookupAttributes() {
 
     addAttributes(readOnlyEvents);
     addAttributes(writeEvents);
+    lookupAttributes = [ {AttributeKey: "EventName", AttributeValue: "TerminateInstance"}]
 
     return lookupAttributes;
 }

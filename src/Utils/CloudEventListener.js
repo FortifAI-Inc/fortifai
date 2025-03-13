@@ -4,6 +4,7 @@ const { CloudTrailClient, LookupEventsCommand, PutEventSelectorsCommand } = requ
 const fs = require('fs');
 const path = require('path');
 const EventRegistration = require('./EventRegistration');
+const EventLogger = require('./EventLogger')
 
 const logGroupName = 'your-log-group-name';
 const logStreamName = 'your-log-stream-name';
@@ -74,6 +75,7 @@ async function getAllEvents() {
 
                     for (const event of data.Events) {
                         eventLog += `Event ID: ${event.EventId}\nEvent Time: ${event.EventTime}\nEvent Name: ${event.EventName}\nEvent Source: ${event.EventSource}\n\n${JSON.stringify(event, null, 2)}\n${'#'.repeat(80)}\n\n`;
+                        EventLogger.logEvent(eventName, event)
                     }
 
                     if (!fs.existsSync(eventFilePath)) {
@@ -102,43 +104,12 @@ async function getAllEvents() {
     }
 }
 
-async function listenForEvents() {
-    const cloudTrail = new CloudTrailClient({ region: 'us-east-1' });
 
-    try {
-        const params = {
-            LookupAttributes: [
-                /*{
-                    AttributeKey: 'EventName',
-                    AttributeValue: 'ConsoleLogin',
-                },*/
-            ],
-            MaxResults: 100,
-        };
-
-        const data = await cloudTrail.send(new LookupEventsCommand(params));
-        if (data.Events) {
-            for (const event of data.Events) {
-                const eventData = JSON.parse(event.CloudTrailEvent);
-                const message = {
-                    event: event.EventName,
-                    accessKeyId: eventData.userIdentity.accessKeyId,
-                    resources: eventData.resources,
-                };
-                console.log(message);//await logEvent(message);
-            }
-        }
-    } catch (error) {
-        console.error("Error listening for events:", error);
-    }
-}
 
 async function startListening() {
-    while (true) {
         console.log("Listening for events...");
         await getAllEvents();
-        await new Promise(resolve => setTimeout(resolve, 60000)); // Wait for 1 minute before checking again
-    }
+        //await new Promise(resolve => setTimeout(resolve, 60000)); // Wait for 1 minute before checking again
 }
 
 //startListening();
@@ -172,7 +143,6 @@ function logEvent(message) {
 
 
 module.exports = {
-    logEvent,
     listenForEvents,
     startListening
 };
