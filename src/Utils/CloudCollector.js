@@ -359,7 +359,7 @@ async function CollectUsers() {
         let records = []
         let S3_KEY = ' '
         for (const user of users.Users) {
-            console.log("User: ", user);
+            //console.log("User: ", user);
             const accessKeys = await iam.listAccessKeys({ UserName: user.UserName });
             const attachedPolicies = await iam.listAttachedUserPolicies({ UserName: user.UserName });
             const inlinePolicies = await iam.listUserPolicies({ UserName: user.UserName });
@@ -400,10 +400,10 @@ async function CollectUsers() {
 
             const index = records.findIndex(rec => rec.UniqueId === UserData.UserId);
             if (index !== -1) {
-                console.log(`Updating existing instance: ${UserData.UserId}`);
+                //console.log(`Updating existing UserId: ${UserData.UserId}`);
                 records[index] = UserData; // Update record
             } else {
-                console.log(`Adding new instance: ${UserData.UserId}`);
+                //console.log(`Adding new UserId: ${UserData.UserId}`);
                 records.push(UserData); // Insert new record
             }
 
