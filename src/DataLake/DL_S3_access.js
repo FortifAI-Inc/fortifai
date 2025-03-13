@@ -4,6 +4,7 @@ const stream = require("stream");
 const util = require("util");
 
 const { S3Client, GetObjectCommand, PutObjectCommand } = require("@aws-sdk/client-s3");
+const path = require('path');
 const s3 = new S3Client( {region: "us-east-1"} );
 
 const bucketName = 'hilikdatalake';
@@ -13,12 +14,15 @@ const bucketName = 'hilikdatalake';
 // Queue to serialize write operations
 let writeQueue = Promise.resolve();
 
+
+
+
 /**
  * Adds a write operation to the queue to ensure writes are serialized.
  * @param {Object} data - JSON representing EC2 instance parameters.
  */
-function enqueueS3Write(type, subtype, data, moredata = null) {
-  writeQueue = writeQueue.then(() => writeS3Data(type, subtype, data, moredata)).catch(err => {
+function enqueueS3Write(schema, records, S3_KEY) {
+  writeQueue = writeQueue.then(() => uploadParquetToS3(schema, records, S3_KEY)).catch(err => {
     console.error("Error processing write queue:", err);
   });
 }
@@ -92,501 +96,44 @@ async function uploadParquetToS3(schema, records, S3_KEY) {
   }
 }
 
-async function writeS3Data(type, subtype, data, moredata=null) {
-    switch (type) {
-        case 'asset':
-            switch (subtype) {
-                case 'EC2':
-                    try {
-                        const ec2Schema = new parquet.ParquetSchema({
-                            UniqueId: { type: 'UTF8', optional: false}, // have a standard uniqueId for all assets, each of them will hold the relevant ID from AWS
-                            InstanceId: { type: 'UTF8', optional: false },
-                            InstanceType: { type: 'UTF8', optional: true },
-                            InstanceState: { type: 'UTF8', optional: true },
-                            LaunchTime: { type: 'UTF8', optional: true },
-                            PrivateIpAddress: { type: 'UTF8', optional: true },
-                            PublicIpAddress: { type: 'UTF8', optional: true },
-                            SubnetId: { type: 'UTF8', optional: true },
-                            VpcId: { type: 'UTF8', optional: true },
-                            Architecture: { type: 'UTF8', optional: true},
-                            ClientToken: { type: 'UTF8', optional: true},
-                            ElasticGpuAssociations: { type: 'UTF8', optional: true},
-                            ElasticInferenceAcceleratorAssociations: { type: 'UTF8', optional: true},
-                            NetworkInterfaces: { type: 'UTF8', repeated: true}, // for now save only the IfID, later figure out how to store an object
-                            CpuOptions: { type: 'UTF8', optional: true},
-                            PlatformDetails: { type: 'UTF8', optional: true},
-                            /*,
-                            securityGroups: { type: 'UTF8', optional: true },
-                            tags: { type: 'UTF8', optional: true }*/
-                        });
-                        IfIDs = []
-                        for (const networkInterface of data.NetworkInterfaces) {
-                            IfIDs.push(networkInterface.NetworkInterfaceId);
-                        }
-                        const ec2Data = {
-                            UniqueId: data.InstanceId, 
-                            InstanceId: data.InstanceId, 
-                            InstanceType: data.InstanceType, 
-                            InstanceState: data.State.Name, 
-                            LaunchTime: data.LaunchTime, 
-                            PrivateIpAddress: data.PrivateIpAddress, 
-                            PublicIpAddress: data.PublicIpAddress, 
-                            SubnetId: data.SubnetId, 
-                            VpcId: data.VpcId,
-                            Architecture: data.Architecure,
-                            ClientToken: data.ClientToken,
-                            ElasticGpuAssociations: data.ElasticGpuAssociations,
-                            ElasticInferenceAcceleratorAssociations: data.ElasticInferenceAcceleratorAssociations,
-                            NetworkInterfaces: IfIDs, // for now save only the IfID, later figure out how to store an object
-                            CpuOptions: data.CpuOptions.CoreCount * data.CpuOptions.ThreadsPerCore+" threads total",
-                            PlatformDetails: data.PlatformDetails
-                        }
-                        const S3_KEY = 'ec2inventory.parquet';
-                        try {
-                            let records = await fetchParquetFromS3(S3_KEY);
-                        
-                            // Check if InstanceId already exists
-                
-                            const index = records.findIndex(rec => rec.UniqueId === data.InstanceId);
-                            if (index !== -1) {
-                              //console.log(`Updating existing instance: ${data.InstanceId}`);
-                              records[index] = ec2Data; // Update record
-                            } else {
-                              //console.log(`Adding new instance: ${data.InstanceId}`);
-                              records.push(ec2Data); // Insert new record
-                            }
-                        
-                            await uploadParquetToS3(ec2Schema, records, S3_KEY);
-                        
-                            //console.log('EC2 Parquet file updated successfully.');
-                          } catch (err) {
-                            console.error('Error writing data to '+subtype+' Parquet file:', err);
-                          }
-                        } catch (error) {   
-                          console.error("Error writing "+subtype+" asset:", error);
-                          throw error;
-                        }
+/**
+ * Writes log data to S3 with partitioning based on timestamps.
+ * @param {Object} commonSchema - Parquet schema for common fields.
+ * @param {Object} commonData - JSON object matching the common schema.
+ * @param {Object} eventSchema - Parquet schema for event-specific fields.
+ * @param {Object} eventData - JSON object matching the event schema.
+ */
+async function writeS3Log(commonSchema, commonData, eventSchema, eventData) {
+  const timestamp = new Date(commonData.Timestamp);
+  const year = timestamp.getUTCFullYear();
+  const month = String(timestamp.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(timestamp.getUTCDate()).padStart(2, '0');
+  const hour = String(timestamp.getUTCHours()).padStart(2, '0');
+  const eventName = commonData.EventName;
 
-                    break;
-                case 'VPC':
-                  try {
-                    const VpcSchema = new parquet.ParquetSchema({
-                        UniqueId: { type: 'UTF8', optional: false },
-                        VpcId: { type: 'UTF8', optional: false },
-                        CidrBlock: { type: 'UTF8', optional: false }
-                        //tags: { type: 'UTF8', optional: true }*/
-                    });
-                    const VpcData = {
-                      UniqueId: data.VpcId, 
-                      VpcId: data.VpcId, 
-                      CidrBlock: data.CidrBlock 
-                    }
-                    const S3_KEY = 'vpcinventory.parquet';
-                    try {
-                        let records = await fetchParquetFromS3(S3_KEY);
-                    
-                        // Check if InstanceId already exists
-            
-                        const index = records.findIndex(rec => rec.UniqueId === data.VpcId);
-                        if (index !== -1) {
-                          console.log(`Updating existing instance: ${data.VpcId}`);
-                          records[index] = VpcData; // Update record
-                        } else {
-                          console.log(`Adding new instance: ${data.VpcId}`);
-                          records.push(VpcData); // Insert new record
-                        }
-                    
-                        await uploadParquetToS3(VpcSchema, records, S3_KEY);
-                    
-                        //console.log('VPC Parquet file updated successfully.');
-                      } catch (err) {
-                        console.error('Error writing data to '+subtype+' Parquet file:', err);
-                      }
-                    } catch (error) {   
-                      console.error("Error writing "+subtype+" asset:", error);
-                      throw error;
-                    }
+  const partitionPath = path.join('EventLogger', year, month, day, hour);
+  const commonFilePath = path.join(partitionPath, 'common.parquet');
+  const eventFilePath = path.join(partitionPath, `${eventName}.parquet`);
 
-                break;
-                case 'S3Bucket':
-                  try {
-                    //console.log("Received S3Bucket"+JSON.stringify(data))
-                    const S3Schema = new parquet.ParquetSchema({
-                        UniqueId: { type: 'UTF8', optional: false },
-                        Name: { type: 'UTF8', optional: false },
-                        CreationDate: { type: 'UTF8', optional: false }
-                        //tags: { type: 'UTF8', optional: true }*/
-                    });
-                    const S3Data = {
-                      UniqueId: data.Name, 
-                      Name: data.Name, 
-                      CreationDate: data.CreationDate 
-                    }
-                    const S3_KEY = 'S3Bucketinventory.parquet';
-                    try {
-                        let records = await fetchParquetFromS3(S3_KEY);
-                    
-                        // Check if InstanceId already exists
-            
-                        const index = records.findIndex(rec => rec.UniqueId === data.Name);
-                        if (index !== -1) {
-                          console.log(`Updating existing instance: ${data.Name}`);
-                          records[index] = S3Data; // Update record
-                        } else {
-                          console.log(`Adding new instance: ${data.Name}`);
-                          records.push(S3Data); // Insert new record
-                        }
-                    
-                        await uploadParquetToS3(S3Schema, records, S3_KEY);
-                    
-                        //console.log('VPC Parquet file updated successfully.');
-                      } catch (err) {
-                        console.error('Error writing data to '+subtype+' Parquet file:', err);
-                      }
-                    } catch (error) {   
-                      console.error("Error writing "+subtype+" asset:", error);
-                      throw error;
-                    }
-
-                break;
-                case 'IGW':
-                  try {
-                    //console.log("Received "+subtype+JSON.stringify(data))
-                    const IGWSchema = new parquet.ParquetSchema({
-                        UniqueId: { type: 'UTF8', optional: false },
-                        InternetGatewayId: { type: 'UTF8', optional: false },
-                        VpcId: { type: 'UTF8', optional: true }
-                        //tags: { type: 'UTF8', optional: true }*/
-                    });
-                    const IGWData = {
-                      UniqueId: data.InternetGatewayId, 
-                      InternetGatewayId: data.InternetGatewayId, 
-                      VpcId: data.VpcId 
-                    }
-                    const S3_KEY = 'IGWBucketinventory.parquet';
-                    try {
-                        let records = await fetchParquetFromS3(S3_KEY);
-                    
-                        // Check if InstanceId already exists
-            
-                        const index = records.findIndex(rec => rec.UniqueId === data.InternetGatewayId);
-                        if (index !== -1) {
-                          console.log(`Updating existing instance: ${data.InternetGatewayId}`);
-                          records[index] = IGWData; // Update record
-                        } else {
-                          console.log(`Adding new instance: ${data.InternetGatewayId}`);
-                          records.push(IGWData); // Insert new record
-                        }
-                    
-                        await uploadParquetToS3(IGWSchema, records, S3_KEY);
-                    
-                      } catch (err) {
-                        console.error('Error writing data to '+subtype+' Parquet file:', err);
-                      }
-                    } catch (error) {   
-                        console.error("Error writing "+subtype+" asset:", error);
-                        throw error;
-                    }
-                break;
-                case 'SG':
-                  try {
-                    //console.log("Received "+subtype+JSON.stringify(data))
-                    const SGSchema = new parquet.ParquetSchema({
-                        UniqueId: { type: 'UTF8', optional: false },
-                        GroupId: { type: 'UTF8', optional: false },
-                        VpcId: { type: 'UTF8', optional: false }
-                        //tags: { type: 'UTF8', optional: true }*/
-                    });
-                    const SGData = {
-                      UniqueId: data.GroupId, 
-                      GroupId: data.GroupId, 
-                      VpcId: data.VpcId 
-                    }
-                    const S3_KEY = 'SGBucketinventory.parquet';
-                    try {
-                        let records = await fetchParquetFromS3(S3_KEY);
-                    
-                        // Check if InstanceId already exists
-            
-                        const index = records.findIndex(rec => rec.UniqueId === data.GroupId);
-                        if (index !== -1) {
-                          console.log(`Updating existing instance: ${data.GroupId}`);
-                          records[index] = SGData; // Update record
-                        } else {
-                          console.log(`Adding new instance: ${data.GroupId}`);
-                          records.push(SGData); // Insert new record
-                        }
-                    
-                        await uploadParquetToS3(SGSchema, records, S3_KEY);
-                    
-                      } catch (err) {
-                        console.error('Error writing data to '+subtype+' Parquet file:', err);
-                      }
-                    } catch (error) {   
-                        console.error("Error writing "+subtype+" asset:", error);
-                        throw error;
-                    }
-                break;
-                case 'NI':
-                  try {
-                    //console.log("Received "+subtype+JSON.stringify(data))
-                    const NISchema = new parquet.ParquetSchema({
-                        UniqueId: { type: 'UTF8', optional: false },
-                        NetworkInterfaceId: { type: 'UTF8', optional: false },
-                        AvailabilityZone: { type: 'UTF8', optional: false },
-                        PrivateIpAddress: { type: 'UTF8', optional: false },
-                        PublicIp: { type: 'UTF8', optional: true },
-                        Description: { type: 'UTF8', optional: true },
-                        AttachmentId: { type: 'UTF8', optional: true },
-                        InstanceId: { type: 'UTF8', optional: true },
-                        VpcId: { type: 'UTF8', optional: false }, 
-                        SubnetId: { type: 'UTF8', optional: false },
-                        GroupId: { type: 'UTF8', optional: true },
-                        //tags: { type: 'UTF8', optional: true }*/
-                    });
-                    const NIData = {
-                      UniqueId: data.NetworkInterfaceId, 
-                      NetworkInterfaceId: data.NetworkInterfaceId,
-                      AvailabilityZone: data.AvailabilityZone,
-                      PrivateIpAddress: data.PrivateIpAddress,
-                      PublicIp: data.Association ? data.Association.PublicIp : null,
-                      Description: data.Description,
-                      AttachmentId: data.Attachment ? data.Attachment.AttachmentId : null,
-                      InstanceId: data.Attachment ? data.Attachment.InstanceId : null,
-                      VpcId: data.VpcId,
-                      SubnetId: data.SubnetId,
-                      GroupId: data.Groups ? data.Groups.map(group => group.GroupId).join(',') : null
-                    }
-                    const S3_KEY = 'NIBucketinventory.parquet';
-                    try {
-                        let records = await fetchParquetFromS3(S3_KEY);
-                    
-                        // Check if InstanceId already exists
-            
-                        const index = records.findIndex(rec => rec.UniqueId === data.NetworkInterfaceId);
-                        if (index !== -1) {
-                          console.log(`Updating existing instance: ${data.NetworkInterfaceId}`);
-                          records[index] = NIData; // Update record
-                        } else {
-                          console.log(`Adding new instance: ${data.NetworkInterfaceId}`);
-                          records.push(NIData); // Insert new record
-                        }
-                    
-                        await uploadParquetToS3(NISchema, records, S3_KEY);
-                    
-                      } catch (err) {
-                        console.error('Error writing data to '+subtype+' Parquet file:', err);
-                      }
-                    } catch (error) {   
-                        console.error("Error writing "+subtype+" asset:", error);
-                        throw error;
-                    }
-
-                break;
-                case 'Lambda':
-                  try {
-                    //console.log("Received "+subtype+JSON.stringify(data))
-                    const LambdaSchema = new parquet.ParquetSchema({
-                        UniqueId: { type: 'UTF8', optional: false },
-                        FunctionName: { type: 'UTF8', optional: false },
-                        Description: { type: 'UTF8', optional: true },
-                        Role: { type: 'UTF8', optional: false }
-                        //tags: { type: 'UTF8', optional: true }*/
-                    });
-                    const LambdaData = {
-                      UniqueId: data.FunctionName, 
-                      FunctionName: data.FunctionName, 
-                      Description: data.Description,
-                      Role: data.Role 
-                    }
-                    const S3_KEY = 'LambdaBucketinventory.parquet';
-                    try {
-                        let records = await fetchParquetFromS3(S3_KEY);
-                    
-                        // Check if InstanceId already exists
-            
-                        const index = records.findIndex(rec => rec.UniqueId === data.FunctionName);
-                        if (index !== -1) {
-                          console.log(`Updating existing instance: ${data.FunctionName}`);
-                          records[index] = LambdaData; // Update record
-                        } else {
-                          console.log(`Adding new instance: ${data.FunctionName}`);
-                          records.push(LambdaData); // Insert new record
-                        }
-                    
-                        await uploadParquetToS3(LambdaSchema, records, S3_KEY);
-                    
-                      } catch (err) {
-                        console.error('Error writing data to '+subtype+' Parquet file:', err);
-                      }
-                    } catch (error) {   
-                        console.error("Error writing "+subtype+" asset:", error);
-                        throw error;
-                    }
-                break;
-                case 'IAMRole':
-                  try {
-                    //console.log("Received "+subtype+JSON.stringify(data))
-                    const IAMRoleSchema = new parquet.ParquetSchema({
-                        UniqueId: { type: 'UTF8', optional: false },
-                        RoleId: { type: 'UTF8', optional: false },
-                        RoleName: { type: 'UTF8', optional: false },
-                        AssumeRolePolicyDocument: { type: 'UTF8', optional: false }
-                    });
-                    const IAMRoleData = {
-                      UniqueId: data.RoleId, 
-                      RoleId: data.RoleId, 
-                      RoleName: data.RoleName,
-                      AssumeRolePolicyDocument: data.AssumeRolePolicyDocument 
-                    }
-                    const S3_KEY = 'IAMRoleBucketinventory.parquet';
-                    try {
-                        let records = await fetchParquetFromS3(S3_KEY);
-                    
-                        // Check if InstanceId already exists
-            
-                        const index = records.findIndex(rec => rec.UniqueId === data.RoleId);
-                        if (index !== -1) {
-                          console.log(`Updating existing instance: ${data.RoleId}`);
-                          records[index] = IAMRoleData; // Update record
-                        } else {
-                          console.log(`Adding new instance: ${data.RoleId}`);
-                          records.push(IAMRoleData); // Insert new record
-                        }
-                    
-                        await uploadParquetToS3(IAMRoleSchema, records, S3_KEY);
-                    
-                      } catch (err) {
-                        console.error('Error writing data to '+subtype+' Parquet file:', err);
-                      }
-                    } catch (error) {   
-                        console.error("Error writing "+subtype+" asset:", error);
-                        throw error;
-                    }
-                break;
-                case 'IAMPolicy':
-                  try {
-                    //console.log("Received "+subtype+JSON.stringify(data))
-                    const IAMPolicySchema = new parquet.ParquetSchema({
-                        UniqueId: { type: 'UTF8', optional: false },
-                        PolicyId: { type: 'UTF8', optional: false },
-                        PolicyName: { type: 'UTF8', optional: false },
-                        AttachmentCount: { type: 'INT32', optional: false },
-                        PermissionsBoundaryUsageCount: {type: 'INT32', optional: false},
-                        Document: {type: 'UTF8', optional: false}
-                    });
-                    const IAMPolicyData = {
-                      UniqueId: data.PolicyId, 
-                      PolicyId: data.PolicyId, 
-                      PolicyName: data.PolicyName,
-                      AttachmentCount: data.AttachmentCount,
-                      PermissionsBoundaryUsageCount: data.PermissionsBoundaryUsageCount,
-                      Document: moredata.Document 
-                    }
-                    const S3_KEY = 'IAMPolicyBucketinventory.parquet';
-                    try {
-                        let records = await fetchParquetFromS3(S3_KEY);
-                    
-                        // Check if InstanceId already exists
-            
-                        const index = records.findIndex(rec => rec.UniqueId === data.PolicyId);
-                        if (index !== -1) {
-                          console.log(`Updating existing instance: ${data.PolicyId}`);
-                          records[index] = IAMPolicyData; // Update record
-                        } else {
-                          console.log(`Adding new instance: ${data.PolicyId}`);
-                          records.push(IAMPolicyData); // Insert new record
-                        }
-                    
-                        await uploadParquetToS3(IAMPolicySchema, records, S3_KEY);
-                    
-                      } catch (err) {
-                        console.error('Error writing data to '+subtype+' Parquet file:', err);
-                      }
-                    } catch (error) {   
-                        console.error("Error writing "+subtype+" asset:", error);
-                        throw error;
-                    }
-                    break;
-                case 'User':
-                  try {
-                    //console.log("Received "+subtype+JSON.stringify(data))
-                    const UserSchema = new parquet.ParquetSchema({
-                        UniqueId: { type: 'UTF8', optional: false },
-                        UserId: { type: 'UTF8', optional: false },
-                        UserName: { type: 'UTF8', optional: false },
-                        AccessKeyIds: { type: 'UTF8', repeated: true },
-                        AttachedPolicyNames: {type: 'UTF8', repeated: true},
-                        InlinePolicyNames: {type: 'UTF8', repeated: true}
-                    });
-                    AccessKeys = []
-                    for (const accessKey of data.AccessKeys) {
-                        AccessKeys.push(accessKey.AccessKeyId);
-                    }
-                    PolicyNames = []
-                    for (const policy of data.AttachedPolicies) {
-                        PolicyNames.push(policy.PolicyName);
-                    }
-                    InlinePolicies = []
-                    for (const policy of data.InlinePolicies) {
-                        InlinePolicies.push(policy);
-                    }
-
-                    const UserData = {
-                      UniqueId: data.UserId, 
-                      UserId: data.UserId, 
-                      UserName: data.UserName,
-                      AccessKeyIds: AccessKeys,
-                      AttachedPolicyNames: PolicyNames,
-                      InlinePolicyNames: InlinePolicies 
-                    }
-                    const S3_KEY = 'UserBucketinventory.parquet';
-                    try {
-                        let records = await fetchParquetFromS3(S3_KEY);
-                    
-                        // Check if InstanceId already exists
-            
-                        const index = records.findIndex(rec => rec.UniqueId === data.UserId);
-                        if (index !== -1) {
-                          console.log(`Updating existing instance: ${data.UserId}`);
-                          records[index] = UserData; // Update record
-                        } else {
-                          console.log(`Adding new instance: ${data.UserId}`);
-                          records.push(UserData); // Insert new record
-                        }
-                    
-                        await uploadParquetToS3(UserSchema, records, S3_KEY);
-                    
-                      } catch (err) {
-                        console.error('Error writing data to '+subtype+' Parquet file:', err);
-                      }
-                    } catch (error) {   
-                        console.error("Error writing "+subtype+" asset:", error);
-                        throw error;
-                    }
-                    break;
-
-                case 'RDS':
-                case 'ECS':
-                case 'EKS':
-                case 'DataBase':
-                  console.log("Received "+subtype+JSON.stringify(data))
-                  break;
-                default:
-                    throw new Error(`Unsupported asset subtype: ${subtype}`);
-            }
-            break;
-        case 'log':
-            // TBD: Implement log handling
-            break;
-        default:
-            throw new Error(`Unsupported type: ${type}`);
-    }
-
+  await enqueueS3Write('log', 'common', commonSchema, commonData, commonFilePath);
+  await enqueueS3Write('log', eventName, eventSchema, eventData, eventFilePath);
 }
 
-
+async function writeS3Logs(schema, data, filePath) {
+  if (type === 'log') {
+    try {
+      let records = await fetchParquetFromS3(filePath);
+      records.push(data);
+      await uploadParquetToS3(schema, records, filePath);
+    } catch (err) {
+      console.error(`Error writing log data to ${subtype} Parquet file:`, err);
+    }
+  } else {
+    // existing asset handling code
+  }
+}
 
 module.exports = {
-    enqueueS3Write
+  enqueueS3Write,
+  writeS3Log
 };

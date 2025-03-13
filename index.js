@@ -8,9 +8,8 @@ console.log("Starting Fortifai...");
 async function main() {
     try {
         //await llm_registry.init();
-        //await CloudCollector.CollectAssets();
-        //await CloudCollector.CollectUsers();
-	await CloudEventListener.startListening()
+        await CloudCollector.CollectAssets();
+	    //    await CloudEventListener.startListening()
         //await flow_logs.collectFlowLogs();
     } catch (error) {
         console.error("Error in main function:", error);
