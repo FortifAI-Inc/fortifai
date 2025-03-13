@@ -67,19 +67,19 @@ async function fetchParquetFromS3(S3_KEY) {
  * Uploads the given Parquet records back to S3.
  * @param {Array} records - Array of JSON objects representing EC2 instances.
  */
-async function uploadParquetToS3(schema, records, S3_KEY) {
+ function uploadParquetToS3(schema, records, S3_KEY) {
   try {
     //console.log("\n💾 Writing updated records to Parquet...");
 
-    const writer = await parquet.ParquetWriter.openFile(schema, tempFilePath);
+    const writer = parquet.ParquetWriter.openFile(schema, tempFilePath);
     
     for (const record of records) {
-      await writer.appendRow(record);
+      writer.appendRow(record);
     }
-    await writer.close();
+    writer.close();
 
     // Read the written Parquet file
-    const fileData = await fs.readFileSync(tempFilePath);
+    const fileData = fs.readFileSync(tempFilePath);
 
     // Upload file to S3
     const putObjectParams = {
@@ -89,7 +89,7 @@ async function uploadParquetToS3(schema, records, S3_KEY) {
       ContentType: "application/octet-stream",
     };
 
-    await s3.send(new PutObjectCommand(putObjectParams));
+     s3.send(new PutObjectCommand(putObjectParams));
     //console.log("✅ Parquet file successfully updated on S3.");
   } catch (err) {
     console.error("❌ Error uploading Parquet file to S3:", err);
