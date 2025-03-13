@@ -1,6 +1,6 @@
 async function logEvent(eventName, event){
     switch (eventName) {
-        case "TerminateInstance":
+        case "TerminateInstances":
             console.log("Terminate Instance event: ", event);
             break;
         default:
