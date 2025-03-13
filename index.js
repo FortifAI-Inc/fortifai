@@ -8,7 +8,7 @@ console.log("Starting Fortifai...");
 async function main() {
     try {
         //await llm_registry.init();
-        await CloudCollector.CollectAssets();
+        await CloudCollector.InventoryAssets();
 	    //    await CloudEventListener.startListening()
         //await flow_logs.collectFlowLogs();
     } catch (error) {
