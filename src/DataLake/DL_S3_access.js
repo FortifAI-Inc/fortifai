@@ -79,7 +79,7 @@ async function fetchParquetFromS3(S3_KEY) {
     await writer.close();
 
     // Read the written Parquet file
-    const fileData = fs.readFileSync(tempFilePath);
+    const fileData = await fs.readFileSync(tempFilePath);
 
     // Upload file to S3
     const putObjectParams = {
@@ -89,7 +89,7 @@ async function fetchParquetFromS3(S3_KEY) {
       ContentType: "application/octet-stream",
     };
 
-     s3.send(new PutObjectCommand(putObjectParams));
+     await s3.send(new PutObjectCommand(putObjectParams));
     //console.log("✅ Parquet file successfully updated on S3.");
   } catch (err) {
     console.error("❌ Error uploading Parquet file to S3:", err);
