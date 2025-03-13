@@ -1,4 +1,4 @@
-const CloudCollector = require('./src/Utils/CloudCollector');
+const CloudCollector = require('./src/Utils/EnvInventory');
 const CloudEventListener = require('./src/Utils/CloudEventListener');
 const flow_logs = require('./src/flow_logs');
 const llm_registry = require('./src/llms_registry');
