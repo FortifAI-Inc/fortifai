@@ -1,5 +1,5 @@
 const { commonSchema, eventSchemas } = require('../DataLake/DL_S3_Logs_schema');
-const { enqueueS3Write } = require('./DL_S3_access');
+const { enqueueS3Write } = require('../DataLake/DL_S3_access');
 
 
 async function logEvent(eventName, event){
