@@ -1,8 +1,8 @@
 const commonSchema = new parquet.ParquetSchema({
-    eventID: { type: 'UTF8' },
-    eventTime: { type: 'TIMESTAMP_MILLIS' },
-    eventSource: { type: 'UTF8' },
-    eventName: { type: 'UTF8' },
+    EventId: { type: 'UTF8' },
+    EventTime: { type: 'TIMESTAMP_MILLIS' },
+    EventSource: { type: 'UTF8' },
+    EventName: { type: 'UTF8' },
     awsRegion: { type: 'UTF8' },
     sourceIPAddress: { type: 'UTF8' },
     userAgent: { type: 'UTF8' },
@@ -30,24 +30,24 @@ const commonSchema = new parquet.ParquetSchema({
 
 const eventSchemas = {
     RunInstances: new parquet.ParquetSchema({
-        eventID: { type: 'UTF8' },
+        EventId: { type: 'UTF8' },
         instanceType: { type: 'UTF8' },
         imageId: { type: 'UTF8' },
         privateIpAddress: { type: 'UTF8' },
         securityGroup: { type: 'UTF8' },
     }),
     AssumeRole: new parquet.ParquetSchema({
-        eventID: { type: 'UTF8' },
+        EventId: { type: 'UTF8' },
         roleArn: { type: 'UTF8' },
         roleSessionName: { type: 'UTF8' },
         credentials: { type: 'UTF8' },
     }),
     TerminateInstances: new parquet.ParquetSchema({
-        eventID: { type: 'UTF8' },
+        EventId: { type: 'UTF8' },
         instanceId: { type: 'UTF8' }
     }),
     CreateBucket: new parquet.ParquetSchema({
-        eventID: { type: 'UTF8' },
+        EventId: { type: 'UTF8' },
         bucketName: { type: 'UTF8' }
     }),
 };
