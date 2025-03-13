@@ -7,3 +7,8 @@ async function logEvent(eventName, event){
             console.log("Unknown event: ", event);
     }
 }
+
+
+module.exports = {
+	logEvent
+}

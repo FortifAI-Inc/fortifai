@@ -169,7 +169,7 @@ const writeEvents = {
 };
 
 function buildLookupAttributes() {
-    const lookupAttributes = [ {AttributeKey: "EventName", AttributeValue: "TerminateInstance"}]//[];
+    const lookupAttributes = [ {AttributeKey: "EventName", AttributeValue: "TerminateInstances"}]//[];
     return lookupAttributes;
     const addAttributes = (events) => {
         for (const service in events) {
