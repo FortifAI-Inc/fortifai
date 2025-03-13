@@ -72,8 +72,8 @@ async function InventoryAssets() {
                 //console.log(`Adding new instance: ${ec2Data.InstanceId}`);
                 records.push(ec2Data); // Insert new record
             }
-            DL_access.writeData(ec2Schema, records, S3_KEY);
         }
+        DL_access.writeData(ec2Schema, records, S3_KEY);
         console.log("EC2 Instances count:", instanceList.length);
 
         // Get VPCs
@@ -97,8 +97,8 @@ async function InventoryAssets() {
                 //console.log(`Adding new instance: ${VpcData.VpcId}`);
                 records.push(VpcData); // Insert new record
             }
-            DL_access.writeData(VpcSchema, records, S3_KEY);
         }
+        DL_access.writeData(VpcSchema, records, S3_KEY);
 
         // Get S3 buckets
         const s3Buckets = await s3.listBuckets();
@@ -122,8 +122,8 @@ async function InventoryAssets() {
                 records.push(S3Data); // Insert new record
             }
 
-            DL_access.writeData(S3Schema, records, S3_KEY);
         }
+        DL_access.writeData(S3Schema, records, S3_KEY);
         console.log("S3 Buckets count:", s3Buckets.Buckets.length);
 
         // Get internet gateways
@@ -148,8 +148,8 @@ async function InventoryAssets() {
                 //console.log(`Adding new instance: ${IGWData.InternetGatewayId}`);
                 records.push(IGWData); // Insert new record
             }
-            DL_access.writeData(IGWSchema, records, S3_KEY);
         }
+        DL_access.writeData(IGWSchema, records, S3_KEY);
 
         // Get security groups
         const securityGroups = await ec2.describeSecurityGroups();
@@ -173,8 +173,8 @@ async function InventoryAssets() {
                 //console.log(`Adding new instance: ${SGData.GroupId}`);
                 records.push(SGData); // Insert new record
             }
-            DL_access.writeData(SGSchema, records, S3_KEY);
         }
+        DL_access.writeData(SGSchema, records, S3_KEY);
 
         // Get network interfaces
         const networkInterfaces = await ec2.describeNetworkInterfaces();
@@ -206,8 +206,8 @@ async function InventoryAssets() {
                 //console.log(`Adding new instance: ${NIData.NetworkInterfaceId}`);
                 records.push(NIData); // Insert new record
             }
-            DL_access.writeData(NISchema, records, S3_KEY);
         }
+        DL_access.writeData(NISchema, records, S3_KEY);
 
         // Get Lambda functions
         const lambdaFunctions = await lambda.listFunctions();
@@ -233,8 +233,8 @@ async function InventoryAssets() {
                 //console.log(`Adding new instance: ${LambdaData.FunctionName}`);
                 records.push(LambdaData); // Insert new record
             }
-            DL_access.writeData(LambdaSchema, records, S3_KEY);
         }
+        DL_access.writeData(LambdaSchema, records, S3_KEY);
 
         // Get RDS instances
         const rdsInstances = await rds.describeDBInstances();
@@ -286,8 +286,8 @@ async function CollectRoles() {
                 records.push(IAMRoleData); // Insert new record
             }
 
-            DL_access.writeData(IAMRoleSchema, records, S3_KEY);
         }
+        DL_access.writeData(IAMRoleSchema, records, S3_KEY);
         //return roles.Roles;
     } catch (error) {
         console.error("Error retrieving IAM roles:", error);
@@ -332,8 +332,8 @@ async function CollectPolicies() {
                 //console.log(`Adding new instance: ${IAMPolicyData.PolicyId}`);
                 records.push(IAMPolicyData); // Insert new record
             }
-            DL_access.writeData(IAMPolicySchema, records, S3_KEY);
         }
+        DL_access.writeData(IAMPolicySchema, records, S3_KEY);
         return policies.Policies;
     } catch (error) {
         console.error("Error retrieving IAM policies:", error);
@@ -401,8 +401,8 @@ async function CollectUsers() {
                 records.push(UserData); // Insert new record
             }
 
-            DL_access.writeData(UserSchema, records, S3_KEY);
         }
+        DL_access.writeData(UserSchema, records, S3_KEY);
         return users.Users;
     } catch (error) {
         console.error("Error retrieving IAM users and access keys:", error);
