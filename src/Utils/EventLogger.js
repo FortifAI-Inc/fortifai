@@ -4,7 +4,7 @@ const path = require('path');
 
 
 
-async function logEvent(eventName, event){
+async function logEvent(eventName, event) {
     switch (eventName) {
         case "TerminateInstances":
             //console.log("Terminate Instance event: ", event);
@@ -13,9 +13,9 @@ async function logEvent(eventName, event){
                 EventId: event.EventId,
                 EventTime: event.EventTime,
                 EventSource: event.EventSource,
-                EventName: event.EventName, 
+                EventName: event.EventName,
                 awsRegion: CloudTrailEvent.awsRegion,
-                sourceIPAddress: CloudTrailEvent.sourceIPAddress, 
+                sourceIPAddress: CloudTrailEvent.sourceIPAddress,
                 userAgent: CloudTrailEvent.userAgent,
                 ReadOnly: event.ReadOnly,
                 eventType: CloudTrailEvent.eventType,
@@ -57,30 +57,26 @@ async function writeS3Log(commonSchema, commonData, eventSchema, eventData) {
     const day = String(timestamp.getUTCDate()).padStart(2, '0');
     const hour = String(timestamp.getUTCHours()).padStart(2, '0');
     const eventName = commonData.EventName;
-  
+
     const partitionPath = path.join('EventLogger', year, month, day, hour);
     const commonFilePath = path.join(partitionPath, 'common.parquet');
     const eventFilePath = path.join(partitionPath, `${eventName}.parquet`);
-  
+
     await writeS3Logs(commonSchema, [commonData], commonFilePath);
     await writeS3Logs(eventSchema, [eventData], eventFilePath);
-  }
-  
-  async function writeS3Logs(schema, data, filePath) {
-    if (type === 'log') {
-      try {
+}
+
+async function writeS3Logs(schema, data, filePath) {
+    try {
         let records = await fetchParquetFromS3(filePath);
         records.push(data);
         await enqueueS3Write(schema, records, filePath);
-      } catch (err) {
+    } catch (err) {
         console.error(`Error writing log data to ${subtype} Parquet file:`, err);
-      }
-    } else {
-      // existing asset handling code
     }
-  }
-  
+}
+
 
 module.exports = {
-	logEvent
+    logEvent
 }
