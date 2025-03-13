@@ -6,32 +6,6 @@ const path = require('path');
 const EventRegistration = require('./EventRegistration');
 const EventLogger = require('./EventLogger')
 
-const logGroupName = 'your-log-group-name';
-const logStreamName = 'your-log-stream-name';
-
-async function logEvent(message) {
-    const cloudWatchLogs = new CloudWatchLogs({
-        region: 'us-east-1',
-    });
-
-    try {
-        const params = {
-            logGroupName,
-            logStreamName,
-            logEvents: [
-                {
-                    message: JSON.stringify(message),
-                    timestamp: new Date().getTime(),
-                },
-            ],
-        };
-
-        await cloudWatchLogs.putLogEvents(params);
-        console.log("Event logged successfully");
-    } catch (error) {
-        console.error("Error logging event:", error);
-    }
-}
 
 async function getAllEvents() {
     const cloudTrail = new CloudTrailClient({ region: 'us-east-1' });
