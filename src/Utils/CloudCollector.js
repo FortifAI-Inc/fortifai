@@ -37,7 +37,7 @@ async function InventoryAssets() {
         const instanceList = ec2Instances.Reservations.map(reservation => reservation.Instances).flat();
         for (const instance of instanceList) {
             IfIDs = []
-            for (const networkInterface of data.NetworkInterfaces) {
+            for (const networkInterface of instance.NetworkInterfaces) {
                 IfIDs.push(networkInterface.NetworkInterfaceId);
             }
             const ec2Data = {
