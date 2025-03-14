@@ -69,7 +69,7 @@ async function writeS3Log(commonSchema, commonData, eventSchema, eventData) {
 async function writeS3Logs(schema, data, filePath) {
     try {
         let records = await fetchParquetFromS3(filePath);
-        const index = records.findIndex(rec => rec.EventId === data.eVentId);
+        const index = records.findIndex(rec => rec.EventId === data.EventId);
         if (index !== -1) {
             console.log("Event is already in the DB");
             return;
