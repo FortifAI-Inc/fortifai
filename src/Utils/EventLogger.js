@@ -11,7 +11,7 @@ async function logEvent(eventName, event) {
             const CloudTrailEvent = JSON.parse(event.CloudTrailEvent);
             const EventCommonData = {
                 EventId: event.EventId,
-                //EventTime: event.EventTime,
+                EventTime: event.EventTime,
                 EventSource: event.EventSource,
                 EventName: event.EventName,
                 awsRegion: CloudTrailEvent.awsRegion,

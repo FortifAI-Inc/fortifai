@@ -2,7 +2,7 @@ const parquet = require('parquetjs-lite');
 
 const commonSchema = new parquet.ParquetSchema({
     EventId: { type: 'UTF8' },
-    //EventTime: { type: 'INT64'},//TIMESTAMP_MILLIS' },
+    EventTime: { type: 'INT64'},//TIMESTAMP_MILLIS' },
     EventSource: { type: 'UTF8' },
     EventName: { type: 'UTF8' },
     awsRegion: { type: 'UTF8' },
