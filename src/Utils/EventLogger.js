@@ -58,9 +58,6 @@ async function writeS3Log(commonSchema, commonData, eventSchema, eventData) {
     const hour = String(timestamp.getUTCHours()).padStart(2, '0');
     const eventName = commonData.EventName;
 
-    if (year != 2025) {
-        console.log("ERROR: year is ",year,commonData)
-    }
     const partitionPath = path.join('EventLogger', year, month, day, hour);
     const commonFilePath = path.join(partitionPath, 'common.parquet');
     const eventFilePath = path.join(partitionPath, `${eventName}.parquet`);
