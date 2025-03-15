@@ -77,7 +77,6 @@ async function logEvent(eventName, event) {
         EventCommonData.accountId = EventCommonData.accountId || 'AWS';
     }
     //console.log(EventCommonData)
-    return;
     let EventPrivateData = { };
     switch (eventName) {
         case "TerminateInstances":
