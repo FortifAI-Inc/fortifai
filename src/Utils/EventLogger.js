@@ -126,7 +126,7 @@ async function logEvent(eventName, event) {
 
                     // Validate required fields
                     const schema = lambdaSchemas[eventName];
-                    schema.schema.fields.forEach(field => {
+                    schema.fields.forEach(field => {
                         if (!field.optional && !EventPrivateData[field.name]) {
                             console.error(`Missing required field ${field.name} for ${eventName}`);
                             EventPrivateData[field.name] = 'MISSING_DATA';
