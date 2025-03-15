@@ -108,12 +108,12 @@ async function logEvent(eventName, event) {
                     const schema = lambdaSchemas[eventName];
                     console.log("Schema is ", schema)
                     //console.log("EventPrivateData is ",EventPrivateData)
-                    schema.schema.fields.forEach(field => {
-                        if (!field.optional && !EventPrivateData[field.name]) {
-                            console.error(`Missing required field ${field.name} for ${eventName}`);
+                    for (const field in schema.fields){
+                        if (!schema,schema.field.optional && !EventPrivateData[field]) {
+                            console.error(`Missing required field ${field} for ${eventName}`);
                             EventPrivateData[field.name] = 'MISSING_DATA';
                         }
-                    });
+                    }
                 } catch (error) {
                     console.error(`Error processing ${eventName}:`, error);
                     EventPrivateData.error = error.message;
@@ -223,13 +223,11 @@ const lambdaHandlers = { // data extractors for Lambda related events
 
     CreateAlias: (cloudTrailEvent) => {
         const req = cloudTrailEvent.requestParameters || {};
-        console.log("Request Parameters are ", req)
-        console.log("cloudTrailEvent is ", cloudTrailEvent)
+        //console.log("Request Parameters are ", req)
+        //console.log("cloudTrailEvent is ", cloudTrailEvent)
         return {
-            functionName: req.functionName,
-            name: req.name,
-            functionVersion: req.functionVersion,
-            description: req.description || null
+            aliasName: req.aliasName,
+            targetKeyId: req.targetKeyId,
         };
     },
 
