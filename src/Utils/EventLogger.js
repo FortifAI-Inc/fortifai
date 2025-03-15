@@ -81,7 +81,6 @@ async function logEvent(eventName, event) {
     switch (eventName) {
         case "TerminateInstances":
             //console.log("Terminate Instance event: ", event);
-            const CloudTrailEvent = JSON.parse(event.CloudTrailEvent);
             const EventCommonData = {
                 EventId: event.EventId,
                 EventTime: Number(event.EventTime),
@@ -118,7 +117,6 @@ async function logEvent(eventName, event) {
         case "InvokeFunction":
         case "CreateAlias":
         case "DeleteAlias":
-
             if (lambdaHandlers[eventName]) {
                 try {
                     EventPrivateData = {
