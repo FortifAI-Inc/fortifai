@@ -5,6 +5,77 @@ const path = require('path');
 
 
 async function logEvent(eventName, event) {
+    // Parse CloudTrail event details
+    const CloudTrailEvent = JSON.parse(event.CloudTrailEvent || '{}');
+    const userIdentity = CloudTrailEvent.userIdentity || {};
+    const sessionContext = userIdentity.sessionContext || {};
+    const sessionAttributes = sessionContext.attributes || {};
+    const sessionIssuer = sessionContext.sessionIssuer || {};
+
+    // Build EventCommonData with schema compliance
+    const EventCommonData = {
+        // Required Fields (must always exist)
+        EventId: event.EventId,
+        EventTime: Number(event.EventTime),
+        EventSource: event.EventSource,
+        EventName: event.EventName,
+        eventCategory: CloudTrailEvent.eventCategory || 'unknown',
+        awsRegion: CloudTrailEvent.awsRegion || 'global',
+        managementEvent: CloudTrailEvent.managementEvent || false,
+        recipientAccountId: CloudTrailEvent.recipientAccountId || '',
+        requestID: CloudTrailEvent.requestID || '',
+
+        // Conditional Fields
+        sourceIPAddress: CloudTrailEvent.sourceIPAddress || null,
+        userAgent: CloudTrailEvent.userAgent || null,
+        ReadOnly: event.ReadOnly !== undefined ? event.ReadOnly : null,
+        eventType: CloudTrailEvent.eventType || 'AwsApiCall',
+
+        // Identity Fields
+        userType: userIdentity.type || 'Unknown',
+        principalId: userIdentity.principalId || 'Unknown',
+        userArn: userIdentity.arn || '',
+        accessKeyId: event.AccessKeyId || userIdentity.accessKeyId || null,
+        userName: userIdentity.userName || null,
+        accountId: userIdentity.accountId || null,
+
+        // Session Context
+        sessionIssuerType: sessionIssuer.type || null,
+        sessionIssuerArn: sessionIssuer.arn || null,
+        sessionIssuerPrincipalId: sessionIssuer.principalId || null,
+        sessionCreationTime: sessionAttributes.creationDate ? 
+            new Date(sessionAttributes.creationDate).getTime() : null,
+        mfaAuthenticated: sessionAttributes.mfaAuthenticated === 'true',
+        sourceIdentity: userIdentity.sourceIdentity || null,
+
+        // Security Context
+        errorCode: CloudTrailEvent.errorCode || null,
+        errorMessage: CloudTrailEvent.errorMessage || null,
+        tlsDetails: CloudTrailEvent.tlsDetails ? 
+            JSON.stringify(CloudTrailEvent.tlsDetails) : null
+    };
+
+    // Schema validation checks
+    const requiredFields = [
+        'EventId', 'EventTime', 'EventSource', 'EventName',
+        'eventCategory', 'awsRegion', 'managementEvent',
+        'recipientAccountId', 'requestID', 'userType',
+        'principalId', 'userArn', 'eventType'
+    ];
+
+    for (const field of requiredFields) {
+        if (!EventCommonData[field] && EventCommonData[field] !== false) {
+            console.error(`Missing required field: ${field}`);
+            EventCommonData[field] = 'MISSING_DATA'; // Ensure schema compliance
+        }
+    }
+
+    // Handle special cases
+    if (EventCommonData.userType === 'AWSService') {
+        EventCommonData.userName = EventCommonData.userName || 'AWS Service';
+        EventCommonData.accountId = EventCommonData.accountId || 'AWS';
+    }
+    return; 
     switch (eventName) {
         case "TerminateInstances":
             //console.log("Terminate Instance event: ", event);
