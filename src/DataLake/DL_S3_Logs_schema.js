@@ -29,9 +29,15 @@ const commonSchema = new parquet.ParquetSchema({
     //mfaAuthenticated: { type: 'BOOLEAN', optional: true }, // Whether MFA was used
 });
 
-
 const eventSchemas = {
-    RunInstances: new parquet.ParquetSchema({
+    TerminateInstances: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8' },
+        instanceId: { type: 'UTF8' }
+    }),
+};
+
+module.exports = { commonSchema, eventSchemas };
+/*    RunInstances: new parquet.ParquetSchema({
         EventId: { type: 'UTF8' },
         instanceType: { type: 'UTF8' },
         imageId: { type: 'UTF8' },
@@ -44,14 +50,8 @@ const eventSchemas = {
         roleSessionName: { type: 'UTF8' },
         credentials: { type: 'UTF8' },
     }),
-    TerminateInstances: new parquet.ParquetSchema({
-        EventId: { type: 'UTF8' },
-        instanceId: { type: 'UTF8' }
-    }),
     CreateBucket: new parquet.ParquetSchema({
         EventId: { type: 'UTF8' },
         bucketName: { type: 'UTF8' }
     }),
-};
-
-module.exports = { commonSchema, eventSchemas };
+*/
