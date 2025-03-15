@@ -227,6 +227,7 @@ const lambdaHandlers = { // data extractors for Lambda related events
     CreateAlias: (cloudTrailEvent) => {
         const req = cloudTrailEvent.requestParameters || {};
         console.log("Request Parameters are ",req)
+        console.log("cloudTrailEvent is ",cloudTrailEvent)
         return {
             functionName: req.functionName,
             name: req.name,
