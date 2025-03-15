@@ -60,7 +60,7 @@ const lambdaSchemas = {
         memorySize: { type: 'INT32', optional: true },
         environment: { type: 'JSON', optional: true },
         kmsKeyArn: { type: 'UTF8', optional: true },
-        architectures: { type: 'LIST', values: { type: 'UTF8' }, optional: true }
+        architectures: { type: 'UTF8', /*values:*/ repeated: true, optional: true }
     }),
 
     DeleteFunction: new parquet.ParquetSchema({
