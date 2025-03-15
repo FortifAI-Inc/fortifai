@@ -11,6 +11,7 @@ async function logEvent(eventName, event) {
     const sessionContext = userIdentity.sessionContext || {};
     const sessionAttributes = sessionContext.attributes || {};
     const sessionIssuer = sessionContext.sessionIssuer || {};
+    console.log("received event", eventName, "with object", event)
 
     // Build EventCommonData with schema compliance
     const EventCommonData = {
@@ -105,10 +106,10 @@ async function logEvent(eventName, event) {
 
                     // Validate required fields
                     const schema = lambdaSchemas[eventName];
-                    console.log("Schema is ",schema)
+                    //console.log("Schema is ",schema)
                     console.log("EventPrivateData is ",EventPrivateData)
-                    if (Array.isArray(schema.schema.fields)) {
-                        schema.schema.fields.forEach(field => {
+                    if (Array.isArray(schema.schema.fieldList)) {
+                        schema.schema.fieldList.forEach(field => {
                             if (!field.optional && !EventPrivateData[field.name]) {
                                 console.error(`Missing required field ${field.name} for ${eventName}`);
                                 EventPrivateData[field.name] = 'MISSING_DATA';
