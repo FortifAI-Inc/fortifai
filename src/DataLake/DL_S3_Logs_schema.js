@@ -88,12 +88,10 @@ const lambdaSchemas = {
         clientContext: { type: 'UTF8', optional: true }
     }),
 
-    CreateAlias: new parquet.ParquetSchema({
+    CreateAlias: new parquet.ParquetSchema({ // This is actually a KMS function
         EventId: { type: 'UTF8', optional: false },
-        functionName: { type: 'UTF8', optional: false },
-        name: { type: 'UTF8', optional: false },
-        functionVersion: { type: 'UTF8', optional: false },
-        description: { type: 'UTF8', optional: true }
+        aliasName: { type: 'UTF8', optional: false },
+        targetKeyId: { type: 'UTF8', optional: false },
     }),
 
     DeleteAlias: new parquet.ParquetSchema({
