@@ -105,6 +105,8 @@ async function logEvent(eventName, event) {
 
                     // Validate required fields
                     const schema = lambdaSchemas[eventName];
+                    console.log("Schema is ",schema)
+                    console.log("EventPrivateData is ",EventPrivateData)
                     if (Array.isArray(schema.fields)) {
                         schema.fields.forEach(field => {
                             if (!field.optional && !EventPrivateData[field.name]) {
