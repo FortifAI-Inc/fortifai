@@ -78,7 +78,7 @@ async function logEvent(eventName, event) {
         EventCommonData.accountId = EventCommonData.accountId || 'AWS';
     }
     //console.log(EventCommonData)
-    let EventPrivateData = { };
+    let EventPrivateData = {};
     switch (eventName) {
         case "TerminateInstances":
             //console.log("Terminate Instance event: ", event);
@@ -106,18 +106,14 @@ async function logEvent(eventName, event) {
 
                     // Validate required fields
                     const schema = lambdaSchemas[eventName];
-                    console.log("Schema is ",schema)
+                    console.log("Schema is ", schema)
                     //console.log("EventPrivateData is ",EventPrivateData)
-                    if (Array.isArray(schema.schema.fields)) {
-                        schema.schema.fields.forEach(field => {
-                            if (!field.optional && !EventPrivateData[field.name]) {
-                                console.error(`Missing required field ${field.name} for ${eventName}`);
-                                EventPrivateData[field.name] = 'MISSING_DATA';
-                            }
-                        });
-                    } else {
-                        console.error(`Invalid schema.fields for ${eventName}`);
-                    }
+                    schema.schema.fields.forEach(field => {
+                        if (!field.optional && !EventPrivateData[field.name]) {
+                            console.error(`Missing required field ${field.name} for ${eventName}`);
+                            EventPrivateData[field.name] = 'MISSING_DATA';
+                        }
+                    });
                 } catch (error) {
                     console.error(`Error processing ${eventName}:`, error);
                     EventPrivateData.error = error.message;
@@ -227,8 +223,8 @@ const lambdaHandlers = { // data extractors for Lambda related events
 
     CreateAlias: (cloudTrailEvent) => {
         const req = cloudTrailEvent.requestParameters || {};
-        console.log("Request Parameters are ",req)
-        console.log("cloudTrailEvent is ",cloudTrailEvent)
+        console.log("Request Parameters are ", req)
+        console.log("cloudTrailEvent is ", cloudTrailEvent)
         return {
             functionName: req.functionName,
             name: req.name,
