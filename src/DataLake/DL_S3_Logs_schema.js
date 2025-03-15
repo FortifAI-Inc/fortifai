@@ -21,7 +21,7 @@ const commonSchema = new parquet.ParquetSchema({
     // Identity Fields
     userType: { type: 'UTF8', optional: false },
     principalId: { type: 'UTF8', optional: false },
-    userArn: { type: 'UTF8', optional: false },
+    userArn: { type: 'UTF8', optional: true }, // Some observability automatic rolwa trigger these without ARN
     accessKeyId: { type: 'UTF8', optional: true },
     userName: { type: 'UTF8', optional: true },               // IAM username (if applicable)
     accountId: { type: 'UTF8', optional: true },              // AWS Account ID of the user

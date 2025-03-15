@@ -60,13 +60,14 @@ async function logEvent(eventName, event) {
         'EventId', 'EventTime', 'EventSource', 'EventName',
         'eventCategory', 'awsRegion', 'managementEvent',
         'recipientAccountId', 'requestID', 'userType',
-        'principalId', 'userArn', 'eventType'
+        'principalId', 'eventType'
     ];
 
     for (const field of requiredFields) {
         if (!EventCommonData[field] && EventCommonData[field] !== false) {
-            console.error(`Missing required field: ${field}`);
+            console.error(`Missing required field: ${field} in event ${event.EventName}`);
             EventCommonData[field] = 'MISSING_DATA'; // Ensure schema compliance
+		console.log(event)
         }
     }
 
@@ -75,6 +76,7 @@ async function logEvent(eventName, event) {
         EventCommonData.userName = EventCommonData.userName || 'AWS Service';
         EventCommonData.accountId = EventCommonData.accountId || 'AWS';
     }
+    //console.log(EventCommonData)
     return; 
     switch (eventName) {
         case "TerminateInstances":
