@@ -43,7 +43,7 @@ async function logEvent(eventName, event) {
         sessionIssuerType: sessionIssuer.type || null,
         sessionIssuerArn: sessionIssuer.arn || null,
         sessionIssuerPrincipalId: sessionIssuer.principalId || null,
-        sessionCreationTime: sessionAttributes.creationDate ? 
+        sessionCreationTime: sessionAttributes.creationDate ?
             new Date(sessionAttributes.creationDate).getTime() : null,
         mfaAuthenticated: sessionAttributes.mfaAuthenticated === 'true',
         sourceIdentity: userIdentity.sourceIdentity || null,
@@ -51,7 +51,7 @@ async function logEvent(eventName, event) {
         // Security Context
         errorCode: CloudTrailEvent.errorCode || null,
         errorMessage: CloudTrailEvent.errorMessage || null,
-        tlsDetails: CloudTrailEvent.tlsDetails ? 
+        tlsDetails: CloudTrailEvent.tlsDetails ?
             JSON.stringify(CloudTrailEvent.tlsDetails) : null
     };
 
@@ -67,7 +67,7 @@ async function logEvent(eventName, event) {
         if (!EventCommonData[field] && EventCommonData[field] !== false) {
             console.error(`Missing required field: ${field} in event ${event.EventName}`);
             EventCommonData[field] = 'MISSING_DATA'; // Ensure schema compliance
-		console.log(event)
+            console.log(event)
         }
     }
 
@@ -77,7 +77,8 @@ async function logEvent(eventName, event) {
         EventCommonData.accountId = EventCommonData.accountId || 'AWS';
     }
     //console.log(EventCommonData)
-    return; 
+    return;
+    let EventPrivateData = { };
     switch (eventName) {
         case "TerminateInstances":
             //console.log("Terminate Instance event: ", event);
@@ -103,13 +104,43 @@ async function logEvent(eventName, event) {
                 accessKeyId: event.AccessKeyId,
                 accountId: CloudTrailEvent.userIdentity.accountId
             }
-            const EventPrivateData = {
+            EventPrivateData = {
                 EventId: event.EventId,
                 instanceId: CloudTrailEvent.requestParameters.instancesSet.items[0].instanceId,
             }
             //console.log("EventCommonData: ", EventCommonData);
             //console.log("EventPrivateData: ", EventPrivateData);
             writeS3Log(commonSchema, EventCommonData, eventSchemas[eventName], EventPrivateData);
+            break;
+        // Lambda related events:
+        case "CreateFunction":
+        case "DeleteFunction":
+        case "UpdateFunctionCode":
+        case "InvokeFunction":
+        case "CreateAlias":
+        case "DeleteAlias":
+
+            if (lambdaHandlers[eventName]) {
+                try {
+                    EventPrivateData = {
+                        EventId: event.EventId,
+                        ...lambdaHandlers[eventName](CloudTrailEvent)
+                    };
+
+                    // Validate required fields
+                    const schema = lambdaSchemas[eventName];
+                    schema.schema.fields.forEach(field => {
+                        if (!field.optional && !EventPrivateData[field.name]) {
+                            console.error(`Missing required field ${field.name} for ${eventName}`);
+                            EventPrivateData[field.name] = 'MISSING_DATA';
+                        }
+                    });
+                } catch (error) {
+                    console.error(`Error processing ${eventName}:`, error);
+                    EventPrivateData.error = error.message;
+                }
+            }
+            writeS3Log(commonSchema, EventCommonData, lambdaSchemas[eventName], EventPrivateData);
             break;
         default:
             console.log("Unknown event: ", event);
@@ -160,3 +191,69 @@ async function writeS3Logs(schema, data, filePath) {
 module.exports = {
     logEvent
 }
+
+
+
+const lambdaHandlers = { // data extractors for Lambda related events
+    CreateFunction: (cloudTrailEvent) => {
+        const req = cloudTrailEvent.requestParameters || {};
+        const res = cloudTrailEvent.responseElements || {};
+        return {
+            functionName: req.functionName,
+            runtime: req.runtime,
+            handler: req.handler,
+            role: req.role,
+            codeSize: res.codeSize,
+            timeout: req.timeout || null,
+            memorySize: req.memorySize || null,
+            environment: req.environment?.variables ?
+                JSON.stringify(req.environment.variables) : null,
+            kmsKeyArn: req.kmsKeyArn || null,
+            architectures: req.architectures || ['x86_64']
+        };
+    },
+
+    DeleteFunction: (cloudTrailEvent) => ({
+        functionName: cloudTrailEvent.requestParameters.functionName,
+        qualifier: cloudTrailEvent.requestParameters.qualifier || null
+    }),
+
+    UpdateFunctionCode: (cloudTrailEvent) => {
+        const req = cloudTrailEvent.requestParameters || {};
+        const res = cloudTrailEvent.responseElements || {};
+        return {
+            functionName: req.functionName,
+            revisionId: res.revisionId,
+            codeSha256: res.codeSha256,
+            codeSize: res.codeSize,
+            publish: req.publish || false
+        };
+    },
+
+    InvokeFunction: (cloudTrailEvent) => {
+        const req = cloudTrailEvent.requestParameters || {};
+        return {
+            functionName: req.functionName,
+            invocationType: req.invocationType || 'RequestResponse',
+            qualifier: req.qualifier || '$LATEST',
+            payloadSize: req.payload?.length || 0,
+            logType: req.logType || null,
+            clientContext: req.clientContext || null
+        };
+    },
+
+    CreateAlias: (cloudTrailEvent) => {
+        const req = cloudTrailEvent.requestParameters || {};
+        return {
+            functionName: req.functionName,
+            name: req.name,
+            functionVersion: req.functionVersion,
+            description: req.description || null
+        };
+    },
+
+    DeleteAlias: (cloudTrailEvent) => ({
+        functionName: cloudTrailEvent.requestParameters.functionName,
+        name: cloudTrailEvent.requestParameters.name
+    })
+};

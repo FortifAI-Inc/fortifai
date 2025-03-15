@@ -50,58 +50,57 @@ const eventSchemas = {
 // Lambda Event Schemas (Full Coverage)
 const lambdaSchemas = {
     CreateFunction: new parquet.ParquetSchema({
-        EventId: { type: 'UTF8' },
-        functionName: { type: 'UTF8' },
-        runtime: { type: 'UTF8' },
-        role: { type: 'UTF8' },
-        handler: { type: 'UTF8' },
-        codeSize: { type: 'INT64' },
-        timeout: { type: 'INT32' },
-        memorySize: { type: 'INT32' },
-        //environment: { type: 'MAP', keyType: 'UTF8', values: { type: 'UTF8' } },
-        kmsKeyArn: { type: 'UTF8', optional: true }
+        EventId: { type: 'UTF8', optional: false },
+        functionName: { type: 'UTF8', optional: false },
+        runtime: { type: 'UTF8', optional: false },
+        handler: { type: 'UTF8', optional: false },
+        role: { type: 'UTF8', optional: false },
+        codeSize: { type: 'INT64', optional: false },
+        timeout: { type: 'INT32', optional: true },
+        memorySize: { type: 'INT32', optional: true },
+        environment: { type: 'JSON', optional: true },
+        kmsKeyArn: { type: 'UTF8', optional: true },
+        architectures: { type: 'LIST', values: { type: 'UTF8' }, optional: true }
     }),
+
     DeleteFunction: new parquet.ParquetSchema({
-        EventId: { type: 'UTF8' },
-        functionName: { type: 'UTF8' },
+        EventId: { type: 'UTF8', optional: false },
+        functionName: { type: 'UTF8', optional: false },
         qualifier: { type: 'UTF8', optional: true }
     }),
+
     UpdateFunctionCode: new parquet.ParquetSchema({
-        EventId: { type: 'UTF8' },
-        functionName: { type: 'UTF8' },
-        revisionId: { type: 'UTF8' },
-        codeSha256: { type: 'UTF8' },
-        codeSize: { type: 'INT64' }
+        EventId: { type: 'UTF8', optional: false },
+        functionName: { type: 'UTF8', optional: false },
+        revisionId: { type: 'UTF8', optional: false },
+        codeSha256: { type: 'UTF8', optional: false },
+        codeSize: { type: 'INT64', optional: false },
+        publish: { type: 'BOOLEAN', optional: true }
     }),
-    UpdateFunctionConfiguration: new parquet.ParquetSchema({
-        EventId: { type: 'UTF8' },
-        functionName: { type: 'UTF8' },
-        role: { type: 'UTF8' },
-        //environment: { type: 'MAP', keyType: 'UTF8', values: { type: 'UTF8' } },
-        runtime: { type: 'UTF8', optional: true },
-        timeout: { type: 'INT32', optional: true },
-        memorySize: { type: 'INT32', optional: true }
+
+    InvokeFunction: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        functionName: { type: 'UTF8', optional: false },
+        invocationType: { type: 'UTF8', optional: false },
+        qualifier: { type: 'UTF8', optional: true },
+        payloadSize: { type: 'INT64', optional: false },
+        logType: { type: 'UTF8', optional: true },
+        clientContext: { type: 'UTF8', optional: true }
     }),
-    AddPermission: new parquet.ParquetSchema({
-        EventId: { type: 'UTF8' },
-        functionName: { type: 'UTF8' },
-        statementId: { type: 'UTF8' },
-        action: { type: 'UTF8' },
-        principal: { type: 'UTF8' },
-        sourceArn: { type: 'UTF8', optional: true }
-    }),
-    RemovePermission: new parquet.ParquetSchema({
-        EventId: { type: 'UTF8' },
-        functionName: { type: 'UTF8' },
-        statementId: { type: 'UTF8' }
-    }),
-    PublishVersion: new parquet.ParquetSchema({
-        EventId: { type: 'UTF8' },
-        functionName: { type: 'UTF8' },
-        codeSha256: { type: 'UTF8' },
+
+    CreateAlias: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        functionName: { type: 'UTF8', optional: false },
+        name: { type: 'UTF8', optional: false },
+        functionVersion: { type: 'UTF8', optional: false },
         description: { type: 'UTF8', optional: true }
     }),
-    // 15+ additional Lambda events
+
+    DeleteAlias: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        functionName: { type: 'UTF8', optional: false },
+        name: { type: 'UTF8', optional: false }
+    })
 };
 
 // EC2 Full Schema Coverage (50+ events)
