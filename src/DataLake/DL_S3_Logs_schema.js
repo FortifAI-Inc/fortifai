@@ -58,7 +58,7 @@ const lambdaSchemas = {
         codeSize: { type: 'INT64' },
         timeout: { type: 'INT32' },
         memorySize: { type: 'INT32' },
-        environment: { type: 'MAP', keyType: 'UTF8', values: { type: 'UTF8' } },
+        //environment: { type: 'MAP', keyType: 'UTF8', values: { type: 'UTF8' } },
         kmsKeyArn: { type: 'UTF8', optional: true }
     }),
     DeleteFunction: new parquet.ParquetSchema({
@@ -77,7 +77,7 @@ const lambdaSchemas = {
         EventId: { type: 'UTF8' },
         functionName: { type: 'UTF8' },
         role: { type: 'UTF8' },
-        environment: { type: 'MAP', keyType: 'UTF8', values: { type: 'UTF8' } },
+        //environment: { type: 'MAP', keyType: 'UTF8', values: { type: 'UTF8' } },
         runtime: { type: 'UTF8', optional: true },
         timeout: { type: 'INT32', optional: true },
         memorySize: { type: 'INT32', optional: true }
