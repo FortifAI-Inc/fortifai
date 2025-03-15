@@ -155,7 +155,7 @@ const kmsSchemas = {
 };
 
 
-module.exports = { commonSchema, eventSchemas };
+module.exports = { commonSchema, eventSchemas, lambdaSchemas };
 /*    RunInstances: new parquet.ParquetSchema({
         EventId: { type: 'UTF8' },
         instanceType: { type: 'UTF8' },

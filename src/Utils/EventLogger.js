@@ -1,4 +1,4 @@
-const { commonSchema, eventSchemas } = require('../DataLake/DL_S3_Logs_schema');
+const { commonSchema, eventSchemas, lambdaSchemas } = require('../DataLake/DL_S3_Logs_schema');
 const { enqueueS3Write, fetchParquetFromS3 } = require('../DataLake/DL_S3_access');
 const path = require('path');
 
