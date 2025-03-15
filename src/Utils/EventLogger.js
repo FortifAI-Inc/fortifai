@@ -107,8 +107,8 @@ async function logEvent(eventName, event) {
                     const schema = lambdaSchemas[eventName];
                     console.log("Schema is ",schema)
                     console.log("EventPrivateData is ",EventPrivateData)
-                    if (Array.isArray(schema.fields)) {
-                        schema.fields.forEach(field => {
+                    if (Array.isArray(schema.schema.fields)) {
+                        schema.schema.fields.forEach(field => {
                             if (!field.optional && !EventPrivateData[field.name]) {
                                 console.error(`Missing required field ${field.name} for ${eventName}`);
                                 EventPrivateData[field.name] = 'MISSING_DATA';
@@ -226,6 +226,7 @@ const lambdaHandlers = { // data extractors for Lambda related events
 
     CreateAlias: (cloudTrailEvent) => {
         const req = cloudTrailEvent.requestParameters || {};
+        console.log("Request Parameters are ",req)
         return {
             functionName: req.functionName,
             name: req.name,
