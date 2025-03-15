@@ -105,12 +105,16 @@ async function logEvent(eventName, event) {
 
                     // Validate required fields
                     const schema = lambdaSchemas[eventName];
-                    schema.fields.forEach(field => {
-                        if (!field.optional && !EventPrivateData[field.name]) {
-                            console.error(`Missing required field ${field.name} for ${eventName}`);
-                            EventPrivateData[field.name] = 'MISSING_DATA';
-                        }
-                    });
+                    if (Array.isArray(schema.fields)) {
+                        schema.fields.forEach(field => {
+                            if (!field.optional && !EventPrivateData[field.name]) {
+                                console.error(`Missing required field ${field.name} for ${eventName}`);
+                                EventPrivateData[field.name] = 'MISSING_DATA';
+                            }
+                        });
+                    } else {
+                        console.error(`Invalid schema.fields for ${eventName}`);
+                    }
                 } catch (error) {
                     console.error(`Error processing ${eventName}:`, error);
                     EventPrivateData.error = error.message;
