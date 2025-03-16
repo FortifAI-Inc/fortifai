@@ -174,14 +174,14 @@ function EventPrivateDataHandler(cloudTrailEvent, eventName) {
             ret[field] = res[field]
         }
     }
-    if (eventName == "StartInstances") {
-        return StartInstancesHandler(cloudTrailEvent, ret)
-    }
-    if (eventName == "RunInstance") {
+
+    if (eventName == "RunInstances") {
         return RunInstanceHAndler(cloudTrailEvent, ret)
     }
-    if (eventName == "TerminateInstance") {
-        return TerminateInstanceHandler(cloudTrailEvent, ret)
+    if (eventName == "StartInstances") {
+        return InstanceSetHandler(cloudTrailEvent, ret)
+    } if (eventName == "TerminateInstances") {
+        return InstanceSetHandler(cloudTrailEvent, ret)
     }
     return (ret)
 
@@ -198,18 +198,7 @@ function RunInstanceHandler(cloudTrailEvent, ret) {
     return ret
 }
 
-function TerminateInstanceHandler(cloudTrailEvent, ret) {
-    if (cloudTrailEvent.eventName == "TerminateInstances") {
-        instances = []
-        for (const instance of cloudTrailEvent.requestParameters.instancesSet.items) {
-            instances.push(instance.instanceId);
-        }
-        ret["InstanceId"] = instances;
-    }
-    return ret
-}
-
-function StartInstancesHandler(cloudTrailEvent, ret) {
+function InstanceSetHandler(cloudTrailEvent, ret) {
     instances = []
     for (const instance of cloudTrailEvent.requestParameters.instancesSet.items) {
         instances.push(instance.instanceId);
