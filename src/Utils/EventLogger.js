@@ -158,7 +158,7 @@ module.exports = {
 function EventPrivateDataHandler(cloudTrailEvent, eventName) {
     const req = cloudTrailEvent.requestParameters || {};
     const res = cloudTrailEvent.responseElements || {};
-    const schema = lambdaSchemas[eventName];
+    const schema = EventsSchemas[eventName];
 
     if (schema === undefined) {
         console.error("EventPrivateDataHandler: No Schema defined for event ", eventName)
