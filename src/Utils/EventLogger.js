@@ -161,12 +161,14 @@ async function logEventBatch(eventName, events) { // This function should check 
             const index = records.findIndex(rec => rec.EventId === event.EventId);
             if (index !== -1) {
                 // event exists, silently ignore
-		  //console.log("Event already in inventory")
+                //console.log("Event already in inventory")
+                retval = await logEvent(eventName, event);
+
             } else {
-		retval  = await logEvent(eventName, event);
+                retval = await logEvent(eventName, event);
                 if (retval == true) {
-                    records.push({ EventId: event.EventId}); // Insert new record
-                } 
+                    records.push({ EventId: event.EventId }); // Insert new record
+                }
             }
         }
         await enqueueS3Write(InventorySchema, records, 'EventLogger/inventory.parquet');
