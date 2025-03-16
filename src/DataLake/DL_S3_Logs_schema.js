@@ -342,6 +342,11 @@ const EventsSchemas = {
         externalId: { type: 'UTF8', optional: true },
         durationSeconds: { type: 'INT32', optional: true }
     }),
+    AssumeRoleFailed: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        errorMessage: { type: 'UTF8', optional: false },
+     }),
+
     CreateGroup: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         groupName: { type: 'UTF8', optional: false },

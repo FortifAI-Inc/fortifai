@@ -77,6 +77,11 @@ async function logEvent(eventName, event) {
         EventCommonData.userName = EventCommonData.userName || 'AWS Service';
         EventCommonData.accountId = EventCommonData.accountId || 'AWS';
     }
+    if (eventName == "AssumeRole") { //Separate successful from failed attempt
+        if (CloudTrailEvent.errorCode == "AccessDenied") {
+            eventName = "AssumeRoleFailed" // collect different schema
+        }
+    }
     //console.log(EventCommonData)
     let EventPrivateData = {};
     try {
