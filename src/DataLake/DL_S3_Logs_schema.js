@@ -80,7 +80,7 @@ const lambdaSchemas = {
         EventId: { type: 'UTF8', optional: false },
         functionName: { type: 'UTF8', optional: false },
         description: { type: 'UTF8', optional: false },
-        timeout: { type: 'INT32', optional: false }
+        timeout: { type: 'INT32', optional: true }
     }),
 
     Invoke: new parquet.ParquetSchema({
