@@ -146,7 +146,7 @@ const readOnlyEvents = {
 const writeEvents = {
     ec2: ["RunInstances", "TerminateInstances", "ModifyInstanceAttribute", "StartInstances", "StopInstances", "RebootInstances", "CreateTags", "DeleteTags"],
     s3: ["PutObject", "DeleteObject", "CreateBucket", "DeleteBucket", "PutBucketPolicy", "PutBucketAcl"],
-    //iam: ["CreateUser", "DeleteUser", "AttachRolePolicy", "DetachRolePolicy", "CreateRole", "DeleteRole", "AssumeRole", "CreateGroup", "DeleteGroup", "AddUserToGroup", "RemoveUserFromGroup"],
+    iam: ["CreateUser", "DeleteUser", "AttachRolePolicy", "DetachRolePolicy", "CreateRole", "DeleteRole", "AssumeRole", "CreateGroup", "DeleteGroup", "AddUserToGroup", "RemoveUserFromGroup"],
     //dynamodb: ["PutItem", "UpdateItem", "DeleteItem", "CreateTable", "DeleteTable", "UpdateTable"],
     //rds: ["CreateDBInstance", "DeleteDBInstance", "ModifyDBInstance", "CreateDBCluster", "DeleteDBCluster", "ModifyDBCluster"],
     //cloudwatch: ["PutMetricData", "DeleteAlarms", "SetAlarmState", "PutDashboard", "DeleteDashboards"],
@@ -174,7 +174,7 @@ const writeEvents = {
 
 function buildLookupAttributes() {
     const lookupAttributes = [];//[ {AttributeKey: "EventName", AttributeValue: "TerminateInstances"}]//[];
-    return [ {AttributeKey: "EventName", AttributeValue: "CreateKey"}];
+    //return [ {AttributeKey: "EventName", AttributeValue: "CreateKey"}];
     const addAttributes = (events) => {
         for (const service in events) {
             events[service].forEach(event => {
