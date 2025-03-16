@@ -208,6 +208,7 @@ function InstanceSetHandler(cloudTrailEvent, eventName) {
     }
     let ret = {}
     for (const field in schema.fields) {
+        console.log("Checking field", field)
         if (req[field] != undefined) {
             ret[field] = req[field]
         } else if (res[field] != undefined) {
