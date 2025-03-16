@@ -349,7 +349,8 @@ const EventsSchemas = {
 
     CreateGroup: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        groupName: { type: 'UTF8', optional: false },
+        displayName: { type: 'UTF8', optional: false },
+        groupId: { type: 'UTF8', optional: true }, // TODO: it's inside "group" on the response
         path: { type: 'UTF8', optional: true }
     }),
     DeleteGroup: new parquet.ParquetSchema({
