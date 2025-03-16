@@ -211,12 +211,12 @@ function EventPrivateDataHandler(cloudTrailEvent, eventName) {
         } else if (cloudTrailEvent[field] != undefined) { // grab it from the top (AssumeRoleFailed)
             ret[field] = cloudTrailEvent[field]
         } else {
-            console.log("Res is ", res)
+            //console.log("Res is ", res)
             for (const member in res) {
-                console.log("Member: ", member)
-                console.log("res[member] is ",res[member])
-                console.log("res[member][field] is ", res[member][field])
-                if (res[member].field != undefined) {
+                //console.log("Member: ", member)
+                //console.log("res[member] is ",res[member])
+                //console.log("res[member][field] is ", res[member][field])
+                if (res[member][field] != undefined) {
                     console.log("Found my field inside ", member)
                     ret[field] = res[member].field
                 }
