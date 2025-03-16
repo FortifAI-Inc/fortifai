@@ -119,7 +119,7 @@ async function logEvent(eventName, event) {
                     }
                 } catch (error) {
                     console.error(`Error processing ${eventName}:`, error);
-                    console.error('schema is ',lambdaschemas[eventName])
+                    console.error('schema is ',lambdaSchemas[eventName])
                     EventPrivateData.error = error.message;
                 }
             }

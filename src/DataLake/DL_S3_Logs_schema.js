@@ -49,7 +49,7 @@ const eventSchemas = {
 };
 // Lambda Event Schemas (Full Coverage)
 const lambdaSchemas = {
-    CreateFunction: new parquet.ParquetSchema({
+    CreateFunction20150331: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         functionName: { type: 'UTF8', optional: false },
         runtime: { type: 'UTF8', optional: false },
