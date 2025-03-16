@@ -134,7 +134,7 @@ async function writeS3Logs(schema, data, filePath) {
         let records = await fetchParquetFromS3(filePath);
         const index = records.findIndex(rec => rec.EventId === data.EventId);
         if (index !== -1) {
-            console.log("Event is already in the DB");
+            //console.log("Event is already in the DB");
             return;
         } else {
             //console.log(`Adding new instance: ${ec2Data.InstanceId}`);
