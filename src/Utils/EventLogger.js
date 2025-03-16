@@ -178,7 +178,7 @@ module.exports = {
 
 
 const lambdaHandlers = { // data extractors for Lambda related events
-    CreateFunction20150331: (cloudTrailEventi, eventName) => {
+    CreateFunction20150331: (cloudTrailEvent, eventName) => {
         const req = cloudTrailEvent.requestParameters || {};
         const res = cloudTrailEvent.responseElements || {};
         /*        return {
