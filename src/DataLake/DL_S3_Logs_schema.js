@@ -1,6 +1,12 @@
 const parquet = require('parquetjs-lite');
 
-const commonSchema = new parquet.ParquetSchema({
+const InventorySchema = new parquet.ParquetSchema({
+    // Required Fields
+    EventId: { type: 'UTF8', optional: false },
+});
+
+
+const CommonSchema = new parquet.ParquetSchema({
     // Required Fields
     EventId: { type: 'UTF8', optional: false },
     EventTime: { type: 'INT64', optional: false },
@@ -370,4 +376,4 @@ const EventsSchemas = {
 };
 
 
-module.exports = { commonSchema, EventsSchemas };
+module.exports = { CommonSchema, EventsSchemas, InventorySchema };

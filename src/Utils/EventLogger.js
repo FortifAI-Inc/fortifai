@@ -1,4 +1,4 @@
-const { commonSchema, EventsSchemas } = require('../DataLake/DL_S3_Logs_schema');
+const { CommonSchema, EventsSchemas, InventorySchema } = require('../DataLake/DL_S3_Logs_schema');
 const { enqueueS3Write, fetchParquetFromS3 } = require('../DataLake/DL_S3_access');
 const path = require('path');
 
@@ -106,9 +106,11 @@ async function logEvent(eventName, event) {
         console.error(`Error processing ${eventName}:`, error);
         //console.error('schema is ', lambdaSchemas[eventName])
         EventPrivateData.error = error.message;
+        return false;
     }
     //}
-    writeS3Log(commonSchema, EventCommonData, EventsSchemas[eventName], EventPrivateData);
+    writeS3Log(CommonSchema, EventCommonData, EventsSchemas[eventName], EventPrivateData);
+    return true;
 }
 
 /**
@@ -151,9 +153,31 @@ async function writeS3Logs(schema, data, filePath) {
     }
 }
 
+async function logEventBatch(eventName, events) { // This function should check out the eventId in the master directory and filter out events.
+    try {
+        let records = await fetchParquetFromS3('EventLogger/inventory.parquet');
+
+        for (const event of events) {
+            const index = records.findIndex(rec => rec.EventId === event.EventId);
+            if (index !== -1) {
+                // event exists, silently ignore
+            } else {
+                if (logEvent(eventName, event) == true) {
+                    records.push({ EventId: event.EventId}); // Insert new record
+                }
+            }
+        }
+        await enqueueS3Write(InventorySchema, records, 'EventLogger/inventory.parquet');
+    } catch (err) {
+        console.error(`Error writing log data to Parquet file:`, err);
+    }
+}
+
+
 
 module.exports = {
-    logEvent
+    logEvent,
+    logEventBatch
 }
 
 
@@ -184,7 +208,7 @@ function EventPrivateDataHandler(cloudTrailEvent, eventName) {
             ret[field] = cloudTrailEvent[field]
         }
     }
-     return (ret)
+    return (ret)
 
 }
 
