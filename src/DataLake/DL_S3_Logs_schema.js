@@ -69,13 +69,11 @@ const lambdaSchemas = {
         qualifier: { type: 'UTF8', optional: true }
     }),
 
-    UpdateFunctionCode: new parquet.ParquetSchema({
+    UpdateFunctionCode20150331v2: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         functionName: { type: 'UTF8', optional: false },
-        revisionId: { type: 'UTF8', optional: false },
-        codeSha256: { type: 'UTF8', optional: false },
-        codeSize: { type: 'INT64', optional: false },
-        publish: { type: 'BOOLEAN', optional: true }
+        dryRun: { type: 'BOOLEAN', optional: false },
+        publish: { type: 'BOOLEAN', optional: false }
     }),
 
     InvokeFunction: new parquet.ParquetSchema({

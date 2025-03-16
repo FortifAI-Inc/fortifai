@@ -97,6 +97,7 @@ async function logEvent(eventName, event) {
         case "InvokeFunction":
         case "CreateAlias":
         case "DeleteAlias":
+        case "UpdateFunctionCode20150331v2":
             if (lambdaHandlers[eventName]) {
                 try {
                     EventPrivateData = {
@@ -108,7 +109,7 @@ async function logEvent(eventName, event) {
                     const schema = lambdaSchemas[eventName];
                     //console.log("Schema is ", schema)
                     //console.log("EventPrivateData is ",EventPrivateData)
-                    for (const field in schema.fields){
+                    for (const field in schema.fields) {
                         if (!schema.schema[field].optional && !EventPrivateData[field]) {
                             console.error(`Missing required field ${field} for ${eventName}`);
                             EventPrivateData[field.name] = 'MISSING_DATA';
@@ -191,6 +192,11 @@ const lambdaHandlers = { // data extractors for Lambda related events
             architectures: req.architectures || ['x86_64']
         };
     },
+    UpdateFunctionCode20150331v2: (cloudTrailEvent) => ({
+        functionName: cloudTrailEvent.requestParameters.functionName,
+        publish: cloudTrailEvent.requestParameters.publish,
+        dryRun: cloudTrailEvent.requestParameters.dryRun
+    }),
 
     DeleteFunction: (cloudTrailEvent) => ({
         functionName: cloudTrailEvent.requestParameters.functionName,
