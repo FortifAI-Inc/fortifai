@@ -119,7 +119,7 @@ async function logEvent(eventName, event) {
                     }
                 } catch (error) {
                     console.error(`Error processing ${eventName}:`, error);
-                    console.error('schema is ',lambdaSchemas[eventName])
+                    console.error('schema is ', lambdaSchemas[eventName])
                     EventPrivateData.error = error.message;
                 }
             }
@@ -195,22 +195,29 @@ const lambdaHandlers = { // data extractors for Lambda related events
             architectures: req.architectures || ['x86_64']
         };
     },
-    UpdateFunctionCode20150331v2: (cloudTrailEvent) => ({
-        functionName: cloudTrailEvent.requestParameters.functionName,
-        publish: cloudTrailEvent.requestParameters.publish,
-        dryRun: cloudTrailEvent.requestParameters.dryRun
-    }),
 
-    UpdateFunctionConfiguration20150331v2: (cloudTrailEvent) => ({
-        functionName: cloudTrailEvent.requestParameters.functionName,
-        description: cloudTrailEvent.requestParameters.description,
-        timeout: cloudTrailEvent.requestParameters.timeout
-    }),
+    UpdateFunctionCode20150331v2: (cloudTrailEvent) => {
+        return {
+            functionName: cloudTrailEvent.requestParameters.functionName,
+            publish: cloudTrailEvent.requestParameters.publish,
+            dryRun: cloudTrailEvent.requestParameters.dryRun
+        }
+    },
 
-    DeleteFunction: (cloudTrailEvent) => ({
-        functionName: cloudTrailEvent.requestParameters.functionName,
-        qualifier: cloudTrailEvent.requestParameters.qualifier || null
-    }),
+    UpdateFunctionConfiguration20150331v2: (cloudTrailEvent) => {
+        return {
+            functionName: cloudTrailEvent.requestParameters.functionName,
+            description: cloudTrailEvent.requestParameters.description,
+            timeout: cloudTrailEvent.requestParameters.timeout
+        }
+    },
+
+    DeleteFunction: (cloudTrailEvent) => {
+        return {
+            functionName: cloudTrailEvent.requestParameters.functionName,
+            qualifier: cloudTrailEvent.requestParameters.qualifier || null
+        }
+    },
 
     UpdateFunctionCode: (cloudTrailEvent) => {
         const req = cloudTrailEvent.requestParameters || {};
