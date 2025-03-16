@@ -42,7 +42,9 @@ const commonSchema = new parquet.ParquetSchema({
 
 
 // Event Schemas 
+
 const EventsSchemas = {
+    // EC2
     TerminateInstances: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         instancesSet: { type: 'JSON', optional: false }
@@ -88,6 +90,7 @@ const EventsSchemas = {
         resourcesSet: { type: 'JSON', optional: false },
         tagKeys: { type: 'UTF8', repeated: true, optional: false }
     }),
+    // S3
     PutObject: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         bucketName: { type: 'UTF8', optional: false },
@@ -119,20 +122,7 @@ const EventsSchemas = {
         bucketName: { type: 'UTF8', optional: false },
         acl: { type: 'JSON', optional: false }
     }),
-    CreateKey: new parquet.ParquetSchema({
-        EventId: { type: 'UTF8', optional: false },
-        keyId: { type: 'UTF8', optional: false },
-        description: { type: 'UTF8', optional: true },
-        keyUsage: { type: 'UTF8', optional: true },
-        keyState: { type: 'UTF8', optional: true },
-        origin: { type: 'UTF8', optional: true },
-        enabled: { type: 'BOOLEAN', optional: true },
-        keySpec: { type: 'UTF8', optional: true },
-        keyMaterialOrigin: { type: 'UTF8', optional: true },
-        customerMasterKeySpec: { type: 'UTF8', optional: true },
-        encryptionAlgorithms: { type: 'UTF8', /*values:*/ repeated: true, optional: true },
-        signingAlgorithms: { type: 'UTF8', /*values:*/ repeated: true, optional: true }
-    }),
+    // Lambda
     CreateFunction20150331: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         functionName: { type: 'UTF8', optional: false },
@@ -177,17 +167,7 @@ const EventsSchemas = {
         clientContext: { type: 'UTF8', optional: true }
     }),
 
-    CreateAlias: new parquet.ParquetSchema({ // This is actually a KMS function
-        EventId: { type: 'UTF8', optional: false },
-        aliasName: { type: 'UTF8', optional: false },
-        targetKeyId: { type: 'UTF8', optional: false },
-    }),
 
-    DeleteAlias: new parquet.ParquetSchema({
-        EventId: { type: 'UTF8', optional: false },
-        functionName: { type: 'UTF8', optional: false },
-        name: { type: 'UTF8', optional: false }
-    }),
     CreateAlias20150331: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         functionName: { type: 'UTF8', optional: false },
@@ -295,6 +275,91 @@ const EventsSchemas = {
     DeleteFunctionEventInvokeConfig: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         functionName: { type: 'UTF8', optional: false }
+    }),
+    //KMS
+    CreateKey: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        keyId: { type: 'UTF8', optional: false },
+        description: { type: 'UTF8', optional: true },
+        keyUsage: { type: 'UTF8', optional: true },
+        keyState: { type: 'UTF8', optional: true },
+        origin: { type: 'UTF8', optional: true },
+        enabled: { type: 'BOOLEAN', optional: true },
+        keySpec: { type: 'UTF8', optional: true },
+        keyMaterialOrigin: { type: 'UTF8', optional: true },
+        customerMasterKeySpec: { type: 'UTF8', optional: true },
+        encryptionAlgorithms: { type: 'UTF8', /*values:*/ repeated: true, optional: true },
+        signingAlgorithms: { type: 'UTF8', /*values:*/ repeated: true, optional: true }
+    }),
+    CreateAlias: new parquet.ParquetSchema({ // This is actually a KMS function
+        EventId: { type: 'UTF8', optional: false },
+        aliasName: { type: 'UTF8', optional: false },
+        targetKeyId: { type: 'UTF8', optional: false },
+    }),
+    DeleteAlias: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        functionName: { type: 'UTF8', optional: false },
+        name: { type: 'UTF8', optional: false }
+    }),
+    //IAM
+    CreateUser: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        userName: { type: 'UTF8', optional: false },
+        path: { type: 'UTF8', optional: true },
+        permissionsBoundary: { type: 'UTF8', optional: true },
+        tags: { type: 'JSON', optional: true }
+    }),
+    DeleteUser: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        userName: { type: 'UTF8', optional: false }
+    }),
+    AttachRolePolicy: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        roleName: { type: 'UTF8', optional: false },
+        policyArn: { type: 'UTF8', optional: false }
+    }),
+    DetachRolePolicy: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        roleName: { type: 'UTF8', optional: false },
+        policyArn: { type: 'UTF8', optional: false }
+    }),
+    CreateRole: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        roleName: { type: 'UTF8', optional: false },
+        assumeRolePolicyDocument: { type: 'JSON', optional: false },
+        path: { type: 'UTF8', optional: true },
+        permissionsBoundary: { type: 'UTF8', optional: true },
+        tags: { type: 'JSON', optional: true }
+    }),
+    DeleteRole: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        roleName: { type: 'UTF8', optional: false }
+    }),
+    AssumeRole: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        roleArn: { type: 'UTF8', optional: false },
+        roleSessionName: { type: 'UTF8', optional: false },
+        externalId: { type: 'UTF8', optional: true },
+        durationSeconds: { type: 'INT32', optional: true }
+    }),
+    CreateGroup: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        groupName: { type: 'UTF8', optional: false },
+        path: { type: 'UTF8', optional: true }
+    }),
+    DeleteGroup: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        groupName: { type: 'UTF8', optional: false }
+    }),
+    AddUserToGroup: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        groupName: { type: 'UTF8', optional: false },
+        userName: { type: 'UTF8', optional: false }
+    }),
+    RemoveUserFromGroup: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        groupName: { type: 'UTF8', optional: false },
+        userName: { type: 'UTF8', optional: false }
     }),
 };
 
