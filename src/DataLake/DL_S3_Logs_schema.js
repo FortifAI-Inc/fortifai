@@ -55,7 +55,7 @@ const lambdaSchemas = {
         runtime: { type: 'UTF8', optional: false },
         handler: { type: 'UTF8', optional: false },
         role: { type: 'UTF8', optional: false },
-        codeSize: { type: 'INT64', optional: false },
+        codeSize: { type: 'INT64', optional: true },
         timeout: { type: 'INT32', optional: true },
         memorySize: { type: 'INT32', optional: true },
         environment: { type: 'JSON', optional: true },
