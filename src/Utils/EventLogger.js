@@ -199,6 +199,8 @@ function RunInstanceHandler(cloudTrailEvent, ret) {
 function InstanceSetHandler(cloudTrailEvent, eventName) {
     const req = cloudTrailEvent.requestParameters || {};
     const res = cloudTrailEvent.responseElements || {};
+
+    console.log("InstanceSetHandler: req is ",req)
     const schema = EventsSchemas[eventName];
     if (schema === undefined) {
         console.error("EventPrivateDataHandler: No Schema defined for event ", eventName)
