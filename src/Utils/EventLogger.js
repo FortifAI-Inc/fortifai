@@ -180,6 +180,8 @@ function EventPrivateDataHandler(cloudTrailEvent, eventName) {
             ret[field] = req[field]
         } else if (res[field] != undefined) {
             ret[field] = res[field]
+        } else if (cloudTrailEvent[field] != undefined) { // grab it from the top (AssumeRoleFailed)
+            ret[field] = cloudTrailEvent[field]
         }
     }
      return (ret)
