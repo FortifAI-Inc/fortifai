@@ -168,19 +168,22 @@ function EventPrivateDataHandler(cloudTrailEvent, eventName) {
     //console.log("Schema is ", schema)
     //console.log("EventPrivateData is ",EventPrivateData)
     for (const field in schema.fields) {
+        console.log("looking for field ", field)
         if (req[field] != undefined) {
+            console.log("Found in Request")
             ret[field] = req[field]
         } else if (res[field] != undefined) {
+            console.log("Found in response")
             ret[field] = res[field]
         }
     }
 
-    if (eventName == "RunInstances") {
+    /*if (eventName == "RunInstances") {
         return RunInstanceHandler(cloudTrailEvent, ret)
     }
     if ( (eventName == "StartInstances") || (eventName == "StopInstances") || (eventName == "RebootInstances") || (eventName == "TerminateInstances") ) {
         return InstanceSetHandler(cloudTrailEvent, ret)
-    } 
+    } */
     return (ret)
 
 }
