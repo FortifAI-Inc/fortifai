@@ -1,4 +1,4 @@
-const { commonSchema, eventSchemas, lambdaSchemas } = require('../DataLake/DL_S3_Logs_schema');
+const { commonSchema, EventsSchemas  } = require('../DataLake/DL_S3_Logs_schema');
 const { enqueueS3Write, fetchParquetFromS3 } = require('../DataLake/DL_S3_access');
 const path = require('path');
 
@@ -87,7 +87,7 @@ async function logEvent(eventName, event) {
         };
 
         // Validate required fields
-        const schema = lambdaSchemas[eventName];
+        const schema = EventsSchemas[eventName];
         //console.log("Schema is ", schema)
         //console.log("EventPrivateData is ",EventPrivateData)
         for (const field in schema.fields) {
