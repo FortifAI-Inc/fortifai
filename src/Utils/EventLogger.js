@@ -197,6 +197,21 @@ function RunInstanceHandler(cloudTrailEvent, ret) {
 }
 
 function InstanceSetHandler(cloudTrailEvent, ret) {
+    const req = cloudTrailEvent.requestParameters || {};
+    const res = cloudTrailEvent.responseElements || {};
+    const schema = EventsSchemas[eventName];
+    if (schema === undefined) {
+        console.error("EventPrivateDataHandler: No Schema defined for event ", eventName)
+        return {}
+    }
+    let ret = {}
+    for (const field in schema.fields) {
+        if (req[field] != undefined) {
+            ret[field] = req[field]
+        } else if (res[field] != undefined) {
+            ret[field] = res[field]
+        }
+    }
     console.log("StartInstances received", ret)
     instances = []
     for (const instance of cloudTrailEvent.requestParameters.instancesSet.items) {
