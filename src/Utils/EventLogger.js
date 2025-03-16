@@ -103,7 +103,7 @@ async function logEvent(eventName, event) {
                 try {
                     EventPrivateData = {
                         EventId: event.EventId,
-                        ...lambdaHandlers[eventName](CloudTrailEvent)
+                        ...lambdaHandlers[eventName](CloudTrailEvent, eventName)
                     };
 
                     // Validate required fields
@@ -195,7 +195,7 @@ const lambdaHandlers = { // data extractors for Lambda related events
                     architectures: req.architectures || ['x86_64']
                 };
                 */
-        const schema = lambdaSchemas[CreateFunction20150331];
+        const schema = lambdaSchemas[eventName];
         let ret = {}
         //console.log("Schema is ", schema)
         //console.log("EventPrivateData is ",EventPrivateData)
