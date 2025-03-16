@@ -44,8 +44,22 @@ const commonSchema = new parquet.ParquetSchema({
 // Event Schemas 
 const EventsSchemas = {
     TerminateInstances: new parquet.ParquetSchema({
-        EventId: { type: 'UTF8' },
-        instanceId: { type: 'UTF8' }
+        EventId: { type: 'UTF8', optional: false },
+        instanceId: { type: 'UTF8', optional: false }
+    }),
+    CreateKey: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        keyId: { type: 'UTF8', optional: false },
+        description: { type: 'UTF8', optional: true },
+        keyUsage: { type: 'UTF8', optional: true },
+        keyState: { type: 'UTF8', optional: true },
+        origin: { type: 'UTF8', optional: true },
+        enabled: { type: 'BOOLEAN', optional: true },
+        keySpec: { type: 'UTF8', optional: true },
+        keyMaterialOrigin: { type: 'UTF8', optional: true },
+        customerMasterKeySpec: { type: 'UTF8', optional: true },
+        encryptionAlgorithms: { type: 'UTF8', /*values:*/ repeated: true, optional: true },
+        signingAlgorithms: { type: 'UTF8', /*values:*/ repeated: true, optional: true }
     }),
     CreateFunction20150331: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
