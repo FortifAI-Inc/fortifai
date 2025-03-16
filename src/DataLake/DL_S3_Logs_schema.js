@@ -373,6 +373,52 @@ const EventsSchemas = {
         groupName: { type: 'UTF8', optional: false },
         userName: { type: 'UTF8', optional: false }
     }),
+    //VPC
+    CreateVpc: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        vpcId: { type: 'UTF8', optional: false },
+        cidrBlock: { type: 'UTF8', optional: false },
+        isDefault: { type: 'BOOLEAN', optional: true },
+        tags: { type: 'JSON', optional: true }
+    }),
+    DeleteVpc: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        vpcId: { type: 'UTF8', optional: false }
+    }),
+    CreateSubnet: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        subnetId: { type: 'UTF8', optional: false },
+        vpcId: { type: 'UTF8', optional: false },
+        cidrBlock: { type: 'UTF8', optional: false },
+        availabilityZone: { type: 'UTF8', optional: true },
+        tags: { type: 'JSON', optional: true }
+    }),
+    DeleteSubnet: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        subnetId: { type: 'UTF8', optional: false }
+    }),
+    CreateSecurityGroup: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        groupId: { type: 'UTF8', optional: false },
+        groupName: { type: 'UTF8', optional: false },
+        vpcId: { type: 'UTF8', optional: true },
+        description: { type: 'UTF8', optional: false },
+        tags: { type: 'JSON', optional: true }
+    }),
+    DeleteSecurityGroup: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        groupId: { type: 'UTF8', optional: false }
+    }),
+    AuthorizeSecurityGroupIngress: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        groupId: { type: 'UTF8', optional: false },
+        ipPermissions: { type: 'JSON', optional: false }
+    }),
+    AuthorizeSecurityGroupEgress: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        groupId: { type: 'UTF8', optional: false },
+        ipPermissions: { type: 'JSON', optional: false }
+    }),
 };
 
 

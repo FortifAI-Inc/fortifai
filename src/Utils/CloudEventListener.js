@@ -63,7 +63,7 @@ async function getAllEvents() {
                 await new Promise(resolve => setTimeout(resolve, 550))
             } while (data.NextToken);
             console.log(`Number of events received for ${attribute.AttributeValue}: ${eventCountForThisAttribute}`);
-            console.log('Length of accumulated events is ', EventAccumulator.length)
+            //console.log('Length of accumulated events is ', EventAccumulator.length)
             EventLogger.logEventBatch(attribute.AttributeValue, EventAccumulator)
             // Append summary to the beginning of each file
             //const eventFilePath = path.join(__dirname, `EventLogs/${attribute.AttributeValue}.log`);

@@ -147,6 +147,7 @@ const writeEvents = {
     ec2: ["RunInstances", "TerminateInstances", "ModifyInstanceAttribute", "StartInstances", "StopInstances", "RebootInstances", "CreateTags", "DeleteTags"],
     s3: ["PutObject", "DeleteObject", "CreateBucket", "DeleteBucket", "PutBucketPolicy", "PutBucketAcl"],
     iam: ["CreateUser", "DeleteUser", "AttachRolePolicy", "DetachRolePolicy", "CreateRole", "DeleteRole", /*"AssumeRole"*/, "CreateGroup", "DeleteGroup", "AddUserToGroup", "RemoveUserFromGroup"],
+    vpc: ["CreateVpc", "DeleteVpc", "CreateSubnet", "DeleteSubnet", "CreateSecurityGroup", "DeleteSecurityGroup", "AuthorizeSecurityGroupIngress", "AuthorizeSecurityGroupEgress"],
     //dynamodb: ["PutItem", "UpdateItem", "DeleteItem", "CreateTable", "DeleteTable", "UpdateTable"],
     //rds: ["CreateDBInstance", "DeleteDBInstance", "ModifyDBInstance", "CreateDBCluster", "DeleteDBCluster", "ModifyDBCluster"],
     //cloudwatch: ["PutMetricData", "DeleteAlarms", "SetAlarmState", "PutDashboard", "DeleteDashboards"],
