@@ -164,6 +164,9 @@ function EventPrivateDataHandler(cloudTrailEvent, eventName) {
         console.error("EventPrivateDataHandler: No Schema defined for event ", eventName)
         return {}
     }
+    if (eventName == "CreateTags") {
+        //return 
+    }
     let ret = {}
     //console.log("Schema is ", schema)
     //console.log("EventPrivateData is ",EventPrivateData)
