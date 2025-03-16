@@ -77,7 +77,7 @@ async function fetchParquetFromS3(S3_KEY) {
       //console.warn("⚠️ File not found on S3, treating as new file:", S3_KEY);
       return []; // Return empty list if file does not exist
     }
-    console.warn("⚠️ File not found or corrupt, treating as new file:", S3_KEY,err);
+    console.warn("⚠️ File not found or corrupt, treating as new file:", S3_KEY,err, err.code);
     return []; // Return empty list on failure
   }
 }
