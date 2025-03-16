@@ -215,7 +215,7 @@ function EventPrivateDataHandler(cloudTrailEvent, eventName) {
             for (const member in res) {
                 console.log("Member: ", member)
                 console.log("res[member] is ",res[member])
-                console.log("res.member is ", res.member)
+                console.log("res[member][field] is ", res[member][field])
                 if (res[member].field != undefined) {
                     console.log("Found my field inside ", member)
                     ret[field] = res[member].field
