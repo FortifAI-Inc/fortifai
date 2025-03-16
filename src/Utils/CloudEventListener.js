@@ -21,6 +21,7 @@ async function getAllEvents() {
             LookupAttributes: [attribute],
             MaxResults: 50,
         };
+        let EventAccumulator = []
 
         try {
             let data;
@@ -39,12 +40,13 @@ async function getAllEvents() {
                 }
                 if (data.Events) {
                     events = events.concat(data.Events);
+                    EventAccumulator = EventAccumulator.concat(data.Events)
                     eventCountForThisAttribute += data.Events.length;
                     const eventName = attribute.AttributeValue;
                     uniqueEventNames.add(eventName);
                     eventCounts[eventName] = (eventCounts[eventName] || 0) + data.Events.length;
 
-                    const eventFilePath = path.join(__dirname, `EventLogs/${eventName}.log`);
+                    //const eventFilePath = path.join(__dirname, `EventLogs/${eventName}.log`);
                     let eventLog = '';
 
                     for (const event of data.Events) {
@@ -52,26 +54,24 @@ async function getAllEvents() {
                         EventLogger.logEvent(eventName, event)
                     }
 
-                    if (!fs.existsSync(eventFilePath)) {
-                        console.log("creating file ", eventFilePath)
-                        fs.mkdirSync(path.dirname(eventFilePath), { recursive: true });
-                        fs.writeFileSync(eventFilePath, '', 'utf8');
-                    }
-                    fs.appendFileSync(eventFilePath, eventLog, 'utf8');
+                    //if (!fs.existsSync(eventFilePath)) {
+                    //    console.log("creating file ", eventFilePath)
+                    //    fs.mkdirSync(path.dirname(eventFilePath), { recursive: true });
+                    //    fs.writeFileSync(eventFilePath, '', 'utf8');
+                    //}
+                    //fs.appendFileSync(eventFilePath, eventLog, 'utf8');
                 }
                 params.NextToken = data.NextToken;
                 await new Promise(resolve => setTimeout(resolve, 550))
             } while (data.NextToken);
             console.log(`Number of events received for ${attribute.AttributeValue}: ${eventCountForThisAttribute}`);
+            console.log('Length of accumulated events is ', EventAccumulator.length)
             // Append summary to the beginning of each file
-            const eventFilePath = path.join(__dirname, `EventLogs/${attribute.AttributeValue}.log`);
-            const summaryLine = `Total number of ${attribute.AttributeValue} events: ${eventCountForThisAttribute}\n${'#'.repeat(80)}\n\n`;
-            const fileContent = fs.readFileSync(eventFilePath, 'utf8');
-            fs.writeFileSync(eventFilePath, summaryLine + fileContent, 'utf8');
+            //const eventFilePath = path.join(__dirname, `EventLogs/${attribute.AttributeValue}.log`);
+            //const summaryLine = `Total number of ${attribute.AttributeValue} events: ${eventCountForThisAttribute}\n${'#'.repeat(80)}\n\n`;
+            //const fileContent = fs.readFileSync(eventFilePath, 'utf8');
+            //fs.writeFileSync(eventFilePath, summaryLine + fileContent, 'utf8');
 
-            //console.log(`Total number of events: ${events.length}`);
-            //console.log(`Unique event names: ${Array.from(uniqueEventNames).join(', ')}`);
-            //console.log(`Event counts: ${JSON.stringify(eventCounts, null, 2)}`);
         } catch (error) {
             console.error("Error retrieving events:", error);
         }
