@@ -171,12 +171,9 @@ function EventPrivateDataHandler(cloudTrailEvent, eventName) {
     //console.log("Schema is ", schema)
     //console.log("EventPrivateData is ",EventPrivateData)
     for (const field in schema.fields) {
-        console.log("looking for field ", field)
         if (req[field] != undefined) {
-            console.log("Found in Request")
             ret[field] = req[field]
         } else if (res[field] != undefined) {
-            console.log("Found in response")
             ret[field] = res[field]
         }
     }
