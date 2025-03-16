@@ -178,7 +178,7 @@ module.exports = {
 
 
 const lambdaHandlers = { // data extractors for Lambda related events
-    CreateFunction20150331: (cloudTrailEvent) => {
+    CreateFunction20150331: (cloudTrailEventi, eventName) => {
         const req = cloudTrailEvent.requestParameters || {};
         const res = cloudTrailEvent.responseElements || {};
         /*        return {
@@ -202,10 +202,12 @@ const lambdaHandlers = { // data extractors for Lambda related events
         for (const field in schema.fields) {
             if (req[field] != undefined) {
                 ret[field] = req[field]
+            } else if(res[field] != undefined) {
+                ret[field] = res[field]
             }
         }
         console.log("Returning ", ret)
-        return(ret)
+        return (ret)
 
     },
 
