@@ -99,11 +99,12 @@ async function logEvent(eventName, event) {
         case "DeleteAlias":
         case "UpdateFunctionCode20150331v2":
         case "UpdateFunctionConfiguration20150331v2":
-            if (lambdaHandlers[eventName]) {
+            //if (lambdaHandlers[eventName]) {
                 try {
                     EventPrivateData = {
                         EventId: event.EventId,
-                        ...lambdaHandlers[eventName](CloudTrailEvent, eventName)
+                        ...EventPrivateDataHandler(CloudTrailEvent, eventName)
+                        //...lambdaHandlers[eventName](CloudTrailEvent, eventName)
                     };
 
                     // Validate required fields
@@ -122,7 +123,7 @@ async function logEvent(eventName, event) {
                     //console.error('schema is ', lambdaSchemas[eventName])
                     EventPrivateData.error = error.message;
                 }
-            }
+            //}
             writeS3Log(commonSchema, EventCommonData, lambdaSchemas[eventName], EventPrivateData);
             break;
         default:
@@ -175,6 +176,28 @@ module.exports = {
     logEvent
 }
 
+ function EventPrivateDataHandler(cloudTrailEvent, eventName) {
+    const req = cloudTrailEvent.requestParameters || {};
+    const res = cloudTrailEvent.responseElements || {};
+    const schema = lambdaSchemas[eventName];
+
+    if (schema === undefined) {
+        console.error("EventPrivateDataHandler: No Schema defined for event ", eventName)
+        return {}
+    }
+    let ret = {}
+    //console.log("Schema is ", schema)
+    //console.log("EventPrivateData is ",EventPrivateData)
+    for (const field in schema.fields) {
+        if (req[field] != undefined) {
+            ret[field] = req[field]
+        } else if(res[field] != undefined) {
+            ret[field] = res[field]
+        }
+    }
+    return (ret)
+
+ }
 
 
 const lambdaHandlers = { // data extractors for Lambda related events
