@@ -110,13 +110,13 @@ async function logEvent(eventName, event) {
                     const schema = lambdaSchemas[eventName];
                     //console.log("Schema is ", schema)
                     //console.log("EventPrivateData is ",EventPrivateData)
-                    for (const field in schema.fields) {
+                    /*for (const field in schema.fields) {
                         if (!schema.schema[field].optional && !EventPrivateData[field]) {
                             console.error(`Missing required field ${field} for ${eventName}`);
                             console.log(event.CloudTrailEvent)
                             EventPrivateData[field.name] = 'MISSING_DATA';
                         }
-                    }
+                    }*/
                 } catch (error) {
                     console.error(`Error processing ${eventName}:`, error);
                     console.error('schema is ', lambdaSchemas[eventName])
