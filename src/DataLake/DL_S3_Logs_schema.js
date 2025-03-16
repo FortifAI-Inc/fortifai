@@ -304,14 +304,14 @@ const EventsSchemas = {
     //IAM
     CreateUser: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        userName: { type: 'UTF8', optional: false },
+        userName: { type: 'UTF8', optional: true }, // Root account doesn't have username
         path: { type: 'UTF8', optional: true },
         permissionsBoundary: { type: 'UTF8', optional: true },
         tags: { type: 'JSON', optional: true }
     }),
     DeleteUser: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        userName: { type: 'UTF8', optional: false }
+        userName: { type: 'UTF8', optional: true }
     }),
     AttachRolePolicy: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
