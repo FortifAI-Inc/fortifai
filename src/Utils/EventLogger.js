@@ -93,7 +93,7 @@ async function logEvent(eventName, event) {
         for (const field in schema.fields) {
             if (!schema.schema[field].optional && EventPrivateData[field] === undefined) {
                 console.error(`Missing required field ${field} for ${eventName}`);
-                //console.log(event.CloudTrailEvent);
+                console.log(event.CloudTrailEvent);
                 EventPrivateData[field] = 'MISSING_DATA';
             }
         }
