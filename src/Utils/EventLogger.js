@@ -157,7 +157,7 @@ module.exports = {
 // Will lookup the schema for the eventName, and if schema exists it will look for matching fields in both request and response
 function EventPrivateDataHandler(cloudTrailEvent, eventName) {
     const req = cloudTrailEvent.requestParameters || {};
-    const res = cloudTrailEvent.responseElements || {};
+    let res = cloudTrailEvent.responseElements || {};
     const schema = EventsSchemas[eventName];
 
     if (schema === undefined) {
