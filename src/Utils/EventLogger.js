@@ -103,7 +103,7 @@ async function logEvent(eventName, event) {
         EventPrivateData.error = error.message;
     }
     //}
-    writeS3Log(commonSchema, EventCommonData, lambdaSchemas[eventName], EventPrivateData);
+    writeS3Log(commonSchema, EventCommonData, EventsSchema[eventName], EventPrivateData);
 }
 
 /**
