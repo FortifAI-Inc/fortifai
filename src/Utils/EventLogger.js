@@ -177,33 +177,7 @@ function EventPrivateDataHandler(cloudTrailEvent, eventName) {
             ret[field] = res[field]
         }
     }
-
-    /*
-    if ( (eventName == "StartInstances") || (eventName == "StopInstances") || (eventName == "RebootInstances") || (eventName == "TerminateInstances") ) {
-        return InstanceSetHandler(cloudTrailEvent, ret)
-    } */
-    return (ret)
+     return (ret)
 
 }
 
-function RunInstanceHandler(cloudTrailEvent, ret) {
-    if (cloudTrailEvent.eventName == "RunInstances") {
-        images = []
-        for (const instance of cloudTrailEvent.requestParameters.instancesSet.items) {
-            images.push(instance.imageId);
-        }
-        ret["imageId"] = images
-    }
-    return ret
-}
-
-function InstanceSetHandler(cloudTrailEvent, ret) {
-    //console.log("StartInstances returning", ret)
-    instances = []
-    for (const instance of cloudTrailEvent.requestParameters.instancesSet.items) {
-        instances.push(instance.instanceId);
-    }
-    ret["instanceId"] = instances;
-    //console.log("StartInstances returning", ret)
-    return ret
-}
