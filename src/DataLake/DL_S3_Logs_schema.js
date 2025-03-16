@@ -80,8 +80,8 @@ const EventsSchemas = {
     }),
     CreateTags: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        resourceId: { type: 'UTF8', repeated: true, optional: false },
-        tagset: { type: 'JSON', optional: false }
+        resourcesSet: { type: 'JSON', optional: false },
+        tagSet: { type: 'JSON', optional: false }
     }),
     DeleteTags: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
