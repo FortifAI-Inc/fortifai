@@ -198,7 +198,6 @@ const lambdaHandlers = { // data extractors for Lambda related events
 
     UpdateFunctionCode20150331v2: (cloudTrailEvent) => {
         const req = cloudTrailEvent.requestParameters || {};
-        console.log("UpdateFunctionCode20150331v2 Request:",req)
         return {
             functionName: req.functionName,
             publish: req.publish,

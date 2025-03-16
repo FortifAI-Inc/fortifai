@@ -152,7 +152,7 @@ const writeEvents = {
     //cloudwatch: ["PutMetricData", "DeleteAlarms", "SetAlarmState", "PutDashboard", "DeleteDashboards"],
     //sns: ["CreateTopic", "DeleteTopic", "Subscribe", "Unsubscribe", "Publish"],
     //sqs: ["CreateQueue", "DeleteQueue", "SendMessage", "DeleteMessage", "PurgeQueue"],
-    lambda: ["CreateFunction20150331", "DeleteFunction", "UpdateFunctionCode20150331v2", "UpdateFunction20150331","Invoke20150331", "UpdateFunctionConfiguration20150331v2", "CreateAlias20150331", 
+    lambda: ["CreateFunction20150331", "DeleteFunction20150331", "UpdateFunctionCode20150331v2", "UpdateFunction20150331","Invoke20150331", "UpdateFunctionConfiguration20150331v2", "CreateAlias20150331", 
         "DeleteAlias20150331", "UpdateAlias20150331", "CreateEventSourceMapping", "DeleteEventSourceMapping", "UpdateEventSourceMapping", "TagResource", "UntagResource", "PublishLayerVersion", 
         "DeleteLayerVersion", "PutProvisionedConcurrencyConfig", "DeleteProvisionedConcurrencyConfig", "CreateCodeSigningConfig", "UpdateCodeSigningConfig", "DeleteCodeSigningConfig", 
         "PutFunctionEventInvokeConfig", "DeleteFunctionEventInvokeConfig", ],
