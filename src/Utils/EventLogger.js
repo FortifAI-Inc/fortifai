@@ -164,6 +164,9 @@ function EventPrivateDataHandler(cloudTrailEvent, eventName) {
         console.error("EventPrivateDataHandler: No Schema defined for event ", eventName)
         return {}
     }
+    if (eventName == "CreateKey") {
+        res = res.keyMetadata; // ugly cornercase?
+    }
     let ret = {}
     //console.log("Schema is ", schema)
     //console.log("EventPrivateData is ",EventPrivateData)
@@ -178,9 +181,7 @@ function EventPrivateDataHandler(cloudTrailEvent, eventName) {
         }
     }
 
-    /*if (eventName == "RunInstances") {
-        return RunInstanceHandler(cloudTrailEvent, ret)
-    }
+    /*
     if ( (eventName == "StartInstances") || (eventName == "StopInstances") || (eventName == "RebootInstances") || (eventName == "TerminateInstances") ) {
         return InstanceSetHandler(cloudTrailEvent, ret)
     } */
