@@ -144,8 +144,8 @@ const readOnlyEvents = {
 };
 
 const writeEvents = {
-    //ec2: ["RunInstances", "TerminateInstances", "ModifyInstanceAttribute", "StartInstances", "StopInstances", "RebootInstances", "CreateTags", "DeleteTags"],
-    //s3: ["PutObject", "DeleteObject", "CreateBucket", "DeleteBucket", "PutBucketPolicy", "PutBucketAcl"],
+    ec2: ["RunInstances", "TerminateInstances", "ModifyInstanceAttribute", "StartInstances", "StopInstances", "RebootInstances", "CreateTags", "DeleteTags"],
+    s3: ["PutObject", "DeleteObject", "CreateBucket", "DeleteBucket", "PutBucketPolicy", "PutBucketAcl"],
     //iam: ["CreateUser", "DeleteUser", "AttachRolePolicy", "DetachRolePolicy", "CreateRole", "DeleteRole", "AssumeRole", "CreateGroup", "DeleteGroup", "AddUserToGroup", "RemoveUserFromGroup"],
     //dynamodb: ["PutItem", "UpdateItem", "DeleteItem", "CreateTable", "DeleteTable", "UpdateTable"],
     //rds: ["CreateDBInstance", "DeleteDBInstance", "ModifyDBInstance", "CreateDBCluster", "DeleteDBCluster", "ModifyDBCluster"],

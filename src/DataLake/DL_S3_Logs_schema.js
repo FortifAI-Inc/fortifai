@@ -47,6 +47,78 @@ const EventsSchemas = {
         EventId: { type: 'UTF8', optional: false },
         instanceId: { type: 'UTF8', optional: false }
     }),
+    RunInstances: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        instanceType: { type: 'UTF8', optional: false },
+        imageId: { type: 'UTF8', optional: false },
+        keyName: { type: 'UTF8', optional: true },
+        securityGroups: { type: 'UTF8', repeated: true, optional: true },
+        subnetId: { type: 'UTF8', optional: true }
+    }),
+    TerminateInstances: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        instanceId: { type: 'UTF8', repeated: true, optional: false }
+    }),
+    ModifyInstanceAttribute: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        instanceId: { type: 'UTF8', optional: false },
+        attribute: { type: 'UTF8', optional: false },
+        value: { type: 'UTF8', optional: true }
+    }),
+    StartInstances: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        instanceId: { type: 'UTF8', repeated: true, optional: false }
+    }),
+    StopInstances: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        instanceId: { type: 'UTF8', repeated: true, optional: false },
+        force: { type: 'BOOLEAN', optional: true }
+    }),
+    RebootInstances: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        instanceId: { type: 'UTF8', repeated: true, optional: false }
+    }),
+    CreateTags: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        resourceId: { type: 'UTF8', repeated: true, optional: false },
+        tags: { type: 'JSON', optional: false }
+    }),
+    DeleteTags: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        resourceId: { type: 'UTF8', repeated: true, optional: false },
+        tagKeys: { type: 'UTF8', repeated: true, optional: false }
+    }),
+    PutObject: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        bucketName: { type: 'UTF8', optional: false },
+        objectKey: { type: 'UTF8', optional: false },
+        size: { type: 'INT64', optional: true },
+        storageClass: { type: 'UTF8', optional: true }
+    }),
+    DeleteObject: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        bucketName: { type: 'UTF8', optional: false },
+        objectKey: { type: 'UTF8', optional: false }
+    }),
+    CreateBucket: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        bucketName: { type: 'UTF8', optional: false },
+        region: { type: 'UTF8', optional: true }
+    }),
+    DeleteBucket: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        bucketName: { type: 'UTF8', optional: false }
+    }),
+    PutBucketPolicy: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        bucketName: { type: 'UTF8', optional: false },
+        policy: { type: 'JSON', optional: false }
+    }),
+    PutBucketAcl: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        bucketName: { type: 'UTF8', optional: false },
+        acl: { type: 'JSON', optional: false }
+    }),
     CreateKey: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         keyId: { type: 'UTF8', optional: false },
