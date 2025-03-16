@@ -91,7 +91,7 @@ async function logEvent(eventName, event) {
             writeS3Log(commonSchema, EventCommonData, eventSchemas[eventName], EventPrivateData);
             break;
         // Lambda related events:
-        case "CreateFunction":
+        case "CreateFunction20150331":
         case "DeleteFunction":
         case "UpdateFunctionCode":
         case "InvokeFunction":
@@ -113,6 +113,7 @@ async function logEvent(eventName, event) {
                     for (const field in schema.fields) {
                         if (!schema.schema[field].optional && !EventPrivateData[field]) {
                             console.error(`Missing required field ${field} for ${eventName}`);
+                            console.log(event.CloudTrailEvent)
                             EventPrivateData[field.name] = 'MISSING_DATA';
                         }
                     }
@@ -176,7 +177,7 @@ module.exports = {
 
 
 const lambdaHandlers = { // data extractors for Lambda related events
-    CreateFunction: (cloudTrailEvent) => {
+    CreateFunction20150331: (cloudTrailEvent) => {
         const req = cloudTrailEvent.requestParameters || {};
         const res = cloudTrailEvent.responseElements || {};
         return {
