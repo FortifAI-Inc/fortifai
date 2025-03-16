@@ -179,7 +179,7 @@ function EventPrivateDataHandler(cloudTrailEvent, eventName) {
         return RunInstanceHandler(cloudTrailEvent, ret)
     }
     if ( (eventName == "StartInstances") || (eventName == "StopInstances") || (eventName == "RebootInstances") || (eventName == "TerminateInstances") ) {
-        return InstanceSetHandler(cloudTrailEvent)
+        return InstanceSetHandler(cloudTrailEvent, eventName)
     } 
     return (ret)
 
@@ -196,7 +196,7 @@ function RunInstanceHandler(cloudTrailEvent, ret) {
     return ret
 }
 
-function InstanceSetHandler(cloudTrailEvent) {
+function InstanceSetHandler(cloudTrailEvent, eventName) {
     const req = cloudTrailEvent.requestParameters || {};
     const res = cloudTrailEvent.responseElements || {};
     const schema = EventsSchemas[eventName];
