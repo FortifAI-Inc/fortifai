@@ -204,6 +204,7 @@ const lambdaHandlers = { // data extractors for Lambda related events
                 ret[field] = req[field]
             }
         }
+        console.log("Returning ", ret)
         return(ret)
 
     },
