@@ -402,7 +402,7 @@ const EventsSchemas = {
         groupId: { type: 'UTF8', optional: false },
         groupName: { type: 'UTF8', optional: false },
         vpcId: { type: 'UTF8', optional: true },
-        description: { type: 'UTF8', optional: false },
+        groupDescription: { type: 'UTF8', optional: false },
         tags: { type: 'JSON', optional: true }
     }),
     DeleteSecurityGroup: new parquet.ParquetSchema({
