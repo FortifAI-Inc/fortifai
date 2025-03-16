@@ -176,7 +176,7 @@ function EventPrivateDataHandler(cloudTrailEvent, eventName) {
     }
 
     if (eventName == "RunInstances") {
-        return RunInstanceHAndler(cloudTrailEvent, ret)
+        return RunInstanceHandler(cloudTrailEvent, ret)
     }
     if ( (eventName == "StartInstances") || (eventName == "StopInstances") || (eventName == "RebootInstances") || (eventName == "TerminateInstances") ) {
         return InstanceSetHandler(cloudTrailEvent, ret)
@@ -197,6 +197,7 @@ function RunInstanceHandler(cloudTrailEvent, ret) {
 }
 
 function InstanceSetHandler(cloudTrailEvent, ret) {
+    console.log("StartInstances received", ret)
     instances = []
     for (const instance of cloudTrailEvent.requestParameters.instancesSet.items) {
         instances.push(instance.instanceId);
