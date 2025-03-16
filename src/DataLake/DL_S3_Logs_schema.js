@@ -76,7 +76,14 @@ const lambdaSchemas = {
         publish: { type: 'BOOLEAN', optional: false }
     }),
 
-    InvokeFunction: new parquet.ParquetSchema({
+    UpdateFunctionCode20150331v2: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        functionName: { type: 'UTF8', optional: false },
+        description: { type: 'UTF8', optional: false },
+        timeout: { type: 'INT32', optional: false }
+    }),
+
+    Invoke: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         functionName: { type: 'UTF8', optional: false },
         invocationType: { type: 'UTF8', optional: false },

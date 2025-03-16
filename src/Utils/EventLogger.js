@@ -98,6 +98,7 @@ async function logEvent(eventName, event) {
         case "CreateAlias":
         case "DeleteAlias":
         case "UpdateFunctionCode20150331v2":
+        case "UpdateFunctionConfiguration20150331v2":
             if (lambdaHandlers[eventName]) {
                 try {
                     EventPrivateData = {
@@ -196,6 +197,12 @@ const lambdaHandlers = { // data extractors for Lambda related events
         functionName: cloudTrailEvent.requestParameters.functionName,
         publish: cloudTrailEvent.requestParameters.publish,
         dryRun: cloudTrailEvent.requestParameters.dryRun
+    }),
+
+    UpdateFunctionConfiguration20150331v2: (cloudTrailEvent) => ({
+        functionName: cloudTrailEvent.requestParameters.functionName,
+        description: cloudTrailEvent.requestParameters.description,
+        timeout: cloudTrailEvent.requestParameters.timeout
     }),
 
     DeleteFunction: (cloudTrailEvent) => ({
