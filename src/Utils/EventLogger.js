@@ -79,56 +79,31 @@ async function logEvent(eventName, event) {
     }
     //console.log(EventCommonData)
     let EventPrivateData = {};
-    switch (eventName) {
-        case "TerminateInstances":
-            //console.log("Terminate Instance event: ", event);
-            EventPrivateData = {
-                EventId: event.EventId,
-                instanceId: CloudTrailEvent.requestParameters.instancesSet.items[0].instanceId,
-            }
-            //console.log("EventCommonData: ", EventCommonData);
-            //console.log("EventPrivateData: ", EventPrivateData);
-            writeS3Log(commonSchema, EventCommonData, eventSchemas[eventName], EventPrivateData);
-            break;
-        // Lambda related events:
-        case "CreateFunction20150331":
-        case "DeleteFunction":
-        case "UpdateFunctionCode":
-        case "InvokeFunction":
-        case "CreateAlias":
-        case "DeleteAlias":
-        case "UpdateFunctionCode20150331v2":
-        case "UpdateFunctionConfiguration20150331v2":
-            //if (lambdaHandlers[eventName]) {
-                try {
-                    EventPrivateData = {
-                        EventId: event.EventId,
-                        ...EventPrivateDataHandler(CloudTrailEvent, eventName)
-                        //...lambdaHandlers[eventName](CloudTrailEvent, eventName)
-                    };
+    try {
+        EventPrivateData = {
+            EventId: event.EventId,
+            ...EventPrivateDataHandler(CloudTrailEvent, eventName)
+            //...lambdaHandlers[eventName](CloudTrailEvent, eventName)
+        };
 
-                    // Validate required fields
-                    const schema = lambdaSchemas[eventName];
-                    //console.log("Schema is ", schema)
-                    //console.log("EventPrivateData is ",EventPrivateData)
-                    for (const field in schema.fields) {
-                        if (!schema.schema[field].optional && EventPrivateData[field] === undefined) {
-                            console.error(`Missing required field ${field} for ${eventName}`);
-                            //console.log(event.CloudTrailEvent);
-                            EventPrivateData[field] = 'MISSING_DATA';
-                        }
-                    }
-                } catch (error) {
-                    console.error(`Error processing ${eventName}:`, error);
-                    //console.error('schema is ', lambdaSchemas[eventName])
-                    EventPrivateData.error = error.message;
-                }
-            //}
-            writeS3Log(commonSchema, EventCommonData, lambdaSchemas[eventName], EventPrivateData);
-            break;
-        default:
-            console.log("Unknown event: ", event);
+        // Validate required fields
+        const schema = lambdaSchemas[eventName];
+        //console.log("Schema is ", schema)
+        //console.log("EventPrivateData is ",EventPrivateData)
+        for (const field in schema.fields) {
+            if (!schema.schema[field].optional && EventPrivateData[field] === undefined) {
+                console.error(`Missing required field ${field} for ${eventName}`);
+                //console.log(event.CloudTrailEvent);
+                EventPrivateData[field] = 'MISSING_DATA';
+            }
+        }
+    } catch (error) {
+        console.error(`Error processing ${eventName}:`, error);
+        //console.error('schema is ', lambdaSchemas[eventName])
+        EventPrivateData.error = error.message;
     }
+    //}
+    writeS3Log(commonSchema, EventCommonData, lambdaSchemas[eventName], EventPrivateData);
 }
 
 /**
@@ -176,7 +151,11 @@ module.exports = {
     logEvent
 }
 
- function EventPrivateDataHandler(cloudTrailEvent, eventName) {
+
+
+// Generic private data extractor for events - 
+// Will lookup the schema for the eventName, and if schema exists it will look for matching fields in both request and response
+function EventPrivateDataHandler(cloudTrailEvent, eventName) {
     const req = cloudTrailEvent.requestParameters || {};
     const res = cloudTrailEvent.responseElements || {};
     const schema = lambdaSchemas[eventName];
@@ -191,109 +170,12 @@ module.exports = {
     for (const field in schema.fields) {
         if (req[field] != undefined) {
             ret[field] = req[field]
-        } else if(res[field] != undefined) {
+        } else if (res[field] != undefined) {
             ret[field] = res[field]
         }
     }
     return (ret)
 
- }
+}
 
 
-const lambdaHandlers = { // data extractors for Lambda related events
-    CreateFunction20150331: (cloudTrailEvent, eventName) => {
-        const req = cloudTrailEvent.requestParameters || {};
-        const res = cloudTrailEvent.responseElements || {};
-        /*        return {
-                    functionName: req.functionName,
-                    runtime: req.runtime,
-                    handler: req.handler,
-                    role: req.role,
-                    codeSize: res.codeSize,
-                    timeout: req.timeout || null,
-                    memorySize: req.memorySize || null,
-                    environment: req.environment?.variables ?
-                        JSON.stringify(req.environment.variables) : null,
-                    kmsKeyArn: req.kmsKeyArn || null,
-                    architectures: req.architectures || ['x86_64']
-                };
-                */
-        const schema = lambdaSchemas[eventName];
-        let ret = {}
-        //console.log("Schema is ", schema)
-        //console.log("EventPrivateData is ",EventPrivateData)
-        for (const field in schema.fields) {
-            if (req[field] != undefined) {
-                ret[field] = req[field]
-            } else if(res[field] != undefined) {
-                ret[field] = res[field]
-            }
-        }
-        console.log("Returning ", ret)
-        return (ret)
-
-    },
-
-    UpdateFunctionCode20150331v2: (cloudTrailEvent) => {
-        const req = cloudTrailEvent.requestParameters || {};
-        return {
-            functionName: req.functionName,
-            publish: req.publish,
-            dryRun: req.dryRun
-        }
-    },
-
-    UpdateFunctionConfiguration20150331v2: (cloudTrailEvent) => {
-        return {
-            functionName: cloudTrailEvent.requestParameters.functionName,
-            description: cloudTrailEvent.requestParameters.description,
-            timeout: cloudTrailEvent.requestParameters.timeout
-        }
-    },
-
-    DeleteFunction: (cloudTrailEvent) => {
-        return {
-            functionName: cloudTrailEvent.requestParameters.functionName,
-            qualifier: cloudTrailEvent.requestParameters.qualifier || null
-        }
-    },
-
-    UpdateFunctionCode: (cloudTrailEvent) => {
-        const req = cloudTrailEvent.requestParameters || {};
-        const res = cloudTrailEvent.responseElements || {};
-        return {
-            functionName: req.functionName,
-            revisionId: res.revisionId,
-            codeSha256: res.codeSha256,
-            codeSize: res.codeSize,
-            publish: req.publish || false
-        };
-    },
-
-    InvokeFunction: (cloudTrailEvent) => {
-        const req = cloudTrailEvent.requestParameters || {};
-        return {
-            functionName: req.functionName,
-            invocationType: req.invocationType || 'RequestResponse',
-            qualifier: req.qualifier || '$LATEST',
-            payloadSize: req.payload?.length || 0,
-            logType: req.logType || null,
-            clientContext: req.clientContext || null
-        };
-    },
-
-    CreateAlias: (cloudTrailEvent) => {
-        const req = cloudTrailEvent.requestParameters || {};
-        //console.log("Request Parameters are ", req)
-        //console.log("cloudTrailEvent is ", cloudTrailEvent)
-        return {
-            aliasName: req.aliasName,
-            targetKeyId: req.targetKeyId,
-        };
-    },
-
-    DeleteAlias: (cloudTrailEvent) => ({
-        functionName: cloudTrailEvent.requestParameters.functionName,
-        name: cloudTrailEvent.requestParameters.name
-    })
-};
