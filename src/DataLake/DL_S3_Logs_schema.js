@@ -63,7 +63,7 @@ const lambdaSchemas = {
         architectures: { type: 'UTF8', /*values:*/ repeated: true, optional: true }
     }),
 
-    DeleteFunction: new parquet.ParquetSchema({
+    DeleteFunction20150331: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         functionName: { type: 'UTF8', optional: false },
         qualifier: { type: 'UTF8', optional: true }
@@ -83,7 +83,7 @@ const lambdaSchemas = {
         timeout: { type: 'INT32', optional: true }
     }),
 
-    Invoke: new parquet.ParquetSchema({
+    Invoke20150331: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         functionName: { type: 'UTF8', optional: false },
         invocationType: { type: 'UTF8', optional: false },
@@ -103,7 +103,115 @@ const lambdaSchemas = {
         EventId: { type: 'UTF8', optional: false },
         functionName: { type: 'UTF8', optional: false },
         name: { type: 'UTF8', optional: false }
-    })
+    }),
+    CreateAlias20150331: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        functionName: { type: 'UTF8', optional: false },
+        name: { type: 'UTF8', optional: false },
+        functionVersion: { type: 'UTF8', optional: false },
+        description: { type: 'UTF8', optional: true }
+    }),
+    DeleteAlias20150331: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        functionName: { type: 'UTF8', optional: false },
+        name: { type: 'UTF8', optional: false }
+    }), 
+    UpdateAlias20150331: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        functionName: { type: 'UTF8', optional: false },
+        name: { type: 'UTF8', optional: false },
+        functionVersion: { type: 'UTF8', optional: false },
+        description: { type: 'UTF8', optional: true }
+    }),
+    CreateEventSourceMapping: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        functionName: { type: 'UTF8', optional: false },
+        eventSourceArn: { type: 'UTF8', optional: false },
+        batchSize: { type: 'INT32', optional: true },
+        enabled: { type: 'BOOLEAN', optional: true },
+        startingPosition: { type: 'UTF8', optional: true },
+        startingPositionTimestamp: { type: 'INT64', optional: true },
+        destinationConfig: { type: 'JSON', optional: true }
+    }),
+    DeleteEventSourceMapping: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        UUID: { type: 'UTF8', optional: false },
+        functionName: { type: 'UTF8', optional: false }
+    }),
+
+    UpdateEventSourceMapping: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        UUID: { type: 'UTF8', optional: false },
+        functionName: { type: 'UTF8', optional: false },
+        batchSize: { type: 'INT32', optional: true },
+        enabled: { type: 'BOOLEAN', optional: true },
+        startingPosition: { type: 'UTF8', optional: true },
+        startingPositionTimestamp: { type: 'INT64', optional: true },
+        destinationConfig: { type: 'JSON', optional: true }
+    }),
+    TagResource: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        resourceName: { type: 'UTF8', optional: false },
+        tags: { type: 'JSON', optional: false }
+    }),
+    UntagResource: new parquet.ParquetSchema({ //TODO not sure
+        EventId: { type: 'UTF8', optional: false },
+        resourceName: { type: 'UTF8', optional: false },
+        tagKeys: { type: 'UTF8', /*values:*/ repeated: true, optional: false }
+    }),
+    PublishLayerVersion: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        layerName: { type: 'UTF8', optional: false },
+        description: { type: 'UTF8', optional: true },
+        licenseInfo: { type: 'UTF8', optional: true },
+        compatibleRuntimes: { type: 'UTF8', /*values:*/ repeated: true, optional: true }
+    }), 
+    DeleteLayerVersion: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        layerName: { type: 'UTF8', optional: false },
+        versionNumber: { type: 'INT64', optional: false }
+    }),
+    PutProvisionedConcurrencyConfig: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        functionName: { type: 'UTF8', optional: false },
+        qualifier: { type: 'UTF8', optional: true },
+        provisionedConcurrency: { type: 'INT32', optional: false },
+        requestedProvisionedConcurrency: { type: 'INT32', optional: false },
+        status: { type: 'UTF8', optional: false },
+        statusReason: { type: 'UTF8', optional: true }
+    }),
+    DeleteProvisionedConcurrencyConfig: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        functionName: { type: 'UTF8', optional: false },
+        qualifier: { type: 'UTF8', optional: true }
+    }),
+    CreateCodeSigningConfig: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        codeSigningConfigArn: { type: 'UTF8', optional: false },
+        description: { type: 'UTF8', optional: true },
+        allowedPublishers: { type: 'JSON', optional: false },
+        codeSigningPolicies: { type: 'JSON', optional: false }
+    }),
+    UpdateCodeSigningConfig: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        codeSigningConfigArn: { type: 'UTF8', optional: false },
+        description: { type: 'UTF8', optional: true },
+        allowedPublishers: { type: 'JSON', optional: false },
+        codeSigningPolicies: { type: 'JSON', optional: false }
+    }),
+    DeleteCodeSigningConfig: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        codeSigningConfigArn: { type: 'UTF8', optional: false }
+    }), 
+    PutFunctionEventInvokeConfig: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        functionName: { type: 'UTF8', optional: false },
+        destinationConfig: { type: 'JSON', optional: false }
+    }),
+    DeleteFunctionEventInvokeConfig: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        functionName: { type: 'UTF8', optional: false }
+    }),
 };
 
 // EC2 Full Schema Coverage (50+ events)

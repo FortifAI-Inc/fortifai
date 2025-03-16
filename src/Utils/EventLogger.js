@@ -181,19 +181,31 @@ const lambdaHandlers = { // data extractors for Lambda related events
     CreateFunction20150331: (cloudTrailEvent) => {
         const req = cloudTrailEvent.requestParameters || {};
         const res = cloudTrailEvent.responseElements || {};
-        return {
-            functionName: req.functionName,
-            runtime: req.runtime,
-            handler: req.handler,
-            role: req.role,
-            codeSize: res.codeSize,
-            timeout: req.timeout || null,
-            memorySize: req.memorySize || null,
-            environment: req.environment?.variables ?
-                JSON.stringify(req.environment.variables) : null,
-            kmsKeyArn: req.kmsKeyArn || null,
-            architectures: req.architectures || ['x86_64']
-        };
+        /*        return {
+                    functionName: req.functionName,
+                    runtime: req.runtime,
+                    handler: req.handler,
+                    role: req.role,
+                    codeSize: res.codeSize,
+                    timeout: req.timeout || null,
+                    memorySize: req.memorySize || null,
+                    environment: req.environment?.variables ?
+                        JSON.stringify(req.environment.variables) : null,
+                    kmsKeyArn: req.kmsKeyArn || null,
+                    architectures: req.architectures || ['x86_64']
+                };
+                */
+        const schema = lambdaSchemas[CreateFunction20150331];
+        let ret = {}
+        //console.log("Schema is ", schema)
+        //console.log("EventPrivateData is ",EventPrivateData)
+        for (const field in schema.fields) {
+            if (req[field] != undefined) {
+                ret[field] = req[field]
+            }
+        }
+        return(ret)
+
     },
 
     UpdateFunctionCode20150331v2: (cloudTrailEvent) => {
