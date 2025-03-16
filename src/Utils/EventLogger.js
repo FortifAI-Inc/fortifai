@@ -1,4 +1,4 @@
-const { commonSchema, EventsSchemas  } = require('../DataLake/DL_S3_Logs_schema');
+const { commonSchema, EventsSchemas } = require('../DataLake/DL_S3_Logs_schema');
 const { enqueueS3Write, fetchParquetFromS3 } = require('../DataLake/DL_S3_access');
 const path = require('path');
 
@@ -164,9 +164,6 @@ function EventPrivateDataHandler(cloudTrailEvent, eventName) {
         console.error("EventPrivateDataHandler: No Schema defined for event ", eventName)
         return {}
     }
-    if (eventName == "CreateTags") {
-        //return 
-    }
     let ret = {}
     //console.log("Schema is ", schema)
     //console.log("EventPrivateData is ",EventPrivateData)
@@ -177,8 +174,47 @@ function EventPrivateDataHandler(cloudTrailEvent, eventName) {
             ret[field] = res[field]
         }
     }
+    if (eventName == "StartInstances") {
+        return StartInstancesHandler(cloudTrailEvent, ret)
+    }
+    if (eventName == "RunInstance") {
+        return RunInstanceHAndler(cloudTrailEvent, ret)
+    }
+    if (eventName == "TerminateInstance") {
+        return TerminateInstanceHandler(cloudTrailEvent, ret)
+    }
     return (ret)
 
 }
 
+function RunInstanceHandler(cloudTrailEvent, ret) {
+    if (cloudTrailEvent.eventName == "RunInstances") {
+        images = []
+        for (const instance of cloudTrailEvent.requestParameters.instancesSet.items) {
+            images.push(instance.imageId);
+        }
+        ret["imageId"] = images
+    }
+    return ret
+}
 
+function TerminateInstanceHandler(cloudTrailEvent, ret) {
+    if (cloudTrailEvent.eventName == "TerminateInstances") {
+        instances = []
+        for (const instance of cloudTrailEvent.requestParameters.instancesSet.items) {
+            instances.push(instance.instanceId);
+        }
+        ret["InstanceId"] = instances;
+    }
+    return ret
+}
+
+function StartInstancesHandler(cloudTrailEvent, ret) {
+    instances = []
+    for (const instance of cloudTrailEvent.requestParameters.instancesSet.items) {
+        instances.push(instance.instanceId);
+    }
+    ret["InstanceId"] = instances;
+    console.log("StartInstances returning", ret)
+    return ret
+}

@@ -50,7 +50,7 @@ const EventsSchemas = {
     RunInstances: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         instanceType: { type: 'UTF8', optional: false },
-        imageId: { type: 'UTF8', optional: false },
+        imageId: { type: 'UTF8', repeated: true, optional: true }, 
         keyName: { type: 'UTF8', optional: true },
         securityGroups: { type: 'UTF8', repeated: true, optional: true },
         subnetId: { type: 'UTF8', optional: true }
