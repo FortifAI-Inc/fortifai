@@ -79,7 +79,7 @@ const lambdaSchemas = {
     UpdateFunctionConfiguration20150331v2: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         functionName: { type: 'UTF8', optional: false },
-        description: { type: 'UTF8', optional: false },
+        description: { type: 'UTF8', optional: true },
         timeout: { type: 'INT32', optional: true }
     }),
 
