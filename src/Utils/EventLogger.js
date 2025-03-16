@@ -179,7 +179,7 @@ function EventPrivateDataHandler(cloudTrailEvent, eventName) {
         return RunInstanceHandler(cloudTrailEvent, ret)
     }
     if ( (eventName == "StartInstances") || (eventName == "StopInstances") || (eventName == "RebootInstances") || (eventName == "TerminateInstances") ) {
-        return InstanceSetHandler(cloudTrailEvent, eventName)
+        return InstanceSetHandler(cloudTrailEvent, ret)
     } 
     return (ret)
 
@@ -196,31 +196,13 @@ function RunInstanceHandler(cloudTrailEvent, ret) {
     return ret
 }
 
-function InstanceSetHandler(cloudTrailEvent, eventName) {
-    const req = cloudTrailEvent.requestParameters || {};
-    const res = cloudTrailEvent.responseElements || {};
-
-    console.log("InstanceSetHandler: req is ",req)
-    const schema = EventsSchemas[eventName];
-    if (schema === undefined) {
-        console.error("EventPrivateDataHandler: No Schema defined for event ", eventName)
-        return {}
-    }
-    let ret = {}
-    for (const field in schema.fields) {
-        console.log("Checking field", field)
-        if (req[field] != undefined) {
-            ret[field] = req[field]
-        } else if (res[field] != undefined) {
-            ret[field] = res[field]
-        }
-    }
-    console.log("StartInstances received", ret)
+function InstanceSetHandler(cloudTrailEvent, ret) {
+    //console.log("StartInstances returning", ret)
     instances = []
     for (const instance of cloudTrailEvent.requestParameters.instancesSet.items) {
         instances.push(instance.instanceId);
     }
-    ret["InstanceId"] = instances;
-    console.log("StartInstances returning", ret)
+    ret["instanceId"] = instances;
+    //console.log("StartInstances returning", ret)
     return ret
 }
