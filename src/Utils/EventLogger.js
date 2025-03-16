@@ -178,11 +178,9 @@ function EventPrivateDataHandler(cloudTrailEvent, eventName) {
     if (eventName == "RunInstances") {
         return RunInstanceHAndler(cloudTrailEvent, ret)
     }
-    if (eventName == "StartInstances") {
+    if ( (eventName == "StartInstances") || (eventName == "StopInstances") || (eventName == "RebootInstances") || (eventName == "TerminateInstances") ) {
         return InstanceSetHandler(cloudTrailEvent, ret)
-    } if (eventName == "TerminateInstances") {
-        return InstanceSetHandler(cloudTrailEvent, ret)
-    }
+    } 
     return (ret)
 
 }
