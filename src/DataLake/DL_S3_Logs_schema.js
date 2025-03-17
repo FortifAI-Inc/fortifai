@@ -503,6 +503,106 @@ const EventsSchemas = {
         policyName: { type: 'UTF8', optional: false },
         policyDocument: { type: 'JSON', optional: false }
     }),
+    
+    // Organizations
+    InviteAccountToOrganization: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        accountId: { type: 'UTF8', optional: false },
+        email: { type: 'UTF8', optional: true },
+        notes: { type: 'UTF8', optional: true },
+        status: { type: 'UTF8', optional: true }
+    }),
+    RemoveAccountFromOrganization: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        accountId: { type: 'UTF8', optional: false }
+    }),
+    CreateOrganization: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        featureSet: { type: 'UTF8', optional: true }
+    }),
+    DeleteOrganization: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false }
+    }),
+    EnableAWSServiceAccess: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        servicePrincipal: { type: 'UTF8', optional: false }
+    }),
+    DisableAWSServiceAccess: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        servicePrincipal: { type: 'UTF8', optional: false }
+    }),
+    EnableAllFeatures: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false }
+    }),
+    DisableAllFeatures: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false }
+    }),
+    EnablePolicyType: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        rootId: { type: 'UTF8', optional: false },
+        policyType: { type: 'UTF8', optional: false }
+    }),
+    DisablePolicyType: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        rootId: { type: 'UTF8', optional: false },
+        policyType: { type: 'UTF8', optional: false }
+    }),
+    AttachPolicy: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        policyId: { type: 'UTF8', optional: false },
+        targetId: { type: 'UTF8', optional: false }
+    }),
+    DetachPolicy: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        policyId: { type: 'UTF8', optional: false },
+        targetId: { type: 'UTF8', optional: false }
+    }),
+    ListPoliciesForTarget: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        targetId: { type: 'UTF8', optional: false },
+        filter: { type: 'UTF8', optional: true }
+    }),
+    ListTargetsForPolicy: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        policyId: { type: 'UTF8', optional: false }
+    }),
+    UpdatePolicy: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        policyId: { type: 'UTF8', optional: false },
+        policyContent: { type: 'JSON', optional: false },
+        description: { type: 'UTF8', optional: true }
+    }),
+    CreateAccount: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        accountName: { type: 'UTF8', optional: false },
+        email: { type: 'UTF8', optional: false },
+        roleName: { type: 'UTF8', optional: true },
+        iamUserAccessToBilling: { type: 'UTF8', optional: true }
+    }),
+    DeleteAccount: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        accountId: { type: 'UTF8', optional: false }
+    }),
+    UpdateOrganizationalUnit: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        organizationalUnitId: { type: 'UTF8', optional: false },
+        name: { type: 'UTF8', optional: true }
+    }),
+    CreateOrganizationalUnit: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        organizationalUnitName: { type: 'UTF8', optional: false },
+        parentId: { type: 'UTF8', optional: false }
+    }),
+    DeleteOrganizationalUnit: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        organizationalUnitId: { type: 'UTF8', optional: false }
+    }),
+    MoveAccount: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        accountId: { type: 'UTF8', optional: false },
+        sourceParentId: { type: 'UTF8', optional: false },
+        destinationParentId: { type: 'UTF8', optional: false }
+    }),
     //VPC
     CreateVpc: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },

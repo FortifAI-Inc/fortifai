@@ -60,7 +60,7 @@ async function logEvent(eventName, event) {
 
     if (EventCommonData.errorCode == "AccessDenied") {
         //console.log ("Event was denied!")
-        return logEventDenied(EventCommonDatam, eventName)
+        return logEventDenied(EventCommonData, eventName)
     }
     // Schema validation checks
     const requiredFields = [
