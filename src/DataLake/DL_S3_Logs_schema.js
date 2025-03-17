@@ -450,8 +450,8 @@ const EventsSchemas = {
     AutomatedDefaultVpcCreation: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         vpcId: { type: 'UTF8', optional: true },
-        isDefault: { type: 'BOOLEAN', optional: false },
-        cidrBlock: { type: 'UTF8', optional: false },
+        isDefault: { type: 'BOOLEAN', optional: true },
+        cidrBlock: { type: 'UTF8', optional: true },
         ARN: { type: 'UTF8', optional: false },
         tags: { type: 'JSON', optional: true }
     }),
