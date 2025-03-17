@@ -449,9 +449,10 @@ const EventsSchemas = {
     }),
     AutomatedDefaultVpcCreation: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        vpcId: { type: 'UTF8', optional: false },
+        vpcId: { type: 'UTF8', optional: true },
         isDefault: { type: 'BOOLEAN', optional: false },
         cidrBlock: { type: 'UTF8', optional: false },
+        ARN: { type: 'UTF8', optional: false },
         tags: { type: 'JSON', optional: true }
     }),
     ModifyNetworkInterfaceAttribute: new parquet.ParquetSchema({
@@ -464,7 +465,7 @@ const EventsSchemas = {
     DetachNetworkInterface: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         attachmentId: { type: 'UTF8', optional: false },
-        networkInterfaceId: { type: 'UTF8', optional: false },
+        networkInterfaceId: { type: 'UTF8', optional: true },
         instanceId: { type: 'UTF8', optional: true },
         force: { type: 'BOOLEAN', optional: true }
     }),
