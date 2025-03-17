@@ -146,7 +146,7 @@ const readOnlyEvents = {
 const writeEvents = {
     ec2: ["RunInstances", "TerminateInstances", "ModifyInstanceAttribute", "StartInstances", "StopInstances", "RebootInstances", "CreateTags", "DeleteTags", "EnableSerialConsoleAccess", "DeleteKeyPair"],
     s3: ["PutObject", "DeleteObject", "CreateBucket", "DeleteBucket", "PutBucketPolicy", "PutBucketAcl", "PutBucketEncryption"],
-    iam: ["CreateUser", "DeleteUser", "AttachRolePolicy", "DetachRolePolicy", "CreateRole", "DeleteRole", /*"AssumeRole"*/, "CreateGroup", "DeleteGroup", "AddUserToGroup", "RemoveUserFromGroup", "AddMemberToGroup",
+    iam: ["CreateUser", "DeleteUser", "AttachRolePolicy", "DetachRolePolicy", "CreateRole", "DeleteRole", "AssumeRole", "CreateGroup", "DeleteGroup", "AddUserToGroup", "RemoveUserFromGroup", "AddMemberToGroup",
             "RemoveMemberFromGroup", "AttachGroupPolicy", "DetachGroupPolicy", "CreatePolicy", "DeletePolicy", "AttachUserPolicy", "DetachUserPolicy", "AttachRolePolicy", "DetachRolePolicy", "AttachGroupPolicy", 
             "DetachGroupPolicy", "CreateInstanceProfile", "DeleteInstanceProfile", "AddRoleToInstanceProfile", "RemoveRoleFromInstanceProfile", "AddRoleToInstanceProfile", "AttachManagedPolicyToPermissionSet",
             "CompleteVirtualMfaDeviceRegistration", "CreateInstanceProfile", "CreatePermissionSet", "CreatePolicyVersion", "DeleteAccessKey", "DeleteLoginProfile", "DeleteMfaDeviceForUser", "DeleteUserPolicy",

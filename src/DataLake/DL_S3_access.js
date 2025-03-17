@@ -22,7 +22,6 @@ async function enqueueS3Write(schema, records, S3_KEY) {
   }
 
   const fileQueue = writeQueueMap.get(S3_KEY);
-  console.log("enqueueS3Write", S3_KEY, records.length);
   // Chain the write operation
   const newQueue = fileQueue
     .then(async () => {
