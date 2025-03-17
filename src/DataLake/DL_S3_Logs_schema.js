@@ -728,8 +728,149 @@ const EventsSchemas = {
         EventId: { type: 'UTF8', optional: false },
         sessionId: { type: 'UTF8', optional: false },
     }),
-
+    // DynamoDB
+    PutItem: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        tableName: { type: 'UTF8', optional: false },
+        item: { type: 'JSON', optional: false },
+        conditionExpression: { type: 'UTF8', optional: true },
+        returnValues: { type: 'UTF8', optional: true }
+    }),
+    UpdateItem: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        tableName: { type: 'UTF8', optional: false },
+        key: { type: 'JSON', optional: false },
+        updateExpression: { type: 'UTF8', optional: false },
+        conditionExpression: { type: 'UTF8', optional: true },
+        returnValues: { type: 'UTF8', optional: true }
+    }),
+    DeleteItem: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        tableName: { type: 'UTF8', optional: false },
+        key: { type: 'JSON', optional: false },
+        conditionExpression: { type: 'UTF8', optional: true },
+        returnValues: { type: 'UTF8', optional: true }
+    }),
+    CreateTable: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        tableName: { type: 'UTF8', optional: false },
+        attributeDefinitions: { type: 'JSON', optional: false },
+        keySchema: { type: 'JSON', optional: false },
+        provisionedThroughput: { type: 'JSON', optional: true },
+        globalSecondaryIndexes: { type: 'JSON', optional: true },
+        localSecondaryIndexes: { type: 'JSON', optional: true }
+    }),
+    DeleteTable: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        tableName: { type: 'UTF8', optional: false }
+    }),
+    UpdateTable: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        tableName: { type: 'UTF8', optional: false },
+        provisionedThroughput: { type: 'JSON', optional: true },
+        globalSecondaryIndexUpdates: { type: 'JSON', optional: true },
+        attributeDefinitions: { type: 'JSON', optional: true }
+    }),
+    // RDS
+    CreateDBInstance: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        dbInstanceIdentifier: { type: 'UTF8', optional: false },
+        dbInstanceClass: { type: 'UTF8', optional: false },
+        engine: { type: 'UTF8', optional: false },
+        allocatedStorage: { type: 'INT32', optional: true },
+        masterUsername: { type: 'UTF8', optional: true },
+        dbSecurityGroups: { type: 'UTF8', repeated: true, optional: true },
+        vpcSecurityGroups: { type: 'UTF8', repeated: true, optional: true },
+        availabilityZone: { type: 'UTF8', optional: true },
+        dbSubnetGroup: { type: 'UTF8', optional: true },
+        preferredMaintenanceWindow: { type: 'UTF8', optional: true },
+        backupRetentionPeriod: { type: 'INT32', optional: true },
+        multiAZ: { type: 'BOOLEAN', optional: true },
+        engineVersion: { type: 'UTF8', optional: true },
+        autoMinorVersionUpgrade: { type: 'BOOLEAN', optional: true },
+        licenseModel: { type: 'UTF8', optional: true },
+        storageType: { type: 'UTF8', optional: true },
+        tags: { type: 'JSON', optional: true }
+    }),
+    DeleteDBInstance: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        dbInstanceIdentifier: { type: 'UTF8', optional: false },
+        skipFinalSnapshot: { type: 'BOOLEAN', optional: true },
+        finalDBSnapshotIdentifier: { type: 'UTF8', optional: true }
+    }),
+    ModifyDBInstance: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        dbInstanceIdentifier: { type: 'UTF8', optional: false },
+        allocatedStorage: { type: 'INT32', optional: true },
+        dbInstanceClass: { type: 'UTF8', optional: true },
+        engineVersion: { type: 'UTF8', optional: true },
+        applyImmediately: { type: 'BOOLEAN', optional: true },
+        backupRetentionPeriod: { type: 'INT32', optional: true },
+        multiAZ: { type: 'BOOLEAN', optional: true },
+        preferredMaintenanceWindow: { type: 'UTF8', optional: true },
+        autoMinorVersionUpgrade: { type: 'BOOLEAN', optional: true },
+        storageType: { type: 'UTF8', optional: true },
+        tags: { type: 'JSON', optional: true }
+    }),
+    CreateDBCluster: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        dbClusterIdentifier: { type: 'UTF8', optional: false },
+        engine: { type: 'UTF8', optional: false },
+        masterUsername: { type: 'UTF8', optional: true },
+        masterUserPassword: { type: 'UTF8', optional: true },
+        vpcSecurityGroups: { type: 'UTF8', repeated: true, optional: true },
+        dbSubnetGroup: { type: 'UTF8', optional: true },
+        preferredBackupWindow: { type: 'UTF8', optional: true },
+        backupRetentionPeriod: { type: 'INT32', optional: true },
+        engineVersion: { type: 'UTF8', optional: true },
+        port: { type: 'INT32', optional: true },
+        tags: { type: 'JSON', optional: true }
+    }),
+    DeleteDBCluster: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        dbClusterIdentifier: { type: 'UTF8', optional: false },
+        skipFinalSnapshot: { type: 'BOOLEAN', optional: true },
+        finalDBSnapshotIdentifier: { type: 'UTF8', optional: true }
+    }),
+    ModifyDBCluster: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        dbClusterIdentifier: { type: 'UTF8', optional: false },
+        newDBClusterIdentifier: { type: 'UTF8', optional: true },
+        backupRetentionPeriod: { type: 'INT32', optional: true },
+        preferredBackupWindow: { type: 'UTF8', optional: true },
+        preferredMaintenanceWindow: { type: 'UTF8', optional: true },
+        engineVersion: { type: 'UTF8', optional: true },
+        applyImmediately: { type: 'BOOLEAN', optional: true },
+        tags: { type: 'JSON', optional: true }
+    }),
+    //CloudWatch
+    PutMetricData: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        namespace: { type: 'UTF8', optional: false },
+        metricData: { type: 'JSON', optional: false }
+    }),
+    DeleteAlarms: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        alarmNames: { type: 'UTF8', repeated: true, optional: false }
+    }),
+    SetAlarmState: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        alarmName: { type: 'UTF8', optional: false },
+        stateValue: { type: 'UTF8', optional: false },
+        stateReason: { type: 'UTF8', optional: false },
+        stateReasonData: { type: 'JSON', optional: true }
+    }),
+    PutDashboard: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        dashboardName: { type: 'UTF8', optional: false },
+        dashboardBody: { type: 'JSON', optional: false }
+    }),
+    DeleteDashboards: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        dashboardNames: { type: 'UTF8', repeated: true, optional: false }
+    }),
 };
+// CloudWatch Metrics and Alarms
 
 
 module.exports = { CommonSchema, EventsSchemas, InventorySchema };
