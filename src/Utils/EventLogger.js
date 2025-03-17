@@ -16,10 +16,8 @@ async function logEvent(eventName, event) {
     const sessionContext = userIdentity.sessionContext || {};
     const sessionAttributes = sessionContext.attributes || {};
     const sessionIssuer = sessionContext.sessionIssuer || {};
-    if (eventName == "ConsoleLogin") {
-        console.log("received event", eventName, "with object", event)
-        console.log("event is ", CloudTrailEvent)
-    }
+    //console.log("received event", eventName, "with object", event)
+    //console.log("event is ", CloudTrailEvent)
     if (ignoreEvents.includes(eventName)) {
         return true;
     }
@@ -111,6 +109,9 @@ async function logEvent(eventName, event) {
         // Validate required fields
         const schema = EventsSchemas[eventName];
         if (schema === undefined) {
+            if (eventName.startsWith("List") || eventName.startsWith("Get") || eventName.startsWith("Describe")) {
+                return true;
+            }
             console.error("EventPrivateDataHandler: No Schema defined for event ", eventName)
             return true;
         }

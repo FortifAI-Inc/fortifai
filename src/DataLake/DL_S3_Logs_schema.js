@@ -711,6 +711,10 @@ const EventsSchemas = {
         EventId: { type: 'UTF8', optional: false },
         awsRegion: { type: 'UTF8', optional: false }
     }),
+    ConsoleLogin: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        additionalEventData: { type: 'JSON', optional: false }
+    }),
     // Authentication
     Authenticate: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
