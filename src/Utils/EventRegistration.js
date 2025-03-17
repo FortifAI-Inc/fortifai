@@ -144,23 +144,26 @@ const readOnlyEvents = {
 };
 
 const writeEvents = {
-    //ec2: ["RunInstances", "TerminateInstances", "ModifyInstanceAttribute", "StartInstances", "StopInstances", "RebootInstances", "CreateTags", "DeleteTags"],
+    ec2: ["RunInstances", "TerminateInstances", "ModifyInstanceAttribute", "StartInstances", "StopInstances", "RebootInstances", "CreateTags", "DeleteTags", "EnableSerialConsoleAccess"],
     //s3: ["PutObject", "DeleteObject", "CreateBucket", "DeleteBucket", "PutBucketPolicy", "PutBucketAcl"],
-    iam: ["CreateUser", "DeleteUser", "AttachRolePolicy", "DetachRolePolicy", "CreateRole", "DeleteRole", /*"AssumeRole"*/, "CreateGroup", "DeleteGroup", "AddUserToGroup", "RemoveUserFromGroup", "AddMemberToGroup",
-            "RemoveMemberFromGroup", "AttachGroupPolicy", "DetachGroupPolicy", "CreatePolicy", "DeletePolicy", "AttachUserPolicy", "DetachUserPolicy", "AttachRolePolicy", "DetachRolePolicy", "AttachGroupPolicy", 
-            "DetachGroupPolicy", "CreateInstanceProfile", "DeleteInstanceProfile", "AddRoleToInstanceProfile", "RemoveRoleFromInstanceProfile", "AddRoleToInstanceProfile", "AttachManagedPolicyToPermissionSet",
-            "CompleteVirtualMfaDeviceRegistration", "CreateInstanceProfile", "CreatePermissionSet", "CreatePolicyVersion", "DeleteAccessKey", "DeleteLoginProfile", "DeleteMfaDeviceForUser", "DeleteUserPolicy",
-            "DetachUserPolicy", "DisassociateProfile", "EnableMFADevice", "GenerateCredentialReport", "PutMfaDeviceManagementForDirectory", "PutUserPermissionsBoundary", "PutUserPolicy" ],
-    organization: ["InviteAccountToOrganization", "RemoveAccountFromOrganization", "CreateOrganization", "DeleteOrganization", "EnableAWSServiceAccess", "DisableAWSServiceAccess", "EnableAllFeatures", 
-        "DisableAllFeatures", "EnablePolicyType", "DisablePolicyType", "AttachPolicy", "DetachPolicy", "ListPoliciesForTarget", "ListTargetsForPolicy", "UpdatePolicy", 
-        "CreateAccount", "DeleteAccount", "UpdateOrganizationalUnit", "CreateOrganizationalUnit", "DeleteOrganizationalUnit", "MoveAccount"],
+    //iam: ["CreateUser", "DeleteUser", "AttachRolePolicy", "DetachRolePolicy", "CreateRole", "DeleteRole", /*"AssumeRole"*/, "CreateGroup", "DeleteGroup", "AddUserToGroup", "RemoveUserFromGroup", "AddMemberToGroup",
+    //        "RemoveMemberFromGroup", "AttachGroupPolicy", "DetachGroupPolicy", "CreatePolicy", "DeletePolicy", "AttachUserPolicy", "DetachUserPolicy", "AttachRolePolicy", "DetachRolePolicy", "AttachGroupPolicy", 
+    //        "DetachGroupPolicy", "CreateInstanceProfile", "DeleteInstanceProfile", "AddRoleToInstanceProfile", "RemoveRoleFromInstanceProfile", "AddRoleToInstanceProfile", "AttachManagedPolicyToPermissionSet",
+    //        "CompleteVirtualMfaDeviceRegistration", "CreateInstanceProfile", "CreatePermissionSet", "CreatePolicyVersion", "DeleteAccessKey", "DeleteLoginProfile", "DeleteMfaDeviceForUser", "DeleteUserPolicy",
+    //        "DetachUserPolicy", "DisassociateProfile", "EnableMFADevice", "GenerateCredentialReport", "PutMfaDeviceManagementForDirectory", "PutUserPermissionsBoundary", "PutUserPolicy" ],
+    //organization: ["InviteAccountToOrganization", "RemoveAccountFromOrganization", "CreateOrganization", "DeleteOrganization", "EnableAWSServiceAccess", "DisableAWSServiceAccess", "EnableAllFeatures", 
+    //    "DisableAllFeatures", "EnablePolicyType", "DisablePolicyType", "AttachPolicy", "DetachPolicy", "ListPoliciesForTarget", "ListTargetsForPolicy", "UpdatePolicy", 
+    //    "CreateAccount", "DeleteAccount", "UpdateOrganizationalUnit", "CreateOrganizationalUnit", "DeleteOrganizationalUnit", "MoveAccount"],
     //lambda: ["CreateFunction20150331", "DeleteFunction20150331", "UpdateFunctionCode20150331v2", "UpdateFunction20150331","Invoke20150331", "UpdateFunctionConfiguration20150331v2", "CreateAlias20150331", 
     //    "DeleteAlias20150331", "UpdateAlias20150331", "CreateEventSourceMapping", "DeleteEventSourceMapping", "UpdateEventSourceMapping", "TagResource", "UntagResource", "PublishLayerVersion", 
     //    "DeleteLayerVersion", "PutProvisionedConcurrencyConfig", "DeleteProvisionedConcurrencyConfig", "CreateCodeSigningConfig", "UpdateCodeSigningConfig", "DeleteCodeSigningConfig", 
     //    "PutFunctionEventInvokeConfig", "DeleteFunctionEventInvokeConfig", ],
     //kms: ["CreateAlias", "DeleteAlias", "CreateKey", "DeleteKey", "EnableKey", "DisableKey", "ScheduleKeyDeletion", "CancelKeyDeletion"],
-    vpc: ["CreateVpc", "DeleteVpc", "CreateSubnet", "DeleteSubnet", "CreateSecurityGroup", "DeleteSecurityGroup", "AuthorizeSecurityGroupIngress", "AuthorizeSecurityGroupEgress", "AttachInternetGateway",
-          "CreateInternetGateway", "CreateRoute", "ReplaceRoute", "AutomatedDefaultVpcCreation", "ModifyNetworkInterfaceAttribute", "DetachNetworkInterface"],
+    //vpc: ["CreateVpc", "DeleteVpc", "CreateSubnet", "DeleteSubnet", "CreateSecurityGroup", "DeleteSecurityGroup", "AuthorizeSecurityGroupIngress", "AuthorizeSecurityGroupEgress", "AttachInternetGateway",
+    //      "CreateInternetGateway", "CreateRoute", "ReplaceRoute", "AutomatedDefaultVpcCreation", "ModifyNetworkInterfaceAttribute", "DetachNetworkInterface"],
+    misc: ["RegisterRegion"],
+    authentication: ["Authenticate", "CredentialChallenge", "CredentialVerification", "Federate"],
+    cloudwatch: ["StartLiveTail", "StopLiveTail"],
     //dynamodb: ["PutItem", "UpdateItem", "DeleteItem", "CreateTable", "DeleteTable", "UpdateTable"],
     //rds: ["CreateDBInstance", "DeleteDBInstance", "ModifyDBInstance", "CreateDBCluster", "DeleteDBCluster", "ModifyDBCluster"],
     //cloudwatch: ["PutMetricData", "DeleteAlarms", "SetAlarmState", "PutDashboard", "DeleteDashboards"],
@@ -168,7 +171,7 @@ const writeEvents = {
     //sqs: ["CreateQueue", "DeleteQueue", "SendMessage", "DeleteMessage", "PurgeQueue"],
     //ecs: ["CreateCluster", "DeleteCluster", "UpdateService", "RunTask", "StopTask", "RegisterTaskDefinition"],
     //eks: ["CreateCluster", "DeleteCluster", "UpdateClusterConfig", "CreateNodegroup", "DeleteNodegroup", "UpdateNodegroupConfig"],
-    //cloudformation: ["CreateStack", "DeleteStack", "UpdateStack", "CreateChangeSet", "ExecuteChangeSet"],
+    //cloudformation: ["CreateStack", "DeleteStack", "UpdateStack", "CreateChangeSet", "ExecuteChangeSet", "RollbackStack"],
     //kinesis: ["CreateStream", "DeleteStream", "PutRecord", "PutRecords", "MergeShards", "SplitShard"],
     //kafka: ["CreateCluster", "DeleteCluster", "UpdateClusterConfiguration", "CreateTopic", "DeleteTopic"],
     //aurora: ["CreateDBCluster", "DeleteDBCluster", "ModifyDBCluster", "StartDBCluster", "StopDBCluster", "CreateDBClusterSnapshot", "DeleteDBClusterSnapshot"],
@@ -178,7 +181,7 @@ const writeEvents = {
     //glue: ["CreateDatabase", "DeleteDatabase", "CreateTable", "DeleteTable", "CreateCrawler", "DeleteCrawler"],
     //athena: ["CreateWorkGroup", "DeleteWorkGroup", "UpdateWorkGroup", "StartQueryExecution", "StopQueryExecution"],
     //emr: ["RunJobFlow", "TerminateJobFlows", "AddJobFlowSteps", "CancelSteps"],
-    //cloudtrail: ["CreateTrail", "DeleteTrail", "StartLogging", "StopLogging", "UpdateTrail"]
+    //cloudtrail: ["CreateTrail", "DeleteTrail", "StartLogging", "StopLogging", "UpdateTrail", "PutEventSelectors"]
 };
 
 function buildLookupAttributes() {
