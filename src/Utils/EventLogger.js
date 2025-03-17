@@ -14,6 +14,7 @@ async function logEvent(eventName, event) {
     const sessionAttributes = sessionContext.attributes || {};
     const sessionIssuer = sessionContext.sessionIssuer || {};
     console.log("received event", eventName, "with object", event)
+    console.log("event is ", CloudTrailEvent)
 
     // Build EventCommonData with schema compliance
     const EventCommonData = {
