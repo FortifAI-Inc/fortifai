@@ -166,7 +166,7 @@ async function writeS3Logs(schema, data, filePath) {
     }
 }
 
-async function logEventBatch(eventName, events) { // This function should check out the eventId in the master directory and filter out events.
+async function logEventBatch(events) { // This function should check out the eventId in the master directory and filter out events.
     try {
         let records = await fetchParquetFromS3('EventLogger/inventory.parquet');
         let modified = false;
@@ -179,7 +179,7 @@ async function logEventBatch(eventName, events) { // This function should check 
                 //retval = await logEvent(eventName, event);
 
             } else {
-                retval = await logEvent(eventName, event);
+                retval = await logEvent(event.EventName, event);
                 if (retval == true) {
                     records.push({ EventId: event.EventId }); // Insert new record  
                     modified = true;

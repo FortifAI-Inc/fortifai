@@ -7,7 +7,7 @@ const EventRegistration = require('./EventRegistration');
 const EventLogger = require('./EventLogger')
 
 
-async function getAllEvents() {
+async function getListedEvents() { // This function will get all events from the cloudtrail that are listed in the EventRegistration.js file.
     const cloudTrail = new CloudTrailClient({ region: 'us-east-1' });
     let events = [];
     let uniqueEventNames = new Set();
@@ -78,11 +78,53 @@ async function getAllEvents() {
 }
 
 
+// This function is used to get all events from the cloudtrail. It does not filter by event name.
+async function getAllEvents() { // This function will get all events from the cloudtrail that are listed in the EventRegistration.js file.
+    const cloudTrail = new CloudTrailClient({ region: 'us-east-1' });
+    let events = [];
+    let uniqueEventNames = new Set();
+    let eventCounts = {};
+
+
+    //console.log("Retrieving event ", attribute.AttributeValue)
+    let params = {
+        MaxResults: 50,
+    };
+
+    try {
+        let data;
+        do {
+            try {
+                data = await cloudTrail.send(new LookupEventsCommand(params));
+            } catch (error) {
+                if (error.name === 'ThrottlingException') {
+                    console.warn("ThrottlingException encountered, continuing...");
+                    await new Promise(resolve => setTimeout(resolve, 1000))
+                    continue;
+                } else {
+                    throw error;
+                }
+            }
+            if (data.Events) {
+                events = events.concat(data.Events);
+            }
+            EventLogger.logEventBatch(EventAccumulator) // Batch log every 50 events
+
+            params.NextToken = data.NextToken;
+            await new Promise(resolve => setTimeout(resolve, 550))
+        } while (data.NextToken);
+
+    } catch (error) {
+        console.error("Error retrieving events:", error);
+    }
+}
+
+
 
 async function startListening() {
-        console.log("Listening for events...");
-        await getAllEvents();
-        //await new Promise(resolve => setTimeout(resolve, 60000)); // Wait for 1 minute before checking again
+    console.log("Listening for events...");
+    await getListedEvents();
+    //await new Promise(resolve => setTimeout(resolve, 60000)); // Wait for 1 minute before checking again
 }
 
 //startListening();
