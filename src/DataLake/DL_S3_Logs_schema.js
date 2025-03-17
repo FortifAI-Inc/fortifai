@@ -106,6 +106,13 @@ const EventsSchemas = {
         EventId: { type: 'UTF8', optional: false },
         keyPairId: { type: 'UTF8', optional: false }
     }),
+    RegisterManagedInstance: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        managedInstanceId: { type: 'UTF8', optional: false },
+        instanceId: { type: 'UTF8', optional: false },
+        activationId: { type: 'UTF8', optional: false }
+    }),
+    
     // S3
     PutObject: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
@@ -706,6 +713,28 @@ const EventsSchemas = {
         instanceId: { type: 'UTF8', optional: true },
         force: { type: 'BOOLEAN', optional: true }
     }),
+    CreateNetworkInterface: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        networkInterfaceId: { type: 'UTF8', optional: false },
+        subnetId: { type: 'UTF8', optional: false },
+        vpcId: { type: 'UTF8', optional: false },
+        description: { type: 'UTF8', optional: true },
+        privateIpAddress: { type: 'UTF8', optional: true },
+        groups: { type: 'UTF8', repeated: true, optional: true },
+        sourceDestCheck: { type: 'BOOLEAN', optional: true },
+        tags: { type: 'JSON', optional: true }
+    }), 
+    DeleteNetworkInterface: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        networkInterfaceId: { type: 'UTF8', optional: false }
+    }),
+    AttachNetworkInterface: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        networkInterfaceId: { type: 'UTF8', optional: false },
+        instanceId: { type: 'UTF8', optional: false },
+        deviceIndex: { type: 'UTF8', optional: false }
+    }),
+    
     // Misc
     RegisterRegion: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
@@ -881,6 +910,36 @@ const EventsSchemas = {
     DeleteDashboards: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         dashboardNames: { type: 'UTF8', repeated: true, optional: false }
+    }),
+    CreateLogStream: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        logGroupName: { type: 'UTF8', optional: false },
+        logStreamName: { type: 'UTF8', optional: false }
+    }),
+    DeleteLogStream: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        logGroupName: { type: 'UTF8', optional: false },
+        logStreamName: { type: 'UTF8', optional: false }
+    }),
+    PutLogEvents: new parquet.ParquetSchema({   
+        EventId: { type: 'UTF8', optional: false },
+        logGroupName: { type: 'UTF8', optional: false },
+        logStreamName: { type: 'UTF8', optional: false },
+        logEvents: { type: 'JSON', optional: false }
+    }),
+    PutLogEventsBatch: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        logGroupName: { type: 'UTF8', optional: false },
+        logStreamName: { type: 'UTF8', optional: false },
+        logEvents: { type: 'JSON', optional: false }
+    }),
+    CreateLogGroup: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        logGroupName: { type: 'UTF8', optional: false }
+    }),
+    DeleteLogGroup: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        logGroupName: { type: 'UTF8', optional: false }
     }),
     // SNS
     CreateTopic: new parquet.ParquetSchema({
@@ -1377,7 +1436,67 @@ const EventsSchemas = {
         EventId: { type: 'UTF8', optional: false },
         SessionId: { type: 'UTF8', optional: false }
     }),
-    
+    // EventBridge
+    PutRule: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        Name: { type: 'UTF8', optional: false },
+        EventPattern: { type: 'JSON', optional: false },
+        State: { type: 'UTF8', optional: false },
+        Tags: { type: 'JSON', optional: true }
+    }),
+    DeleteRule: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        Name: { type: 'UTF8', optional: false }
+    }),
+    PutTargets: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false }, 
+        Rule: { type: 'UTF8', optional: false },
+        Targets: { type: 'JSON', optional: false }
+    }),
+    RemoveTargets: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        Rule: { type: 'UTF8', optional: false },    
+        Ids: { type: 'UTF8', repeated: true, optional: false }
+    }),
+    // API Gateway
+    CreateApi: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        name: { type: 'UTF8', optional: false },
+        tags: { type: 'JSON', optional: true }
+    }),
+    DeleteApi: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        apiId: { type: 'UTF8', optional: false }
+    }),
+    GetApi: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        apiId: { type: 'UTF8', optional: false }
+    }), 
+    GetApis: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        name: { type: 'UTF8', optional: true },
+        tags: { type: 'JSON', optional: true }
+    }),
+    DeleteApiKey: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        apiKey: { type: 'UTF8', optional: false }
+    }),
+    GetApiKey: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        apiKey: { type: 'UTF8', optional: false }
+    }), 
+    GetApiKeys: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        name: { type: 'UTF8', optional: true },
+        tags: { type: 'JSON', optional: true }
+    }), 
+    AddPermission20150331v2: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        action: { type: 'UTF8', optional: false },
+        principal: { type: 'UTF8', optional: false },
+        statementId: { type: 'UTF8', optional: false },
+        sourceArn: { type: 'UTF8', optional: false }
+    }),
     
 };
 

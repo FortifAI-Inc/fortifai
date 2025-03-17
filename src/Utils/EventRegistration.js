@@ -118,7 +118,8 @@ async function createLambdaFunction(roleArn) {
         }
     }
 }
-const ignoreEvents = [ "LookupEvents" ];
+const ignoreEvents = [ "LookupEvents", "SearchAgreements", "AWSPaymentPortalService.GetAccountPreferences", "Programs_ListPaymentProgramStatus", "AWSPaymentPortalService.DescribePaymentsDashboard", 
+    "AWSPaymentPortalService.GetAccountPreferences", "Programs_ListPaymentProgramStatus", "AWSPaymentPortalService.DescribePaymentsDashboard", "GenerateRecommendations", "SendSSHPublicKey", "SharedSnapshotVolumeCreated"];
 
 
 
