@@ -717,7 +717,6 @@ const EventsSchemas = {
     }),
     Federate: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        credentialId: { type: 'UTF8', optional: false },
         serviceEventDetails: { type: 'JSON', optional: false }
     }),
     // CloudWatch
