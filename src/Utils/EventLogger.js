@@ -1,6 +1,7 @@
 const { CommonSchema, EventsSchemas, InventorySchema } = require('../DataLake/DL_S3_Logs_schema');
 const { enqueueS3Write, fetchParquetFromS3 } = require('../DataLake/DL_S3_access');
 const path = require('path');
+const { ignoreEvents } = require('./EventRegistration');
 
 async function logEventDenied(EventCommonDatam, eventName) { //TODO: log AccessDenied events
     return true
@@ -17,7 +18,9 @@ async function logEvent(eventName, event) {
     const sessionIssuer = sessionContext.sessionIssuer || {};
     //console.log("received event", eventName, "with object", event)
     //console.log("event is ", CloudTrailEvent)
-
+    if (ignoreEvents.includes(eventName)) {
+        return true;
+    }
     // Build EventCommonData with schema compliance
     const EventCommonData = {
         // Required Fields (must always exist)
@@ -101,11 +104,14 @@ async function logEvent(eventName, event) {
         EventPrivateData = {
             EventId: event.EventId,
             ...EventPrivateDataHandler(CloudTrailEvent, eventName)
-            //...lambdaHandlers[eventName](CloudTrailEvent, eventName)
         };
 
         // Validate required fields
         const schema = EventsSchemas[eventName];
+        if (schema === undefined) {
+            console.error("EventPrivateDataHandler: No Schema defined for event ", eventName)
+            return true;
+        }
         //console.log("Schema is ", schema)
         //console.log("EventPrivateData is ",EventPrivateData)
         for (const field in schema.fields) {

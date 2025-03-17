@@ -118,30 +118,10 @@ async function createLambdaFunction(roleArn) {
         }
     }
 }
-const readOnlyEvents = {
-    //ec2: ["DescribeInstances", "DescribeVolumes", "GetConsoleOutput", "DescribeSecurityGroups", "DescribeImages", "DescribeSnapshots", "DescribeAddresses", "DescribeTags"],
-    //s3: ["GetObject", "ListBuckets", "GetBucketLocation", "ListObjects", "GetBucketPolicy", "GetBucketAcl"],
-    //iam: ["GetUser", "ListRoles", "GetRole", "ListUsers", "GetPolicy", "GetGroup", "ListGroups"],
-    //dynamodb: ["GetItem", "Query", "Scan", "DescribeTable", "ListTables"],
-    //rds: ["DescribeDBInstances", "DescribeDBClusters", "DescribeDBSnapshots", "DescribeDBSubnetGroups"],
-    //cloudwatch: ["GetMetricData", "ListMetrics", "DescribeAlarms", "DescribeAlarmHistory"],
-    //sns: ["ListTopics", "GetTopicAttributes", "ListSubscriptions"],
-    //sqs: ["ListQueues", "GetQueueAttributes", "ListQueueTags"],
-    //lambda: ["ListFunctions", "GetFunction", "ListAliases", "ListEventSourceMappings"],
-    //ecs: ["DescribeClusters", "DescribeServices", "DescribeTasks", "ListContainerInstances"],
-    //eks: ["DescribeCluster", "ListClusters", "DescribeNodegroup", "ListNodegroups"],
-    //cloudformation: ["DescribeStacks", "ListStacks", "GetTemplate", "DescribeStackEvents"],
-    //kinesis: ["DescribeStream", "ListStreams", "GetShardIterator", "GetRecords", "DescribeStreamSummary"],
-    //kafka: ["ListClusters", "DescribeCluster", "GetBootstrapBrokers", "ListNodes"],
-    //aurora: ["DescribeDBClusters", "DescribeDBInstances", "DescribeDBClusterSnapshots", "DescribeDBClusterParameterGroups"],
-    //keystore: ["ListKeys", "DescribeKey", "ListAliases"],
-    //redshift: ["DescribeClusters", "DescribeClusterSnapshots", "DescribeClusterParameterGroups", "DescribeClusterSecurityGroups"],
-    //elasticache: ["DescribeCacheClusters", "DescribeCacheSubnetGroups", "DescribeCacheParameterGroups", "DescribeCacheSecurityGroups"],
-    //glue: ["GetDatabases", "GetTables", "GetPartitions", "GetCrawlers"],
-    //athena: ["ListWorkGroups", "ListDataCatalogs", "ListDatabases", "ListNamedQueries"],
-    //emr: ["DescribeCluster", "ListClusters", "ListSteps", "DescribeStep"],
-    //cloudtrail: ["DescribeTrails", "GetTrailStatus", "ListTrails"]//, "LookupEvents"]
-};
+const ignoreEvents = [ "LookupEvents" ];
+
+module.exports = { ignoreEvents, writeEvents, buildLookupAttributes };
+
 
 const writeEvents = {
     ec2: ["RunInstances", "TerminateInstances", "ModifyInstanceAttribute", "StartInstances", "StopInstances", "RebootInstances", "CreateTags", "DeleteTags", "EnableSerialConsoleAccess", "DeleteKeyPair"],
