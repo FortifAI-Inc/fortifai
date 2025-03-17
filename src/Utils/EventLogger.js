@@ -169,6 +169,7 @@ async function writeS3Logs(schema, data, filePath) {
 async function logEventBatch(eventName, events) { // This function should check out the eventId in the master directory and filter out events.
     try {
         let records = await fetchParquetFromS3('EventLogger/inventory.parquet');
+        let modified = false;
 
         for (const event of events) {
             const index = records.findIndex(rec => rec.EventId === event.EventId);
@@ -180,11 +181,14 @@ async function logEventBatch(eventName, events) { // This function should check 
             } else {
                 retval = await logEvent(eventName, event);
                 if (retval == true) {
-                    records.push({ EventId: event.EventId }); // Insert new record
+                    records.push({ EventId: event.EventId }); // Insert new record  
+                    modified = true;
                 }
             }
         }
-        await enqueueS3Write(InventorySchema, records, 'EventLogger/inventory.parquet');
+        if (modified) {
+            await enqueueS3Write(InventorySchema, records, 'EventLogger/inventory.parquet');
+        }
     } catch (err) {
         console.error(`Error writing log data to Parquet file:`, err);
     }
