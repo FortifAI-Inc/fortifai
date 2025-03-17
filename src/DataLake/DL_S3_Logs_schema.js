@@ -419,6 +419,55 @@ const EventsSchemas = {
         groupId: { type: 'UTF8', optional: false },
         ipPermissions: { type: 'JSON', optional: false }
     }),
+    AttachInternetGateway: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        internetGatewayId: { type: 'UTF8', optional: false },
+        vpcId: { type: 'UTF8', optional: false }
+    }),
+    CreateInternetGateway: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        internetGatewayId: { type: 'UTF8', optional: false },
+        tags: { type: 'JSON', optional: true }
+    }),
+    CreateRoute: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        routeTableId: { type: 'UTF8', optional: false },
+        destinationCidrBlock: { type: 'UTF8', optional: false },
+        gatewayId: { type: 'UTF8', optional: true },
+        instanceId: { type: 'UTF8', optional: true },
+        natGatewayId: { type: 'UTF8', optional: true },
+        transitGatewayId: { type: 'UTF8', optional: true }
+    }),
+    ReplaceRoute: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        routeTableId: { type: 'UTF8', optional: false },
+        destinationCidrBlock: { type: 'UTF8', optional: false },
+        gatewayId: { type: 'UTF8', optional: true },
+        instanceId: { type: 'UTF8', optional: true },
+        natGatewayId: { type: 'UTF8', optional: true },
+        transitGatewayId: { type: 'UTF8', optional: true }
+    }),
+    AutomatedDefaultVpcCreation: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        vpcId: { type: 'UTF8', optional: false },
+        isDefault: { type: 'BOOLEAN', optional: false },
+        cidrBlock: { type: 'UTF8', optional: false },
+        tags: { type: 'JSON', optional: true }
+    }),
+    ModifyNetworkInterfaceAttribute: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        networkInterfaceId: { type: 'UTF8', optional: false },
+        description: { type: 'UTF8', optional: true },
+        sourceDestCheck: { type: 'BOOLEAN', optional: true },
+        groups: { type: 'UTF8', repeated: true, optional: true }
+    }),
+    DetachNetworkInterface: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        attachmentId: { type: 'UTF8', optional: false },
+        networkInterfaceId: { type: 'UTF8', optional: false },
+        instanceId: { type: 'UTF8', optional: true },
+        force: { type: 'BOOLEAN', optional: true }
+    }),
 };
 
 
