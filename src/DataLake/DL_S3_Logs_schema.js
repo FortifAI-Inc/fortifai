@@ -32,6 +32,7 @@ const CommonSchema = new parquet.ParquetSchema({
     userName: { type: 'UTF8', optional: true },               // IAM username (if applicable)
     accountId: { type: 'UTF8', optional: true },              // AWS Account ID of the user
     onBehalfOf: { type: 'JSON', optional: true },
+    credentialId: {type: 'UTF8', optional: true },
     
     // Session Context (Conditional)
     sessionIssuerType: { type: 'UTF8', optional: true },
@@ -708,12 +709,10 @@ const EventsSchemas = {
     }),
     CredentialChallenge: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        credentialId: { type: 'UTF8', optional: false },
         additionalEventData: { type: 'JSON', optional: false }
     }),
     CredentialVerification: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        credentialId: { type: 'UTF8', optional: false },
         additionalEventData: { type: 'JSON', optional: false }
     }),
     Federate: new parquet.ParquetSchema({
