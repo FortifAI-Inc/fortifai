@@ -21,6 +21,14 @@ async function logEvent(eventName, event) {
     if (ignoreEvents.includes(eventName)) {
         return true;
     }
+    if (EventsSchemas[eventName] === undefined) {
+        if (/^(List|Get|Describe)/.test(eventName)) {
+            return true;
+        }
+        console.error("EventPrivateDataHandler: No Schema defined for event ", eventName)
+        return true;
+    }
+
     // Build EventCommonData with schema compliance
     const EventCommonData = {
         // Required Fields (must always exist)
@@ -76,7 +84,7 @@ async function logEvent(eventName, event) {
     const requiredFields = [
         'EventId', 'EventTime', 'EventSource', 'EventName',
         'eventCategory', 'awsRegion', 'managementEvent',
-        'recipientAccountId', 'requestID', 'userType',
+        'recipientAccountId', 'userType',
         'principalId', 'eventType'
     ];
 
@@ -108,13 +116,6 @@ async function logEvent(eventName, event) {
 
         // Validate required fields
         const schema = EventsSchemas[eventName];
-        if (schema === undefined) {
-            if (/^(List|Get|Describe)/.test(eventName)) {
-                return true;
-            }
-            console.error("EventPrivateDataHandler: No Schema defined for event ", eventName)
-            return true;
-        }
         //console.log("Schema is ", schema)
         //console.log("EventPrivateData is ",EventPrivateData)
         for (const field in schema.fields) {
