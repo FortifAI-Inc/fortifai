@@ -1015,8 +1015,131 @@ const EventsSchemas = {
         scalingConfig: { type: 'JSON', optional: true },
         labels: { type: 'JSON', optional: true },
         taints: { type: 'JSON', optional: true }
-    })
+    }),
+    // CloudFormation
+    CreateStack: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        stackName: { type: 'UTF8', optional: false },
+        templateBody: { type: 'JSON', optional: true },
+        templateURL: { type: 'UTF8', optional: true },
+        parameters: { type: 'JSON', optional: true },
+        capabilities: { type: 'UTF8', repeated: true, optional: true },
+        tags: { type: 'JSON', optional: true }
+    }),
+    DeleteStack: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        stackName: { type: 'UTF8', optional: false }
+    }),
+    UpdateStack: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        stackName: { type: 'UTF8', optional: false },
+        templateBody: { type: 'JSON', optional: true },
+        templateURL: { type: 'UTF8', optional: true },
+        parameters: { type: 'JSON', optional: true },
+        capabilities: { type: 'UTF8', repeated: true, optional: true },
+        tags: { type: 'JSON', optional: true }
+    }),
+    CreateChangeSet: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        stackName: { type: 'UTF8', optional: false },
+        changeSetName: { type: 'UTF8', optional: false },
+        templateBody: { type: 'JSON', optional: true },
+        templateURL: { type: 'UTF8', optional: true },
+        parameters: { type: 'JSON', optional: true },
+        capabilities: { type: 'UTF8', repeated: true, optional: true },
+        tags: { type: 'JSON', optional: true }
+    }),
+    ExecuteChangeSet: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        changeSetName: { type: 'UTF8', optional: false },
+        stackName: { type: 'UTF8', optional: false }
+    }),
+    RollbackStack: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        stackName: { type: 'UTF8', optional: false },
+        reason: { type: 'UTF8', optional: true }
+    }),
+    // Kinesis
+    CreateStream: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        streamName: { type: 'UTF8', optional: false },
+        shardCount: { type: 'INT32', optional: true }
+    }),
+    DeleteStream: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        streamName: { type: 'UTF8', optional: false }
+    }),
+    PutRecord: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        streamName: { type: 'UTF8', optional: false },
+        data: { type: 'UTF8', optional: false },
+        partitionKey: { type: 'UTF8', optional: false }
+    }),
+    PutRecords: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        streamName: { type: 'UTF8', optional: false },
+        records: { type: 'JSON', optional: false }
+    }),
+    MergeShards: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        streamName: { type: 'UTF8', optional: false },
+        shardToMerge: { type: 'UTF8', optional: false },
+        adjacentShardToMerge: { type: 'UTF8', optional: false }
+    }),
+    SplitShard: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        streamName: { type: 'UTF8', optional: false },
+        shardToSplit: { type: 'UTF8', optional: false },
+        newStartingHashKey: { type: 'UTF8', optional: false }
+    }),
+    UpdateClusterConfiguration: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        clusterName: { type: 'UTF8', optional: false },
+        configurationInfo: { type: 'JSON', optional: false }
+    }),
+    CreateTopic: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        topicName: { type: 'UTF8', optional: false },
+        tags: { type: 'JSON', optional: true }
+    }),
+    DeleteTopic: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        topicName: { type: 'UTF8', optional: false }
+    }),
+    UpdateBrokerStorage: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        clusterArn: { type: 'UTF8', optional: false },
+        currentVersion: { type: 'UTF8', optional: false },
+        targetBrokerEBSVolumeInfo: { type: 'JSON', optional: false }
+    }),
+    UpdateBrokerType: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        clusterArn: { type: 'UTF8', optional: false },
+        currentVersion: { type: 'UTF8', optional: false },
+        targetInstanceType: { type: 'UTF8', optional: false }
+    }),
+    StartDBCluster: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        dbClusterIdentifier: { type: 'UTF8', optional: false }
+    }),
+    StopDBCluster: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        dbClusterIdentifier: { type: 'UTF8', optional: false }
+    }),
+    CreateDBClusterSnapshot: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        dbClusterSnapshotIdentifier: { type: 'UTF8', optional: false },
+        dbClusterIdentifier: { type: 'UTF8', optional: false },
+        tags: { type: 'JSON', optional: true }
+    }),
+    DeleteDBClusterSnapshot: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        dbClusterSnapshotIdentifier: { type: 'UTF8', optional: false }
+    }),
 };
+
+
+
 
 
 
