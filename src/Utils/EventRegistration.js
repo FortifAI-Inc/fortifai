@@ -146,7 +146,11 @@ const readOnlyEvents = {
 const writeEvents = {
     //ec2: ["RunInstances", "TerminateInstances", "ModifyInstanceAttribute", "StartInstances", "StopInstances", "RebootInstances", "CreateTags", "DeleteTags"],
     //s3: ["PutObject", "DeleteObject", "CreateBucket", "DeleteBucket", "PutBucketPolicy", "PutBucketAcl"],
-    //iam: ["CreateUser", "DeleteUser", "AttachRolePolicy", "DetachRolePolicy", "CreateRole", "DeleteRole", /*"AssumeRole"*/, "CreateGroup", "DeleteGroup", "AddUserToGroup", "RemoveUserFromGroup"],
+    iam: ["CreateUser", "DeleteUser", "AttachRolePolicy", "DetachRolePolicy", "CreateRole", "DeleteRole", /*"AssumeRole"*/, "CreateGroup", "DeleteGroup", "AddUserToGroup", "RemoveUserFromGroup", "AddMemberToGroup",
+            "RemoveMemberFromGroup", "AttachGroupPolicy", "DetachGroupPolicy", "CreatePolicy", "DeletePolicy", "AttachUserPolicy", "DetachUserPolicy", "AttachRolePolicy", "DetachRolePolicy", "AttachGroupPolicy", 
+            "DetachGroupPolicy", "CreateInstanceProfile", "DeleteInstanceProfile", "AddRoleToInstanceProfile", "RemoveRoleFromInstanceProfile", "AddRoleToInstanceProfile", "AttachManagedPolicyToPermissionSet",
+            "CompleteVirtualMfaDeviceRegistration", "CreateInstanceProfile", "CreatePermissionSet", "CreatePolicyVersion", "DeleteAccessKey", "DeleteLoginProfile", "DeleteMfaDeviceForUser", "DeleteUserPolicy",
+            "DetachUserPolicy", "DisassociateProfile", "EnableMFADevice", "GenerateCredentialReport", "PutMfaDeviceManagementForDirectory", "PutUserPermissionsBoundary", "PutUserPolicy"],
     //lambda: ["CreateFunction20150331", "DeleteFunction20150331", "UpdateFunctionCode20150331v2", "UpdateFunction20150331","Invoke20150331", "UpdateFunctionConfiguration20150331v2", "CreateAlias20150331", 
     //    "DeleteAlias20150331", "UpdateAlias20150331", "CreateEventSourceMapping", "DeleteEventSourceMapping", "UpdateEventSourceMapping", "TagResource", "UntagResource", "PublishLayerVersion", 
     //    "DeleteLayerVersion", "PutProvisionedConcurrencyConfig", "DeleteProvisionedConcurrencyConfig", "CreateCodeSigningConfig", "UpdateCodeSigningConfig", "DeleteCodeSigningConfig", 

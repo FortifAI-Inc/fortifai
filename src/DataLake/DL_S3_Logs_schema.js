@@ -373,6 +373,136 @@ const EventsSchemas = {
         groupName: { type: 'UTF8', optional: false },
         userName: { type: 'UTF8', optional: false }
     }),
+    AddMemberToGroup: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        groupName: { type: 'UTF8', optional: false },
+        memberName: { type: 'UTF8', optional: false }
+    }),
+    RemoveMemberFromGroup: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        groupName: { type: 'UTF8', optional: false },
+        memberName: { type: 'UTF8', optional: false }
+    }),
+    AttachGroupPolicy: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        groupName: { type: 'UTF8', optional: false },
+        policyArn: { type: 'UTF8', optional: false }
+    }),
+    DetachGroupPolicy: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        groupName: { type: 'UTF8', optional: false },
+        policyArn: { type: 'UTF8', optional: false }
+    }),
+    CreatePolicy: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        policyName: { type: 'UTF8', optional: false },
+        policyDocument: { type: 'JSON', optional: false },
+        description: { type: 'UTF8', optional: true }
+    }),
+    DeletePolicy: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        policyArn: { type: 'UTF8', optional: false }
+    }),
+    AttachUserPolicy: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        userName: { type: 'UTF8', optional: false },
+        policyArn: { type: 'UTF8', optional: false }
+    }),
+    DetachUserPolicy: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        userName: { type: 'UTF8', optional: false },
+        policyArn: { type: 'UTF8', optional: false }
+    }),
+    CreateInstanceProfile: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        instanceProfileName: { type: 'UTF8', optional: false },
+        path: { type: 'UTF8', optional: true }
+    }),
+    DeleteInstanceProfile: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        instanceProfileName: { type: 'UTF8', optional: false }
+    }),
+    AddRoleToInstanceProfile: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        instanceProfileName: { type: 'UTF8', optional: false },
+        roleName: { type: 'UTF8', optional: false }
+    }),
+    RemoveRoleFromInstanceProfile: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        instanceProfileName: { type: 'UTF8', optional: false },
+        roleName: { type: 'UTF8', optional: false }
+    }),
+    AttachManagedPolicyToPermissionSet: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        permissionSetArn: { type: 'UTF8', optional: false },
+        policyArn: { type: 'UTF8', optional: false }
+    }),
+    CompleteVirtualMfaDeviceRegistration: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        userName: { type: 'UTF8', optional: false },
+        serialNumber: { type: 'UTF8', optional: false }
+    }),
+    CreatePermissionSet: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        permissionSetName: { type: 'UTF8', optional: false },
+        description: { type: 'UTF8', optional: true }
+    }),
+    CreatePolicyVersion: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        policyArn: { type: 'UTF8', optional: false },
+        policyDocument: { type: 'JSON', optional: false },
+        setAsDefault: { type: 'BOOLEAN', optional: true }
+    }),
+    DeleteAccessKey: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        accessKeyId: { type: 'UTF8', optional: false },
+        userName: { type: 'UTF8', optional: true }
+    }),
+    DeleteLoginProfile: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        userName: { type: 'UTF8', optional: false }
+    }),
+    DeleteMfaDeviceForUser: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        userName: { type: 'UTF8', optional: false },
+        serialNumber: { type: 'UTF8', optional: false }
+    }),
+    DeleteUserPolicy: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        userName: { type: 'UTF8', optional: false },
+        policyName: { type: 'UTF8', optional: false }
+    }),
+    DisassociateProfile: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        profileName: { type: 'UTF8', optional: false }
+    }),
+    EnableMFADevice: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        userName: { type: 'UTF8', optional: false },
+        serialNumber: { type: 'UTF8', optional: false },
+        authenticationCode1: { type: 'UTF8', optional: false },
+        authenticationCode2: { type: 'UTF8', optional: false }
+    }),
+    GenerateCredentialReport: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        reportFormat: { type: 'UTF8', optional: true }
+    }),
+    PutMfaDeviceManagementForDirectory: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        directoryId: { type: 'UTF8', optional: false },
+        mfaDeviceManagement: { type: 'UTF8', optional: false }
+    }),
+    PutUserPermissionsBoundary: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        userName: { type: 'UTF8', optional: false },
+        permissionsBoundary: { type: 'UTF8', optional: false }
+    }),
+    PutUserPolicy: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        userName: { type: 'UTF8', optional: false },
+        policyName: { type: 'UTF8', optional: false },
+        policyDocument: { type: 'JSON', optional: false }
+    }),
     //VPC
     CreateVpc: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
