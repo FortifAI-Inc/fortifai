@@ -31,6 +31,7 @@ const CommonSchema = new parquet.ParquetSchema({
     accessKeyId: { type: 'UTF8', optional: true },
     userName: { type: 'UTF8', optional: true },               // IAM username (if applicable)
     accountId: { type: 'UTF8', optional: true },              // AWS Account ID of the user
+    onBehalfOf: { type: 'JSON', optional: true },
     
     // Session Context (Conditional)
     sessionIssuerType: { type: 'UTF8', optional: true },
@@ -699,39 +700,36 @@ const EventsSchemas = {
     // Misc
     RegisterRegion: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        region: { type: 'UTF8', optional: false }
+        awsRegion: { type: 'UTF8', optional: false }
     }),
     // Authentication
     Authenticate: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        userId: { type: 'UTF8', optional: false },
-        password: { type: 'UTF8', optional: false }
     }),
     CredentialChallenge: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        userId: { type: 'UTF8', optional: false },
-        challenge: { type: 'UTF8', optional: false }
+        credentialId: { type: 'UTF8', optional: false },
+        additionalEventData: { type: 'JSON', optional: false }
     }),
     CredentialVerification: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        userId: { type: 'UTF8', optional: false },
-        response: { type: 'UTF8', optional: false }
+        credentialId: { type: 'UTF8', optional: false },
+        additionalEventData: { type: 'JSON', optional: false }
     }),
     Federate: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        userId: { type: 'UTF8', optional: false },
-        provider: { type: 'UTF8', optional: false }
+        credentialId: { type: 'UTF8', optional: false },
+        serviceEventDetails: { type: 'JSON', optional: false }
     }),
     // CloudWatch
     StartLiveTail: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        logGroupName: { type: 'UTF8', optional: false },
-        logStreamName: { type: 'UTF8', optional: false }
+        logGroupIdentifiers: { type: 'UTF8', optional: true },
+        logStreamIdentifiers: { type: 'UTF8', optional: true }
     }),
     StopLiveTail: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        logGroupName: { type: 'UTF8', optional: false },
-        logStreamName: { type: 'UTF8', optional: false }
+        sessionId: { type: 'UTF8', optional: false },
     }),
 
 };
