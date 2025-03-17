@@ -827,7 +827,7 @@ const EventsSchemas = {
         EventId: { type: 'UTF8', optional: false },
         networkInterfaceId: { type: 'UTF8', optional: false },
         instanceId: { type: 'UTF8', optional: false },
-        deviceIndex: { type: 'UTF8', optional: false }
+        deviceIndex: { type: 'INT32', optional: false }
     }),
     CreateFlowLogs: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
@@ -874,9 +874,9 @@ const EventsSchemas = {
     }),
     StartEnvironment: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        environmentId: { type: 'UTF8', optional: false },
-        environmentName: { type: 'UTF8', optional: false },
-        environmentType: { type: 'UTF8', optional: false }
+        EnvironmentId: { type: 'UTF8', optional: false },
+        environmentName: { type: 'UTF8', optional: true },
+        environmentType: { type: 'UTF8', optional: true }
     }),
     
     // Authentication

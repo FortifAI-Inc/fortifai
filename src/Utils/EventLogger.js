@@ -186,7 +186,7 @@ async function logEventBatch(events) { // This function should check out the eve
             if (index !== -1) {
                 // event exists, silently ignore
                 //console.log("Event already in inventory")
-                //retval = await logEvent(eventName, event);
+                //retval = await logEvent(event.EventName, event);
 
             } else {
                 retval = await logEvent(event.EventName, event);
