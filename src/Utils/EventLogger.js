@@ -56,7 +56,7 @@ async function logEvent(eventName, event) {
             JSON.stringify(CloudTrailEvent.tlsDetails) : null
     };
 
-    if (commonData.errorCode == "AccessDenied") {
+    if (EventCommonData.errorCode == "AccessDenied") {
         console.log ("Event was denied!")
     }
     // Schema validation checks
