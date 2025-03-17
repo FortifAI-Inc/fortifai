@@ -375,8 +375,8 @@ const EventsSchemas = {
     }),
     AddMemberToGroup: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        groupName: { type: 'UTF8', optional: false },
-        memberName: { type: 'UTF8', optional: false }
+        groupId: { type: 'UTF8', optional: false },
+        memberId: { type: 'UTF8', optional: false }
     }),
     RemoveMemberFromGroup: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
@@ -435,16 +435,16 @@ const EventsSchemas = {
     AttachManagedPolicyToPermissionSet: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         permissionSetArn: { type: 'UTF8', optional: false },
-        policyArn: { type: 'UTF8', optional: false }
+        managedPolicyArn: { type: 'UTF8', optional: false }
     }),
     CompleteVirtualMfaDeviceRegistration: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        userName: { type: 'UTF8', optional: false },
-        serialNumber: { type: 'UTF8', optional: false }
+        userId: { type: 'UTF8', optional: false },
+        deviceId: { type: 'UTF8', optional: false }
     }),
     CreatePermissionSet: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        permissionSetName: { type: 'UTF8', optional: false },
+        name: { type: 'UTF8', optional: false },
         description: { type: 'UTF8', optional: true }
     }),
     CreatePolicyVersion: new parquet.ParquetSchema({
@@ -464,8 +464,8 @@ const EventsSchemas = {
     }),
     DeleteMfaDeviceForUser: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        userName: { type: 'UTF8', optional: false },
-        serialNumber: { type: 'UTF8', optional: false }
+        userId: { type: 'UTF8', optional: false },
+        deviceId: { type: 'UTF8', optional: false }
     }),
     DeleteUserPolicy: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
@@ -474,14 +474,14 @@ const EventsSchemas = {
     }),
     DisassociateProfile: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        profileName: { type: 'UTF8', optional: false }
+        instanceArn: { type: 'UTF8', optional: false }
     }),
     EnableMFADevice: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         userName: { type: 'UTF8', optional: false },
         serialNumber: { type: 'UTF8', optional: false },
-        authenticationCode1: { type: 'UTF8', optional: false },
-        authenticationCode2: { type: 'UTF8', optional: false }
+        authenticationCode1: { type: 'UTF8', optional: true },
+        authenticationCode2: { type: 'UTF8', optional: true }
     }),
     GenerateCredentialReport: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
@@ -490,7 +490,7 @@ const EventsSchemas = {
     PutMfaDeviceManagementForDirectory: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         directoryId: { type: 'UTF8', optional: false },
-        mfaDeviceManagement: { type: 'UTF8', optional: false }
+        instanceArn: { type: 'UTF8', optional: false }
     }),
     PutUserPermissionsBoundary: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
