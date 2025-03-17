@@ -376,7 +376,7 @@ const EventsSchemas = {
     AddMemberToGroup: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         groupId: { type: 'UTF8', optional: false },
-        memberId: { type: 'UTF8', optional: false }
+        member: { type: 'JSON', optional: false }
     }),
     RemoveMemberFromGroup: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
@@ -439,7 +439,7 @@ const EventsSchemas = {
     }),
     CompleteVirtualMfaDeviceRegistration: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        userId: { type: 'UTF8', optional: false },
+        user: { type: 'JSON', optional: false },
         deviceId: { type: 'UTF8', optional: false }
     }),
     CreatePermissionSet: new parquet.ParquetSchema({
@@ -464,7 +464,7 @@ const EventsSchemas = {
     }),
     DeleteMfaDeviceForUser: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        userId: { type: 'UTF8', optional: false },
+        user: { type: 'JSON', optional: false },
         deviceId: { type: 'UTF8', optional: false }
     }),
     DeleteUserPolicy: new parquet.ParquetSchema({

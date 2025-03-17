@@ -2,7 +2,9 @@ const { CommonSchema, EventsSchemas, InventorySchema } = require('../DataLake/DL
 const { enqueueS3Write, fetchParquetFromS3 } = require('../DataLake/DL_S3_access');
 const path = require('path');
 
-
+async function logEventDenied(EventCommonDatam, eventName) { //TODO: log AccessDenied events
+    return true
+}
 
 async function logEvent(eventName, event) {
     // Parse CloudTrail event details
@@ -57,7 +59,8 @@ async function logEvent(eventName, event) {
     };
 
     if (EventCommonData.errorCode == "AccessDenied") {
-        console.log ("Event was denied!")
+        //console.log ("Event was denied!")
+        return logEventDenied(EventCommonDatam, eventName)
     }
     // Schema validation checks
     const requiredFields = [
