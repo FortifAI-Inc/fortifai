@@ -16,8 +16,10 @@ async function logEvent(eventName, event) {
     const sessionContext = userIdentity.sessionContext || {};
     const sessionAttributes = sessionContext.attributes || {};
     const sessionIssuer = sessionContext.sessionIssuer || {};
-    //console.log("received event", eventName, "with object", event)
-    //console.log("event is ", CloudTrailEvent)
+    if (eventName == "ConsoleLogin") {
+        console.log("received event", eventName, "with object", event)
+        console.log("event is ", CloudTrailEvent)
+    }
     if (ignoreEvents.includes(eventName)) {
         return true;
     }
