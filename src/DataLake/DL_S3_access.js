@@ -117,7 +117,7 @@ async function uploadParquetToS3(schema, records, S3_KEY) {
     // Remove temp file
     fs.unlinkSync(tempFilePath);
   } catch (err) {
-    console.error("❌ Error uploading Parquet file to S3:", err);
+    console.error("❌ Error uploading Parquet file to S3:",S3_KEY, err);
   }
 }
 
