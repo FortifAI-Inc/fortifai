@@ -42,10 +42,13 @@ async function enqueueS3Write(schema, records, S3_KEY) {
  * Fetches Parquet file from S3 ensuring mutual exclusion with writes.
  */
 async function fetchParquetFromS3(S3_KEY) {
+  // Wait for any ongoing write operation to finish
   while (writeLocks.get(S3_KEY)) {
-    // Wait for any ongoing write operation to finish
     await new Promise(resolve => setTimeout(resolve, 50));
   }
+
+  // Set read lock
+  writeLocks.set(S3_KEY, true);
 
   try {
     const tempFilePath = `tmp/${S3_KEY.replace(/\//g, "_")}.parquet`;
@@ -71,8 +74,10 @@ async function fetchParquetFromS3(S3_KEY) {
     }
 
     await reader.close();
+    writeLocks.delete(S3_KEY); // Release lock after reading
     return records;
-    } catch (err) {
+  } catch (err) {
+    writeLocks.delete(S3_KEY); // Release lock on error
     if (err.name === "NoSuchKey") {
       //console.warn("⚠️ File not found on S3, treating as new file:", S3_KEY);
       return []; // Return empty list if file does not exist
