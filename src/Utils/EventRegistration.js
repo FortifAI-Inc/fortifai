@@ -186,7 +186,7 @@ const writeEvents = {
 
 function buildLookupAttributes() {
     const lookupAttributes = [];//[ {AttributeKey: "EventName", AttributeValue: "TerminateInstances"}]//[];
-    return [ {AttributeKey: "EventName", AttributeValue: "EnableSerialConsoleAccess"}];
+    //return [ {AttributeKey: "EventName", AttributeValue: "EnableSerialConsoleAccess"}];
     const addAttributes = (events) => {
         for (const service in events) {
             events[service].forEach(event => {

@@ -100,7 +100,7 @@ const EventsSchemas = {
     }),
     EnableSerialConsoleAccess: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        instanceId: { type: 'UTF8', optional: false }
+        //instanceId: { type: 'UTF8', optional: false }
     }),
     // S3
     PutObject: new parquet.ParquetSchema({
@@ -351,7 +351,6 @@ const EventsSchemas = {
         EventId: { type: 'UTF8', optional: false },
         errorMessage: { type: 'UTF8', optional: false },
      }),
-
     CreateGroup: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         displayName: { type: 'UTF8', optional: false },
