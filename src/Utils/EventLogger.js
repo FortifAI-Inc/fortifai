@@ -72,12 +72,12 @@ async function logEvent(eventName, event) {
             JSON.stringify(CloudTrailEvent.tlsDetails) : null
     };
 
-    if (EventCommonData.errorCode == "AccessDenied") {
+    if ((EventCommonData.errorCode == "AccessDenied") || (EventCommonData.errorCode == "Client.UnauthorizedOperation") || (EventCommonData.errorCode == "Client.InvalidParameter") || (EventCommonData.errorCode == "Client.InvalidParameterValue")) {
         //console.log ("Event was denied!")
         return logEventDenied(EventCommonData, eventName)
     }
-    if (EventCommonData.errorCode == "ServerException") {
-        //console.log ("Event was denied!")
+    if ( (EventCommonData.errorCode == "ServerException") || (EventCommonData.errorCode != undefined) ) {
+        console.log ("Event was denied!", eventName, EventCommonData.errorCode)
         return logEventException(EventCommonData, eventName)
     }
     // Schema validation checks
@@ -241,6 +241,11 @@ function EventPrivateDataHandler(cloudTrailEvent, eventName) {
             for (const member in res) { // check nesting inside response
                 if (res[member][field] != undefined) {
                     ret[field] = res[member][field]
+                }
+            }
+            for (const member in req) { // check nesting inside request
+                if (req[member][field] != undefined) {
+                    ret[field] = req[member][field]
                 }
             }
             /*for (const member in cloudTrailEvent) { // check nesting inside cloudTrailEvent

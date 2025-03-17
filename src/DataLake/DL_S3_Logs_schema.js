@@ -108,7 +108,7 @@ const EventsSchemas = {
     }),
     RegisterManagedInstance: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        managedInstanceId: { type: 'UTF8', optional: false },
+        managedInstanceId: { type: 'UTF8', optional: true },
         instanceId: { type: 'UTF8', optional: true },
         activationId: { type: 'UTF8', optional: true }
     }),
@@ -363,6 +363,12 @@ const EventsSchemas = {
         externalId: { type: 'UTF8', optional: true },
         durationSeconds: { type: 'INT32', optional: true }
     }),
+    AssumeRoleWithSAML: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        roleArn: { type: 'UTF8', optional: false },
+        principalArn: { type: 'UTF8', optional: false },
+        samlAssertion: { type: 'UTF8', optional: false }
+    }),
     AssumeRoleFailed: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         errorMessage: { type: 'UTF8', optional: false },
@@ -533,6 +539,80 @@ const EventsSchemas = {
         EventId: { type: 'UTF8', optional: false },
         trustPolicyDocument: { type: 'JSON', optional: false }
     }), 
+    CreateAccountAssignment: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        permissionSetArn: { type: 'UTF8', optional: false },
+        principalId: { type: 'UTF8', optional: false },
+        principalType: { type: 'UTF8', optional: false },
+        targetId: { type: 'UTF8', optional: false }
+    }),
+    CreateSAMLProvider: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        name: { type: 'UTF8', optional: false },
+        samlMetadataDocument: { type: 'UTF8', optional: false }
+    }),
+    VerifyEmail: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        email: { type: 'UTF8', optional: false },
+        verificationStatus: { type: 'UTF8', optional: false }
+    }),
+    CreateVirtualMFADevice: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        virtualMFADeviceName: { type: 'UTF8', optional: false },
+        assignmentStatus: { type: 'UTF8', optional: false }
+    }), 
+    DeleteVirtualMFADevice: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        virtualMFADeviceName: { type: 'UTF8', optional: false }
+    }),
+    CreateServiceLinkedRole: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        awsServiceName: { type: 'UTF8', optional: false },
+        description: { type: 'UTF8', optional: true }
+    }),
+    StartSSO: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        roleArn: { type: 'UTF8', optional: false },
+        principalArn: { type: 'UTF8', optional: false },
+        sessionDuration: { type: 'UTF8', optional: true }
+    }),
+    AssociateDirectory: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        directoryId: { type: 'UTF8', optional: false },
+        directoryName: { type: 'UTF8', optional: false },
+        directoryType: { type: 'UTF8', optional: false }
+    }),
+    DisassociateDirectory: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        directoryId: { type: 'UTF8', optional: false }
+    }), 
+    StartVirtualMfaDeviceRegistration: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        virtualMFADeviceName: { type: 'UTF8', optional: false },
+        assignmentStatus: { type: 'UTF8', optional: false }
+    }),
+    UserAuthentication: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        authenticationResult: { type: 'UTF8', optional: false },
+        authenticationStatus: { type: 'UTF8', optional: false }
+    }),
+    CreateLoginProfile: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        userName: { type: 'UTF8', optional: false },
+        password: { type: 'UTF8', optional: false },
+        passwordResetRequired: { type: 'BOOLEAN', optional: true }
+    }),
+    DeleteLoginProfile: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        userName: { type: 'UTF8', optional: false }
+    }),
+    CreateAccountAssignment: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        permissionSetArn: { type: 'UTF8', optional: false },
+        principalId: { type: 'UTF8', optional: false },
+        principalType: { type: 'UTF8', optional: false },
+        targetId: { type: 'UTF8', optional: false }
+    }),
     // Organizations
     InviteAccountToOrganization: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
@@ -751,15 +831,22 @@ const EventsSchemas = {
     }),
     CreateFlowLogs: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        FlowLogIdSet: { type: 'JSON', optional: false },
-        LogGroupName: { type: 'UTF8', optional: false },
-        LogStreamName: { type: 'UTF8', optional: false },
-        TrafficType: { type: 'UTF8', optional: false }
+        flowLogIdSet: { type: 'JSON', optional: true },
+        LogGroupName: { type: 'UTF8', optional: true },
+        LogStreamName: { type: 'UTF8', optional: true },
+        TrafficType: { type: 'UTF8', optional: true }
     }),
     DeleteFlowLogs: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         FlowLogId: { type: 'JSON', optional: false }
     }),
+    FilterLogEvents: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        logGroupName: { type: 'UTF8', optional: false },
+        logStreamNames: { type: 'UTF8', repeated: true, optional: false },
+        filterPattern: { type: 'UTF8', optional: false }
+    }),
+    
     // Misc
     RegisterRegion: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
@@ -772,7 +859,7 @@ const EventsSchemas = {
     CreateKeyPair: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         keyPairId: { type: 'UTF8', optional: false },
-        keyPairName: { type: 'UTF8', optional: false },
+        keyName: { type: 'UTF8', optional: false },
         keyFingerprint: { type: 'UTF8', optional: false }
     }),
     DeleteKeyPair: new parquet.ParquetSchema({
@@ -783,8 +870,15 @@ const EventsSchemas = {
     SendSSHPublicKey: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         instanceId: { type: 'UTF8', optional: false },
-        publicKey: { type: 'UTF8', optional: false }
+        sSHPublicKey: { type: 'UTF8', optional: false }
     }),
+    StartEnvironment: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        environmentId: { type: 'UTF8', optional: false },
+        environmentName: { type: 'UTF8', optional: false },
+        environmentType: { type: 'UTF8', optional: false }
+    }),
+    
     // Authentication
     Authenticate: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
@@ -801,6 +895,13 @@ const EventsSchemas = {
         EventId: { type: 'UTF8', optional: false },
         serviceEventDetails: { type: 'JSON', optional: false }
     }),
+    CreateAccessKey: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        accessKeyId: { type: 'UTF8', optional: false },
+        secretAccessKey: { type: 'UTF8', optional: false },
+        status: { type: 'UTF8', optional: false }
+    }),
+    
     // CloudWatch
     StartLiveTail: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
