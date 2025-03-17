@@ -458,7 +458,7 @@ const EventsSchemas = {
     ModifyNetworkInterfaceAttribute: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         networkInterfaceId: { type: 'UTF8', optional: false },
-        description: { type: 'UTF8', optional: true },
+        description: { type: 'JSON', optional: true },
         sourceDestCheck: { type: 'BOOLEAN', optional: true },
         groups: { type: 'UTF8', repeated: true, optional: true }
     }),
