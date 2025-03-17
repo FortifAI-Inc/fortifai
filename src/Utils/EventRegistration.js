@@ -171,16 +171,16 @@ const writeEvents = {
     //sqs: ["CreateQueue", "DeleteQueue", "SendMessage", "DeleteMessage", "PurgeQueue"],
     //ecs: ["CreateCluster", "DeleteCluster", "UpdateService", "RunTask", "StopTask", "RegisterTaskDefinition"],
     //eks: ["CreateCluster", "DeleteCluster", "UpdateClusterConfig", "CreateNodegroup", "DeleteNodegroup", "UpdateNodegroupConfig"],
-    cloudformation: ["CreateStack", "DeleteStack", "UpdateStack", "CreateChangeSet", "ExecuteChangeSet", "RollbackStack"],
-    kinesis: ["CreateStream", "DeleteStream", "PutRecord", "PutRecords", "MergeShards", "SplitShard"],
-    kafka: ["UpdateClusterConfiguration", "CreateTopic", "DeleteTopic", "UpdateBrokerStorage", "UpdateBrokerType"],
-    aurora: ["StartDBCluster", "StopDBCluster", "CreateDBClusterSnapshot", "DeleteDBClusterSnapshot"],
-    //redshift: ["ModifyCluster", "RestoreFromClusterSnapshot", "CreateClusterSnapshot", "DeleteClusterSnapshot"],
-    //elasticache: ["CreateCacheCluster", "DeleteCacheCluster", "ModifyCacheCluster", "RebootCacheCluster", "CreateCacheParameterGroup", "DeleteCacheParameterGroup"],
-    //glue: ["CreateDatabase", "DeleteDatabase", "CreateCrawler", "DeleteCrawler"],
-    //athena: ["CreateWorkGroup", "DeleteWorkGroup", "UpdateWorkGroup", "StartQueryExecution", "StopQueryExecution"],
-    //emr: ["RunJobFlow", "TerminateJobFlows", "AddJobFlowSteps", "CancelSteps"],
-    //cloudtrail: ["CreateTrail", "DeleteTrail", "StartLogging", "StopLogging", "UpdateTrail", "PutEventSelectors"]
+    //cloudformation: ["CreateStack", "DeleteStack", "UpdateStack", "CreateChangeSet", "ExecuteChangeSet", "RollbackStack"],
+    //kinesis: ["CreateStream", "DeleteStream", "PutRecord", "PutRecords", "MergeShards", "SplitShard"],
+    //kafka: ["UpdateClusterConfiguration", "CreateTopic", "DeleteTopic", "UpdateBrokerStorage", "UpdateBrokerType"],
+    //aurora: ["StartDBCluster", "StopDBCluster", "CreateDBClusterSnapshot", "DeleteDBClusterSnapshot"],
+    redshift: ["ModifyCluster", "RestoreFromClusterSnapshot", "CreateClusterSnapshot", "DeleteClusterSnapshot"],
+    elasticache: ["CreateCacheCluster", "DeleteCacheCluster", "ModifyCacheCluster", "RebootCacheCluster", "CreateCacheParameterGroup", "DeleteCacheParameterGroup"],
+    glue: ["CreateDatabase", "DeleteDatabase", "CreateCrawler", "DeleteCrawler"],
+    athena: ["CreateWorkGroup", "DeleteWorkGroup", "UpdateWorkGroup", "StartQueryExecution", "StopQueryExecution"],
+    emr: ["RunJobFlow", "TerminateJobFlows", "AddJobFlowSteps", "CancelSteps"],
+    cloudtrail: ["CreateTrail", "DeleteTrail", "StartLogging", "StopLogging", "UpdateTrail", "PutEventSelectors"]
 };
 
 function buildLookupAttributes() {

@@ -1022,7 +1022,7 @@ const EventsSchemas = {
         stackName: { type: 'UTF8', optional: false },
         templateBody: { type: 'JSON', optional: true },
         templateURL: { type: 'UTF8', optional: true },
-        parameters: { type: 'JSON', optional: true },
+        parameters: { type: 'JSON', repeated: true, optional: true },
         capabilities: { type: 'UTF8', repeated: true, optional: true },
         tags: { type: 'JSON', optional: true }
     }),
@@ -1092,6 +1092,7 @@ const EventsSchemas = {
         shardToSplit: { type: 'UTF8', optional: false },
         newStartingHashKey: { type: 'UTF8', optional: false }
     }),
+    // Kafka
     UpdateClusterConfiguration: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         clusterName: { type: 'UTF8', optional: false },
@@ -1118,6 +1119,7 @@ const EventsSchemas = {
         currentVersion: { type: 'UTF8', optional: false },
         targetInstanceType: { type: 'UTF8', optional: false }
     }),
+    //Aurora
     StartDBCluster: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         dbClusterIdentifier: { type: 'UTF8', optional: false }
@@ -1135,6 +1137,87 @@ const EventsSchemas = {
     DeleteDBClusterSnapshot: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         dbClusterSnapshotIdentifier: { type: 'UTF8', optional: false }
+    }),
+    // redshift
+    ModifyCluster: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        clusterIdentifier: { type: 'UTF8', optional: false },
+        clusterType: { type: 'UTF8', optional: true },
+        numberOfNodes: { type: 'INT32', optional: true },
+        clusterSecurityGroups: { type: 'UTF8', repeated: true, optional: true },
+        vpcSecurityGroupIds: { type: 'UTF8', repeated: true, optional: true },
+        masterUserPassword: { type: 'UTF8', optional: true },
+        clusterParameterGroupName: { type: 'UTF8', optional: true },
+        automatedSnapshotRetentionPeriod: { type: 'INT32', optional: true },
+        manualSnapshotRetentionPeriod: { type: 'INT32', optional: true },
+        preferredMaintenanceWindow: { type: 'UTF8', optional: true },
+        clusterVersion: { type: 'UTF8', optional: true },
+        allowVersionUpgrade: { type: 'BOOLEAN', optional: true },
+        clusterSubnetGroupName: { type: 'UTF8', optional: true },
+        publiclyAccessible: { type: 'BOOLEAN', optional: true },
+        encrypted: { type: 'BOOLEAN', optional: true },
+        kmsKeyId: { type: 'UTF8', optional: true },
+        enhancedVpcRouting: { type: 'BOOLEAN', optional: true },
+        maintenanceTrackName: { type: 'UTF8', optional: true },
+        snapshotScheduleIdentifier: { type: 'UTF8', optional: true },
+        snapshotScheduleAssociationState: { type: 'UTF8', optional: true },
+        expectedNextSnapshotScheduleTime: { type: 'UTF8', optional: true },
+        expectedNextSnapshotScheduleTimeStatus: { type: 'UTF8', optional: true },
+        nextSnapshotScheduleIdentifier: { type: 'UTF8', optional: true },
+        nextSnapshotScheduleAssociationState: { type: 'UTF8', optional: true },
+        nextSnapshotScheduleTimeStatus: { type: 'UTF8', optional: true },
+        nextSnapshotScheduleTime: { type: 'UTF8', optional: true },
+        snapshotScheduleIdentifierStatus: { type: 'UTF8', optional: true },
+        snapshotScheduleState: { type: 'UTF8', optional: true },
+        snapshotScheduleStateStatus: { type: 'UTF8', optional: true },
+        snapshotScheduleTime: { type: 'UTF8', optional: true },
+        snapshotScheduleTimeStatus: { type: 'UTF8', optional: true },
+        snapshotScheduleIdentifier: { type: 'UTF8', optional: true },
+        snapshotScheduleAssociationState: { type: 'UTF8', optional: true },
+        snapshotScheduleTime: { type: 'UTF8', optional: true },
+        snapshotScheduleTimeStatus: { type: 'UTF8', optional: true },
+        snapshotScheduleState: { type: 'UTF8', optional: true },
+        snapshotScheduleStateStatus: { type: 'UTF8', optional: true },  
+        tags: { type: 'JSON', optional: true }
+    }),
+    RestoreFromClusterSnapshot: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        clusterIdentifier: { type: 'UTF8', optional: false },
+        snapshotIdentifier: { type: 'UTF8', optional: false },
+        clusterSubnetGroupName: { type: 'UTF8', optional: true },
+        publiclyAccessible: { type: 'BOOLEAN', optional: true },
+        enhancedVpcRouting: { type: 'BOOLEAN', optional: true },
+        maintenanceTrackName: { type: 'UTF8', optional: true },
+        snapshotScheduleIdentifier: { type: 'UTF8', optional: true },
+        snapshotScheduleAssociationState: { type: 'UTF8', optional: true },
+        expectedNextSnapshotScheduleTime: { type: 'UTF8', optional: true },
+        expectedNextSnapshotScheduleTimeStatus: { type: 'UTF8', optional: true },
+        nextSnapshotScheduleIdentifier: { type: 'UTF8', optional: true },
+        nextSnapshotScheduleAssociationState: { type: 'UTF8', optional: true },
+        nextSnapshotScheduleTimeStatus: { type: 'UTF8', optional: true },
+        nextSnapshotScheduleTime: { type: 'UTF8', optional: true },
+        snapshotScheduleIdentifierStatus: { type: 'UTF8', optional: true },
+        snapshotScheduleState: { type: 'UTF8', optional: true },
+        snapshotScheduleStateStatus: { type: 'UTF8', optional: true },
+        snapshotScheduleTime: { type: 'UTF8', optional: true },
+        snapshotScheduleTimeStatus: { type: 'UTF8', optional: true },
+        snapshotScheduleIdentifier: { type: 'UTF8', optional: true },
+        snapshotScheduleAssociationState: { type: 'UTF8', optional: true },
+        snapshotScheduleTime: { type: 'UTF8', optional: true },
+        snapshotScheduleTimeStatus: { type: 'UTF8', optional: true },
+        snapshotScheduleState: { type: 'UTF8', optional: true },
+        snapshotScheduleStateStatus: { type: 'UTF8', optional: true },
+        tags: { type: 'JSON', optional: true }
+    }),
+    CreateClusterSnapshot: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        clusterSnapshotIdentifier: { type: 'UTF8', optional: false },
+        clusterIdentifier: { type: 'UTF8', optional: false },
+        tags: { type: 'JSON', optional: true }
+    }),
+    DeleteClusterSnapshot: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        clusterSnapshotIdentifier: { type: 'UTF8', optional: false }
     }),
 };
 
