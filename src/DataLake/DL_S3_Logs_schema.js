@@ -15,7 +15,7 @@ const CommonSchema = new parquet.ParquetSchema({
     eventCategory: { type: 'UTF8', optional: false },
     awsRegion: { type: 'UTF8', optional: false },
     managementEvent: { type: 'BOOLEAN', optional: false },
-    recipientAccountId: { type: 'UTF8', optional: false },  
+    recipientAccountId: { type: 'UTF8', optional: false },
     requestID: { type: 'UTF8', optional: false },
 
     // Conditional Fields
@@ -23,7 +23,7 @@ const CommonSchema = new parquet.ParquetSchema({
     userAgent: { type: 'UTF8', optional: true },
     ReadOnly: { type: 'BOOLEAN', optional: true },
     eventType: { type: 'UTF8', optional: false },
-    
+
     // Identity Fields
     userType: { type: 'UTF8', optional: false },
     principalId: { type: 'UTF8', optional: false },
@@ -32,8 +32,8 @@ const CommonSchema = new parquet.ParquetSchema({
     userName: { type: 'UTF8', optional: true },               // IAM username (if applicable)
     accountId: { type: 'UTF8', optional: true },              // AWS Account ID of the user
     onBehalfOf: { type: 'JSON', optional: true },
-    credentialId: {type: 'UTF8', optional: true },
-    
+    credentialId: { type: 'UTF8', optional: true },
+
     // Session Context (Conditional)
     sessionIssuerType: { type: 'UTF8', optional: true },
     sessionIssuerArn: { type: 'UTF8', optional: true },
@@ -41,7 +41,7 @@ const CommonSchema = new parquet.ParquetSchema({
     sessionCreationTime: { type: 'INT64', optional: true },
     mfaAuthenticated: { type: 'BOOLEAN', optional: true },
     sourceIdentity: { type: 'UTF8', optional: true },
-    
+
     // Security Context
     errorCode: { type: 'UTF8', optional: true },
     errorMessage: { type: 'UTF8', optional: true },
@@ -185,7 +185,7 @@ const EventsSchemas = {
         EventId: { type: 'UTF8', optional: false },
         functionName: { type: 'UTF8', optional: false },
         name: { type: 'UTF8', optional: false }
-    }), 
+    }),
     UpdateAlias20150331: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         functionName: { type: 'UTF8', optional: false },
@@ -234,7 +234,7 @@ const EventsSchemas = {
         description: { type: 'UTF8', optional: true },
         licenseInfo: { type: 'UTF8', optional: true },
         compatibleRuntimes: { type: 'UTF8', /*values:*/ repeated: true, optional: true }
-    }), 
+    }),
     DeleteLayerVersion: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         layerName: { type: 'UTF8', optional: false },
@@ -271,7 +271,7 @@ const EventsSchemas = {
     DeleteCodeSigningConfig: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         codeSigningConfigArn: { type: 'UTF8', optional: false }
-    }), 
+    }),
     PutFunctionEventInvokeConfig: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         functionName: { type: 'UTF8', optional: false },
@@ -350,7 +350,7 @@ const EventsSchemas = {
     AssumeRoleFailed: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         errorMessage: { type: 'UTF8', optional: false },
-     }),
+    }),
     CreateGroup: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         displayName: { type: 'UTF8', optional: false },
@@ -501,7 +501,7 @@ const EventsSchemas = {
         policyName: { type: 'UTF8', optional: false },
         policyDocument: { type: 'JSON', optional: false }
     }),
-    
+
     // Organizations
     InviteAccountToOrganization: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
@@ -869,8 +869,155 @@ const EventsSchemas = {
         EventId: { type: 'UTF8', optional: false },
         dashboardNames: { type: 'UTF8', repeated: true, optional: false }
     }),
+    // SNS
+    CreateTopic: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        topicArn: { type: 'UTF8', optional: false },
+        name: { type: 'UTF8', optional: true },
+        attributes: { type: 'JSON', optional: true },
+        tags: { type: 'JSON', optional: true }
+    }),
+    DeleteTopic: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        topicArn: { type: 'UTF8', optional: false }
+    }),
+    Subscribe: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        topicArn: { type: 'UTF8', optional: false },
+        protocol: { type: 'UTF8', optional: false },
+        endpoint: { type: 'UTF8', optional: true },
+        attributes: { type: 'JSON', optional: true }
+    }),
+    Unsubscribe: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        subscriptionArn: { type: 'UTF8', optional: false }
+    }),
+    Publish: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        topicArn: { type: 'UTF8', optional: true },
+        targetArn: { type: 'UTF8', optional: true },
+        message: { type: 'UTF8', optional: false },
+        subject: { type: 'UTF8', optional: true },
+        messageAttributes: { type: 'JSON', optional: true }
+    }),
+    //SQS
+    CreateQueue: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        queueUrl: { type: 'UTF8', optional: false },
+        queueName: { type: 'UTF8', optional: true },
+        attributes: { type: 'JSON', optional: true }
+    }),
+    DeleteQueue: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        queueUrl: { type: 'UTF8', optional: false }
+    }),
+    SendMessage: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        queueUrl: { type: 'UTF8', optional: false },
+        messageBody: { type: 'UTF8', optional: false },
+        delaySeconds: { type: 'INT32', optional: true },
+        messageAttributes: { type: 'JSON', optional: true }
+    }),
+    DeleteMessage: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        queueUrl: { type: 'UTF8', optional: false },
+        receiptHandle: { type: 'UTF8', optional: false }
+    }),
+    PurgeQueue: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        queueUrl: { type: 'UTF8', optional: false }
+    }),
+    // ECS
+    CreateCluster: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        clusterName: { type: 'UTF8', optional: false },
+        settings: { type: 'JSON', optional: true },
+        tags: { type: 'JSON', optional: true }
+    }),
+    DeleteCluster: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        clusterName: { type: 'UTF8', optional: false }
+    }),
+    UpdateService: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        serviceName: { type: 'UTF8', optional: false },
+        clusterName: { type: 'UTF8', optional: false },
+        desiredCount: { type: 'INT32', optional: true },
+        taskDefinition: { type: 'UTF8', optional: true },
+        deploymentConfiguration: { type: 'JSON', optional: true }
+    }),
+    RunTask: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        clusterName: { type: 'UTF8', optional: false },
+        taskDefinition: { type: 'UTF8', optional: false },
+        overrides: { type: 'JSON', optional: true },
+        count: { type: 'INT32', optional: true },
+        startedBy: { type: 'UTF8', optional: true }
+    }),
+    StopTask: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        clusterName: { type: 'UTF8', optional: false },
+        taskId: { type: 'UTF8', optional: false },
+        reason: { type: 'UTF8', optional: true }
+    }),
+    RegisterTaskDefinition: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        family: { type: 'UTF8', optional: false },
+        containerDefinitions: { type: 'JSON', optional: false },
+        taskRoleArn: { type: 'UTF8', optional: true },
+        executionRoleArn: { type: 'UTF8', optional: true },
+        networkMode: { type: 'UTF8', optional: true },
+        volumes: { type: 'JSON', optional: true },
+        placementConstraints: { type: 'JSON', optional: true },
+        requiresCompatibilities: { type: 'UTF8', repeated: true, optional: true }
+    }),
+    // EKS
+    CreateCluster: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        clusterName: { type: 'UTF8', optional: false },
+        version: { type: 'UTF8', optional: true },
+        roleArn: { type: 'UTF8', optional: false },
+        resourcesVpcConfig: { type: 'JSON', optional: false },
+        logging: { type: 'JSON', optional: true },
+        tags: { type: 'JSON', optional: true }
+    }),
+    DeleteCluster: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        clusterName: { type: 'UTF8', optional: false }
+    }),
+    UpdateClusterConfig: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        clusterName: { type: 'UTF8', optional: false },
+        resourcesVpcConfig: { type: 'JSON', optional: true },
+        logging: { type: 'JSON', optional: true }
+    }),
+    CreateNodegroup: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        clusterName: { type: 'UTF8', optional: false },
+        nodegroupName: { type: 'UTF8', optional: false },
+        scalingConfig: { type: 'JSON', optional: false },
+        subnets: { type: 'UTF8', repeated: true, optional: false },
+        instanceTypes: { type: 'UTF8', repeated: true, optional: true },
+        amiType: { type: 'UTF8', optional: true },
+        remoteAccess: { type: 'JSON', optional: true },
+        nodeRole: { type: 'UTF8', optional: false },
+        tags: { type: 'JSON', optional: true }
+    }),
+    DeleteNodegroup: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        clusterName: { type: 'UTF8', optional: false },
+        nodegroupName: { type: 'UTF8', optional: false }
+    }),
+    UpdateNodegroupConfig: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        clusterName: { type: 'UTF8', optional: false },
+        nodegroupName: { type: 'UTF8', optional: false },
+        scalingConfig: { type: 'JSON', optional: true },
+        labels: { type: 'JSON', optional: true },
+        taints: { type: 'JSON', optional: true }
+    })
 };
-// CloudWatch Metrics and Alarms
+
 
 
 module.exports = { CommonSchema, EventsSchemas, InventorySchema };
