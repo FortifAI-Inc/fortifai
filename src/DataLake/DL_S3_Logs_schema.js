@@ -102,6 +102,10 @@ const EventsSchemas = {
         EventId: { type: 'UTF8', optional: false },
         //instanceId: { type: 'UTF8', optional: false }
     }),
+    DeleteKeyPair: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        keyPairId: { type: 'UTF8', optional: false }
+    }),
     // S3
     PutObject: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
@@ -133,6 +137,11 @@ const EventsSchemas = {
         EventId: { type: 'UTF8', optional: false },
         bucketName: { type: 'UTF8', optional: false },
         acl: { type: 'JSON', optional: false }
+    }),
+    PutBucketEncryption: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        bucketName: { type: 'UTF8', optional: false },
+        serverSideEncryptionConfiguration: { type: 'JSON', optional: false }
     }),
     // Lambda
     CreateFunction20150331: new parquet.ParquetSchema({
@@ -1353,6 +1362,19 @@ const EventsSchemas = {
         trailName: { type: 'UTF8', optional: false },
         advancedEventSelectors: { type: 'JSON', optional: false }
     }),
+    // Session Management
+    CreateSession: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        sessionId: { type: 'UTF8', optional: false },
+        sessionName: { type: 'UTF8', optional: false },
+        tags: { type: 'JSON', optional: true }
+    }),
+    DeleteSession: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        sessionId: { type: 'UTF8', optional: false }
+    }),
+    
+    
 };
 
 
