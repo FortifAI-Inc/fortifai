@@ -734,7 +734,17 @@ const EventsSchemas = {
         instanceId: { type: 'UTF8', optional: false },
         deviceIndex: { type: 'UTF8', optional: false }
     }),
-    
+    CreateFlowLogs: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        flowLogId: { type: 'UTF8', optional: false },
+        logGroupName: { type: 'UTF8', optional: false },
+        logStreamName: { type: 'UTF8', optional: false },
+        trafficType: { type: 'UTF8', optional: false }
+    }),
+    DeleteFlowLogs: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        flowLogId: { type: 'UTF8', optional: false }
+    }),
     // Misc
     RegisterRegion: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
