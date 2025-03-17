@@ -979,7 +979,7 @@ const EventsSchemas = {
         roleArn: { type: 'UTF8', optional: false },
         resourcesVpcConfig: { type: 'JSON', optional: false },
         logging: { type: 'JSON', optional: true },
-        tags: { type: 'JSON', optional: true }
+        tags: { type: 'JSON', repeated: true, optional: true }
     }),
     DeleteCluster: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },

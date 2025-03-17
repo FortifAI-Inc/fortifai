@@ -5,7 +5,9 @@ const path = require('path');
 async function logEventDenied(EventCommonDatam, eventName) { //TODO: log AccessDenied events
     return true
 }
-
+async function logEventException(EventCommonDatam, eventName) { //TODO: log ServerException events (EKS?)
+    return true
+}
 async function logEvent(eventName, event) {
     // Parse CloudTrail event details
     const CloudTrailEvent = JSON.parse(event.CloudTrailEvent || '{}');
@@ -62,6 +64,10 @@ async function logEvent(eventName, event) {
     if (EventCommonData.errorCode == "AccessDenied") {
         //console.log ("Event was denied!")
         return logEventDenied(EventCommonData, eventName)
+    }
+    if (EventCommonData.errorCode == "ServerExceptione") {
+        //console.log ("Event was denied!")
+        return logEventException(EventCommonData, eventName)
     }
     // Schema validation checks
     const requiredFields = [
