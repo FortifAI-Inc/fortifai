@@ -210,12 +210,17 @@ function EventPrivateDataHandler(cloudTrailEvent, eventName) {
             ret[field] = res[field]
         } else if (cloudTrailEvent[field] != undefined) { // grab it from the top (AssumeRoleFailed)
             ret[field] = cloudTrailEvent[field]
-        } else { // check nesting inside response
-            for (const member in res) {
+        } else { 
+            for (const member in res) { // check nesting inside response
                  if (res[member][field] != undefined) {
                     ret[field] = res[member][field]
                 }
             }
+            for (const member in cloudTrailEvent) { // check nesting inside cloudTrailEvent
+                if (cloudTrailEvent[member][field] != undefined) {
+                   ret[field] = cloudTrailEvent[member][field]
+               }
+           }
 
         }
     }
