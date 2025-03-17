@@ -452,7 +452,7 @@ const EventsSchemas = {
         vpcId: { type: 'UTF8', optional: true },
         isDefault: { type: 'BOOLEAN', optional: true },
         cidrBlock: { type: 'UTF8', optional: true },
-        ARN: { type: 'UTF8', optional: false },
+        ARN: { type: 'UTF8', optional: true }, // TODO: hiding in resources
         tags: { type: 'JSON', optional: true }
     }),
     ModifyNetworkInterfaceAttribute: new parquet.ParquetSchema({
