@@ -1337,7 +1337,7 @@ const EventsSchemas = {
     // CloudTrail
     CreateTrail: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        trailName: { type: 'UTF8', optional: false },
+        name: { type: 'UTF8', optional: false },
         tags: { type: 'JSON', repeated: true, optional: true }
     }),
     DeleteTrail: new parquet.ParquetSchema({    
@@ -1346,7 +1346,7 @@ const EventsSchemas = {
     }),
     StartLogging: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        trailName: { type: 'UTF8', optional: false }
+        name: { type: 'UTF8', optional: false }
     }),
     StopLogging: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
@@ -1354,7 +1354,7 @@ const EventsSchemas = {
     }),
     UpdateTrail: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },     
-        trailName: { type: 'UTF8', optional: false },
+        name: { type: 'UTF8', optional: false },
         tags: { type: 'JSON', repeated: true, optional: true }
     }),
     PutEventSelectors: new parquet.ParquetSchema({
@@ -1365,13 +1365,13 @@ const EventsSchemas = {
     // Session Management
     CreateSession: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        sessionId: { type: 'UTF8', optional: false },
-        sessionName: { type: 'UTF8', optional: false },
+        SessionId: { type: 'UTF8', optional: false },
+        sessionName: { type: 'UTF8', optional: true },
         tags: { type: 'JSON', optional: true }
     }),
     DeleteSession: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        sessionId: { type: 'UTF8', optional: false }
+        SessionId: { type: 'UTF8', optional: false }
     }),
     
     
