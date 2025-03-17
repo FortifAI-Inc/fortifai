@@ -141,7 +141,7 @@ const EventsSchemas = {
     PutBucketEncryption: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         bucketName: { type: 'UTF8', optional: false },
-        serverSideEncryptionConfiguration: { type: 'JSON', optional: false }
+        ServerSideEncryptionConfiguration: { type: 'JSON', optional: false }
     }),
     // Lambda
     CreateFunction20150331: new parquet.ParquetSchema({
