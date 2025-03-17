@@ -120,7 +120,6 @@ async function createLambdaFunction(roleArn) {
 }
 const ignoreEvents = [ "LookupEvents" ];
 
-module.exports = { ignoreEvents, writeEvents, buildLookupAttributes };
 
 
 const writeEvents = {
@@ -269,6 +268,4 @@ async function main() {
     }
 }
 
-module.exports = { buildLookupAttributes };
-//main();
-
+module.exports = { ignoreEvents, buildLookupAttributes };
