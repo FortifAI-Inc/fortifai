@@ -65,7 +65,7 @@ async function logEvent(eventName, event) {
         //console.log ("Event was denied!")
         return logEventDenied(EventCommonData, eventName)
     }
-    if (EventCommonData.errorCode == "ServerExceptione") {
+    if (EventCommonData.errorCode == "ServerException") {
         //console.log ("Event was denied!")
         return logEventException(EventCommonData, eventName)
     }
