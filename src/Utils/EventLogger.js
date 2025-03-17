@@ -109,7 +109,7 @@ async function logEvent(eventName, event) {
         // Validate required fields
         const schema = EventsSchemas[eventName];
         if (schema === undefined) {
-            if (eventName.startsWith("List") || eventName.startsWith("Get") || eventName.startsWith("Describe")) {
+            if (/^(List|Get|Describe)/.test(eventName)) {
                 return true;
             }
             console.error("EventPrivateDataHandler: No Schema defined for event ", eventName)
