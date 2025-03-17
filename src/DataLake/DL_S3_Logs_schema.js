@@ -109,8 +109,8 @@ const EventsSchemas = {
     RegisterManagedInstance: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         managedInstanceId: { type: 'UTF8', optional: false },
-        instanceId: { type: 'UTF8', optional: false },
-        activationId: { type: 'UTF8', optional: false }
+        instanceId: { type: 'UTF8', optional: true },
+        activationId: { type: 'UTF8', optional: true }
     }),
     
     // S3
@@ -517,7 +517,22 @@ const EventsSchemas = {
         policyName: { type: 'UTF8', optional: false },
         policyDocument: { type: 'JSON', optional: false }
     }),
-
+    ValidateTrustPolicy: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        trustPolicyDocument: { type: 'JSON', optional: false }
+    }),
+    ValidatePolicy: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        policyDocument: { type: 'JSON', optional: false }
+    }),
+    ValidatePolicyDocument: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        policyDocument: { type: 'JSON', optional: false }
+    }), 
+    ValidateTrustPolicyDocument: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        trustPolicyDocument: { type: 'JSON', optional: false }
+    }), 
     // Organizations
     InviteAccountToOrganization: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
@@ -736,14 +751,14 @@ const EventsSchemas = {
     }),
     CreateFlowLogs: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        flowLogId: { type: 'UTF8', optional: false },
-        logGroupName: { type: 'UTF8', optional: false },
-        logStreamName: { type: 'UTF8', optional: false },
-        trafficType: { type: 'UTF8', optional: false }
+        FlowLogIdSet: { type: 'JSON', optional: false },
+        LogGroupName: { type: 'UTF8', optional: false },
+        LogStreamName: { type: 'UTF8', optional: false },
+        TrafficType: { type: 'UTF8', optional: false }
     }),
     DeleteFlowLogs: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        flowLogId: { type: 'UTF8', optional: false }
+        FlowLogId: { type: 'JSON', optional: false }
     }),
     // Misc
     RegisterRegion: new parquet.ParquetSchema({
@@ -753,6 +768,22 @@ const EventsSchemas = {
     ConsoleLogin: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
         additionalEventData: { type: 'JSON', optional: false }
+    }),
+    CreateKeyPair: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        keyPairId: { type: 'UTF8', optional: false },
+        keyPairName: { type: 'UTF8', optional: false },
+        keyFingerprint: { type: 'UTF8', optional: false }
+    }),
+    DeleteKeyPair: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        keyPairId: { type: 'UTF8', optional: false },
+        keyPairName: { type: 'UTF8', optional: false }
+    }),
+    SendSSHPublicKey: new parquet.ParquetSchema({
+        EventId: { type: 'UTF8', optional: false },
+        instanceId: { type: 'UTF8', optional: false },
+        publicKey: { type: 'UTF8', optional: false }
     }),
     // Authentication
     Authenticate: new parquet.ParquetSchema({
