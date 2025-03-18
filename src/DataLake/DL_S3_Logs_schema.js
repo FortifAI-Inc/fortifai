@@ -880,9 +880,9 @@ const EventsSchemas = {
     }),
     CreateEnvironment: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        environmentId: { type: 'UTF8', optional: false },
-        environmentName: { type: 'UTF8', optional: false },
-        environmentType: { type: 'UTF8', optional: false }
+        EnvironmentId: { type: 'UTF8', optional: false },
+        environmentName: { type: 'UTF8', optional: true },
+        environmentType: { type: 'UTF8', optional: true }
     }),
     
     
@@ -921,8 +921,8 @@ const EventsSchemas = {
     }),
     StartQuery: new parquet.ParquetSchema({
         EventId: { type: 'UTF8', optional: false },
-        logGroupName: { type: 'UTF8', optional: false },
-        logStreamName: { type: 'UTF8', optional: false },
+        logGroupNames: { type: 'JSON', optional: true },
+        logStreamNames: { type: 'JSON', optional: true },
         queryString: { type: 'UTF8', optional: false }
     }), 
     StopQuery: new parquet.ParquetSchema({
