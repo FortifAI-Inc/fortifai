@@ -47,6 +47,7 @@ async function InventoryAssets() {
             }
             const ec2Data = {
                 UniqueId: instance.InstanceId,
+                IsStale: false,
                 InstanceId: instance.InstanceId,
                 InstanceType: instance.InstanceType,
                 InstanceState: instance.State.Name,
@@ -79,7 +80,7 @@ async function InventoryAssets() {
         if (records.length > 0) {
             DL_access.writeData(ec2Schema, records, S3_KEY);
             DL_S3_access.addAssetTypeToDirectory('EC2', S3_KEY);
-            records = []    
+            records = []
         }
         console.log("EC2 Instances count:", instanceList.length);
 
@@ -91,10 +92,15 @@ async function InventoryAssets() {
         for (const vpc of vpcs.Vpcs) {
             const VpcData = {
                 UniqueId: vpc.VpcId,
+                IsStale: false,
                 VpcId: vpc.VpcId,
                 CidrBlock: vpc.CidrBlock
             }
             records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
+            for (const record of records) { // Mark all records as stale
+                record.IsStale = true;
+            }
+
 
             const index = records.findIndex(rec => rec.UniqueId === VpcData.VpcId);
             if (index !== -1) {
@@ -117,10 +123,14 @@ async function InventoryAssets() {
         for (const subnet of subnets.Subnets) {
             const SubnetData = {
                 UniqueId: subnet.SubnetId,
+                IsStale: false,
                 SubnetId: subnet.SubnetId,
                 VpcId: subnet.VpcId
             }
             records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
+            for (const record of records) { // Mark all records as stale
+                record.IsStale = true;
+            }
 
             const index = records.findIndex(rec => rec.UniqueId === SubnetData.SubnetId);
             if (index !== -1) {
@@ -128,7 +138,7 @@ async function InventoryAssets() {
             } else {
                 records.push(SubnetData); // Insert new record
             }
-        }   
+        }
         if (records.length > 0) {
             DL_access.writeData(SubnetSchema, records, S3_KEY);
             DL_S3_access.addAssetTypeToDirectory('Subnet', S3_KEY);
@@ -141,10 +151,14 @@ async function InventoryAssets() {
         for (const bucket of s3Buckets.Buckets) {
             const S3Data = {
                 UniqueId: bucket.Name,
+                IsStale: false,
                 Name: bucket.Name,
                 CreationDate: bucket.CreationDate
             }
             records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
+            for (const record of records) { // Mark all records as stale
+                record.IsStale = true;
+            }
 
             // Check if InstanceId already exists
 
@@ -172,10 +186,14 @@ async function InventoryAssets() {
         for (const igw of internetGateways.InternetGateways) {
             const IGWData = {
                 UniqueId: igw.InternetGatewayId,
+                IsStale: false,
                 InternetGatewayId: igw.InternetGatewayId,
                 VpcId: igw.VpcId
             }
             records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
+            for (const record of records) { // Mark all records as stale
+                record.IsStale = true;
+            }
 
             // Check if InstanceId already exists
 
@@ -201,10 +219,14 @@ async function InventoryAssets() {
         for (const sg of securityGroups.SecurityGroups) {
             const SGData = {
                 UniqueId: sg.GroupId,
+                IsStale: false,
                 GroupId: sg.GroupId,
                 VpcId: sg.VpcId
             }
             records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
+            for (const record of records) { // Mark all records as stale
+                record.IsStale = true;
+            }
 
             // Check if InstanceId already exists
 
@@ -230,6 +252,7 @@ async function InventoryAssets() {
         for (const ni of networkInterfaces.NetworkInterfaces) {
             const NIData = {
                 UniqueId: ni.NetworkInterfaceId,
+                IsStale: false,
                 NetworkInterfaceId: ni.NetworkInterfaceId,
                 AvailabilityZone: ni.AvailabilityZone,
                 PrivateIpAddress: ni.PrivateIpAddress,
@@ -242,6 +265,9 @@ async function InventoryAssets() {
                 GroupId: ni.Groups ? ni.Groups.map(group => group.GroupId).join(',') : null
             }
             records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
+            for (const record of records) { // Mark all records as stale
+                record.IsStale = true;
+            }
 
             // Check if InstanceId already exists
 
@@ -267,11 +293,15 @@ async function InventoryAssets() {
         for (const lambdaFunction of lambdaFunctions.Functions) {
             const LambdaData = {
                 UniqueId: lambdaFunction.FunctionName,
+                IsStale: false,
                 FunctionName: lambdaFunction.FunctionName,
                 Description: lambdaFunction.Description,
                 Role: lambdaFunction.Role
             }
             records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
+            for (const record of records) { // Mark all records as stale
+                record.IsStale = true;
+            }
 
             // Check if InstanceId already exists
 
@@ -322,11 +352,15 @@ async function CollectRoles() {
         for (const role of roles.Roles) {
             const IAMRoleData = {
                 UniqueId: role.RoleId,
+                IsStale: false,
                 RoleId: role.RoleId,
                 RoleName: role.RoleName,
                 AssumeRolePolicyDocument: role.AssumeRolePolicyDocument
             }
             records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
+            for (const record of records) { // Mark all records as stale
+                record.IsStale = true;
+            }
 
             // Check if InstanceId already exists
 
@@ -372,6 +406,7 @@ async function CollectPolicies() {
             });
             const IAMPolicyData = {
                 UniqueId: policy.PolicyId,
+                IsStale: false,
                 PolicyId: policy.PolicyId,
                 PolicyName: policy.PolicyName,
                 AttachmentCount: policy.AttachmentCount,
@@ -379,6 +414,9 @@ async function CollectPolicies() {
                 Document: policyVersion.PolicyVersion.Document
             }
             records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
+            for (const record of records) { // Mark all records as stale
+                record.IsStale = true;
+            }   
 
             // Check if InstanceId already exists
 
@@ -445,6 +483,7 @@ async function CollectUsers() {
 
             const UserData = {
                 UniqueId: consolidatedUser.UserId,
+                IsStale: false,
                 UserId: consolidatedUser.UserId,
                 UserName: consolidatedUser.UserName,
                 AccessKeyIds: AccessKeys,
@@ -452,6 +491,9 @@ async function CollectUsers() {
                 InlinePolicyNames: InlinePolicies
             }
             records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
+            for (const record of records) { // Mark all records as stale
+                record.IsStale = true;
+            }   
 
             // Check if InstanceId already exists
 

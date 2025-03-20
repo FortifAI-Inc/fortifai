@@ -7,6 +7,7 @@ const AssetDirectorySchema = new parquet.ParquetSchema({
 
 const ec2Schema = new parquet.ParquetSchema({
     UniqueId: { type: 'UTF8', optional: false}, // have a standard uniqueId for all assets, each of them will hold the relevant ID from AWS
+    IsStale: { type: 'BOOLEAN', optional: false },
     InstanceId: { type: 'UTF8', optional: false },
     InstanceType: { type: 'UTF8', optional: true },
     InstanceState: { type: 'UTF8', optional: true },
@@ -28,36 +29,42 @@ const ec2Schema = new parquet.ParquetSchema({
 });
 const VpcSchema = new parquet.ParquetSchema({
     UniqueId: { type: 'UTF8', optional: false },
+    IsStale: { type: 'BOOLEAN', optional: false },
     VpcId: { type: 'UTF8', optional: false },
     CidrBlock: { type: 'UTF8', optional: false }
     //tags: { type: 'UTF8', optional: true }*/
 });
 const SubnetSchema = new parquet.ParquetSchema({
     UniqueId: { type: 'UTF8', optional: false },
+    IsStale: { type: 'BOOLEAN', optional: false },
     SubnetId: { type: 'UTF8', optional: false },
     VpcId: { type: 'UTF8', optional: false }
     //tags: { type: 'UTF8', optional: true }*/
 }); 
 const S3Schema = new parquet.ParquetSchema({
     UniqueId: { type: 'UTF8', optional: false },
+    IsStale: { type: 'BOOLEAN', optional: false },
     Name: { type: 'UTF8', optional: false },
     CreationDate: { type: 'UTF8', optional: false }
     //tags: { type: 'UTF8', optional: true }*/
 });
 const IGWSchema = new parquet.ParquetSchema({
     UniqueId: { type: 'UTF8', optional: false },
+    IsStale: { type: 'BOOLEAN', optional: false },
     InternetGatewayId: { type: 'UTF8', optional: false },
     VpcId: { type: 'UTF8', optional: true }
     //tags: { type: 'UTF8', optional: true }*/
 });
 const SGSchema = new parquet.ParquetSchema({
     UniqueId: { type: 'UTF8', optional: false },
+    IsStale: { type: 'BOOLEAN', optional: false },
     GroupId: { type: 'UTF8', optional: false },
     VpcId: { type: 'UTF8', optional: false }
     //tags: { type: 'UTF8', optional: true }*/
 });
 const NISchema = new parquet.ParquetSchema({
     UniqueId: { type: 'UTF8', optional: false },
+    IsStale: { type: 'BOOLEAN', optional: false },
     NetworkInterfaceId: { type: 'UTF8', optional: false },
     AvailabilityZone: { type: 'UTF8', optional: false },
     PrivateIpAddress: { type: 'UTF8', optional: false },
@@ -72,6 +79,7 @@ const NISchema = new parquet.ParquetSchema({
 });
 const LambdaSchema = new parquet.ParquetSchema({
     UniqueId: { type: 'UTF8', optional: false },
+    IsStale: { type: 'BOOLEAN', optional: false },
     FunctionName: { type: 'UTF8', optional: false },
     Description: { type: 'UTF8', optional: true },
     Role: { type: 'UTF8', optional: false }
@@ -79,12 +87,14 @@ const LambdaSchema = new parquet.ParquetSchema({
 });
 const IAMRoleSchema = new parquet.ParquetSchema({
     UniqueId: { type: 'UTF8', optional: false },
+    IsStale: { type: 'BOOLEAN', optional: false },
     RoleId: { type: 'UTF8', optional: false },
     RoleName: { type: 'UTF8', optional: false },
     AssumeRolePolicyDocument: { type: 'UTF8', optional: false }
 });
 const IAMPolicySchema = new parquet.ParquetSchema({
     UniqueId: { type: 'UTF8', optional: false },
+    IsStale: { type: 'BOOLEAN', optional: false },
     PolicyId: { type: 'UTF8', optional: false },
     PolicyName: { type: 'UTF8', optional: false },
     AttachmentCount: { type: 'INT32', optional: false },
@@ -93,6 +103,7 @@ const IAMPolicySchema = new parquet.ParquetSchema({
 });
 const UserSchema = new parquet.ParquetSchema({
     UniqueId: { type: 'UTF8', optional: false },
+    IsStale: { type: 'BOOLEAN', optional: false },
     UserId: { type: 'UTF8', optional: false },
     UserName: { type: 'UTF8', optional: false },
     AccessKeyIds: { type: 'UTF8', repeated: true },
