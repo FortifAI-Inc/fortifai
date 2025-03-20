@@ -1,5 +1,10 @@
 const parquet = require('parquetjs-lite');
 
+const AssetDirectorySchema = new parquet.ParquetSchema({
+    AssetType: { type: 'UTF8', optional: false},
+    AssetTable: { type: 'UTF8', optional: false}, // the S3 Key for the asset containing this Type
+}
+
 const ec2Schema = new parquet.ParquetSchema({
     UniqueId: { type: 'UTF8', optional: false}, // have a standard uniqueId for all assets, each of them will hold the relevant ID from AWS
     InstanceId: { type: 'UTF8', optional: false },
@@ -99,5 +104,6 @@ module.exports = {
     LambdaSchema,
     IAMRoleSchema,
     IAMPolicySchema,
-    UserSchema
+    UserSchema,
+    AssetDirectorySchema
 };

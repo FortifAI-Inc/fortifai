@@ -126,5 +126,18 @@ async function uploadParquetToS3(schema, records, S3_KEY) {
     console.error("❌ Error uploading Parquet file to S3:",S3_KEY, err);
   }
 }
+async function addAssetTypeToDirectory(AssetType, AssetTable) {
+  const schema = AssetDirectorySchema;
+  const records = [];
+  const S3_KEY = `Assets/AssetDirectory.parquet`;
+  records = await fetchParquetFromS3(S3_KEY);
+  const index = records.findIndex(rec => rec.AssetType === AssetType);
+  if (index !== -1) {
+    records[index].AssetTable = AssetTable;
+  } else {
+    records.push({ AssetType: AssetType, AssetTable: AssetTable });
+  }
+  await enqueueS3Write(schema, records, S3_KEY);
+}
 
-module.exports = { enqueueS3Write, fetchParquetFromS3 };
+module.exports = { enqueueS3Write, fetchParquetFromS3, addAssetTypeToDirectory };

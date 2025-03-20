@@ -78,6 +78,7 @@ async function InventoryAssets() {
         }
         if (records.length > 0) {
             DL_access.writeData(ec2Schema, records, S3_KEY);
+            DL_S3_access.addAssetTypeToDirectory('EC2', S3_KEY);
             records = []    
         }
         console.log("EC2 Instances count:", instanceList.length);
@@ -106,6 +107,7 @@ async function InventoryAssets() {
         }
         if (records.length > 0) {
             DL_access.writeData(VpcSchema, records, S3_KEY);
+            DL_S3_access.addAssetTypeToDirectory('VPC', S3_KEY);
             records = []
         }
 
@@ -134,6 +136,7 @@ async function InventoryAssets() {
         }
         if (records.length > 0) {
             DL_access.writeData(S3Schema, records, S3_KEY);
+            DL_S3_access.addAssetTypeToDirectory('S3', S3_KEY);
             records = []
         }
         console.log("S3 Buckets count:", s3Buckets.Buckets.length);
@@ -163,6 +166,7 @@ async function InventoryAssets() {
         }
         if (records.length > 0) {
             DL_access.writeData(IGWSchema, records, S3_KEY);
+            DL_S3_access.addAssetTypeToDirectory('IGW', S3_KEY);
             records = []
         }
 
@@ -191,6 +195,7 @@ async function InventoryAssets() {
         }
         if (records.length > 0) {
             DL_access.writeData(SGSchema, records, S3_KEY);
+            DL_S3_access.addAssetTypeToDirectory('SG', S3_KEY);
             records = []
         }
 
@@ -227,6 +232,7 @@ async function InventoryAssets() {
         }
         if (records.length > 0) {
             DL_access.writeData(NISchema, records, S3_KEY);
+            DL_S3_access.addAssetTypeToDirectory('NI', S3_KEY);
             records = []
         }
 
@@ -256,6 +262,7 @@ async function InventoryAssets() {
         }
         if (records.length > 0) {
             DL_access.writeData(LambdaSchema, records, S3_KEY);
+            DL_S3_access.addAssetTypeToDirectory('Lambda', S3_KEY);
             records = []
         }
 
@@ -311,6 +318,7 @@ async function CollectRoles() {
         }
         if (records.length > 0) {
             DL_access.writeData(IAMRoleSchema, records, S3_KEY);
+            DL_S3_access.addAssetTypeToDirectory('IAMRole', S3_KEY);
             records = []
         }
         //return roles.Roles;
@@ -361,6 +369,7 @@ async function CollectPolicies() {
         }
         if (records.length > 0) {
             DL_access.writeData(IAMPolicySchema, records, S3_KEY);
+            DL_S3_access.addAssetTypeToDirectory('IAMPolicy', S3_KEY);
             records = []
         }
         return policies.Policies;
@@ -434,6 +443,7 @@ async function CollectUsers() {
         }
         if (records.length > 0) {
             DL_access.writeData(UserSchema, records, S3_KEY);
+            DL_S3_access.addAssetTypeToDirectory('User', S3_KEY);
             records = []
         }
         return users.Users;
