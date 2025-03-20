@@ -8,7 +8,8 @@ const DL_S3_access = require('../DataLake/DL_S3_access');
 const { IAM } = require("@aws-sdk/client-iam");
 const { ec2Schema, VpcSchema, S3Schema, IGWSchema, SGSchema, NISchema, LambdaSchema, IAMRoleSchema, IAMPolicySchema, UserSchema } = require('../DataLake/DL_S3_Assets_schema');
 
-
+const EnvRegion = 'eu-north-1'
+//const EnvRegion = 'us-east-1'
 
 /// TBD: https://github.com/thiagosanches/awscraper/tree/main/scrapers has many more scrapers, e.g. glue jobs, Lambdas and more
 /// TBD: map ECS / EKS workloads
@@ -20,16 +21,16 @@ const { ec2Schema, VpcSchema, S3Schema, IGWSchema, SGSchema, NISchema, LambdaSch
 async function InventoryAssets() {
     console.log("Inventorying AWS environment...");
     const ec2 = new EC2({
-        region: 'us-east-1',
+        region: EnvRegion,
     });
     const s3 = new S3({
-        region: 'us-east-1',
+        region: EnvRegion,
     });
     const rds = new RDS({
-        region: 'us-east-1',
+        region: EnvRegion,
     });
     const lambda = new Lambda({
-        region: 'us-east-1',
+        region: EnvRegion,
     });
 
     try {
@@ -61,7 +62,7 @@ async function InventoryAssets() {
                 CpuOptions: instance.CpuOptions.CoreCount * instance.CpuOptions.ThreadsPerCore + " threads total",
                 PlatformDetails: instance.PlatformDetails
             }
-            S3_KEY = 'ec2inventory.parquet';
+            S3_KEY = 'Assets/ec2inventory.parquet';
             records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
 
             // Check if InstanceId already exists
@@ -88,7 +89,7 @@ async function InventoryAssets() {
                 VpcId: vpc.VpcId,
                 CidrBlock: vpc.CidrBlock
             }
-            S3_KEY = 'vpcinventory.parquet';
+            S3_KEY = 'Assets/vpcinventory.parquet';
             records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
 
             const index = records.findIndex(rec => rec.UniqueId === VpcData.VpcId);
@@ -110,7 +111,7 @@ async function InventoryAssets() {
                 Name: bucket.Name,
                 CreationDate: bucket.CreationDate
             }
-            S3_KEY = 'S3Bucketinventory.parquet';
+            S3_KEY = 'Assets/S3Bucketinventory.parquet';
             records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
 
             // Check if InstanceId already exists
@@ -137,7 +138,7 @@ async function InventoryAssets() {
                 InternetGatewayId: igw.InternetGatewayId,
                 VpcId: igw.VpcId
             }
-            S3_KEY = 'IGWBucketinventory.parquet';
+            S3_KEY = 'Assets/IGWBucketinventory.parquet';
             records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
 
             // Check if InstanceId already exists
@@ -162,7 +163,7 @@ async function InventoryAssets() {
                 GroupId: sg.GroupId,
                 VpcId: sg.VpcId
             }
-            S3_KEY = 'SGBucketinventory.parquet';
+            S3_KEY = 'Assets/SGBucketinventory.parquet';
             records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
 
             // Check if InstanceId already exists
@@ -195,7 +196,7 @@ async function InventoryAssets() {
                 SubnetId: ni.SubnetId,
                 GroupId: ni.Groups ? ni.Groups.map(group => group.GroupId).join(',') : null
             }
-            S3_KEY = 'NIBucketinventory.parquet';
+            S3_KEY = 'Assets/NIBucketinventory.parquet';
             records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
 
             // Check if InstanceId already exists
@@ -222,7 +223,7 @@ async function InventoryAssets() {
                 Description: lambdaFunction.Description,
                 Role: lambdaFunction.Role
             }
-            S3_KEY = 'LambdaBucketinventory.parquet';
+            S3_KEY = 'Assets/LambdaBucketinventory.parquet';
             records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
 
             // Check if InstanceId already exists
@@ -274,7 +275,7 @@ async function CollectRoles() {
                 RoleName: role.RoleName,
                 AssumeRolePolicyDocument: role.AssumeRolePolicyDocument
             }
-            S3_KEY = 'IAMRoleBucketinventory.parquet';
+            S3_KEY = 'Assets/IAMRoleBucketinventory.parquet';
             records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
 
             // Check if InstanceId already exists
@@ -323,7 +324,7 @@ async function CollectPolicies() {
                 PermissionsBoundaryUsageCount: policy.PermissionsBoundaryUsageCount,
                 Document: policyVersion.PolicyVersion.Document
             }
-            S3_KEY = 'IAMPolicyBucketinventory.parquet';
+            S3_KEY = 'Assets/IAMPolicyBucketinventory.parquet';
             records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
 
             // Check if InstanceId already exists
@@ -393,7 +394,7 @@ async function CollectUsers() {
                 AttachedPolicyNames: PolicyNames,
                 InlinePolicyNames: InlinePolicies
             }
-            S3_KEY = 'UserBucketinventory.parquet';
+            S3_KEY = 'Assets/UserBucketinventory.parquet';
             records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
 
             // Check if InstanceId already exists

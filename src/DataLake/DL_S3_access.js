@@ -5,8 +5,10 @@ const stream = require("stream");
 const util = require("util");
 const path = require("path");
 
-const s3 = new S3Client({ region: "us-east-1" });
-const bucketName = "hilikdatalake";
+const EnvRegion = 'eu-north-1'  // TODO: make this configurable from env variable
+//const EnvRegion = 'us-east-1'
+const s3 = new S3Client({ region: EnvRegion });
+const bucketName = "fortifaidatalake";
 
 // Map to store write queues per file
 const writeQueueMap = new Map();
