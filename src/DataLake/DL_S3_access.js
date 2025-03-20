@@ -129,7 +129,7 @@ async function uploadParquetToS3(schema, records, S3_KEY) {
 async function addAssetTypeToDirectory(AssetType, AssetTable) {
   const DL_S3_Assets_schema = require('./DL_S3_Assets_schema');
   const schema = DL_S3_Assets_schema.AssetDirectorySchema;
-  const records = [];
+  let records = [];
   const S3_KEY = `Assets/AssetDirectory.parquet`;
   records = await fetchParquetFromS3(S3_KEY);
   const index = records.findIndex(rec => rec.AssetType === AssetType);
