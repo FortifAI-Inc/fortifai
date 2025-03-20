@@ -78,6 +78,7 @@ async function InventoryAssets() {
         }
         if (records.length > 0) {
             DL_access.writeData(ec2Schema, records, S3_KEY);
+            records = []    
         }
         console.log("EC2 Instances count:", instanceList.length);
 
@@ -105,6 +106,7 @@ async function InventoryAssets() {
         }
         if (records.length > 0) {
             DL_access.writeData(VpcSchema, records, S3_KEY);
+            records = []
         }
 
         // Get S3 buckets
@@ -132,6 +134,7 @@ async function InventoryAssets() {
         }
         if (records.length > 0) {
             DL_access.writeData(S3Schema, records, S3_KEY);
+            records = []
         }
         console.log("S3 Buckets count:", s3Buckets.Buckets.length);
 
@@ -160,6 +163,7 @@ async function InventoryAssets() {
         }
         if (records.length > 0) {
             DL_access.writeData(IGWSchema, records, S3_KEY);
+            records = []
         }
 
         // Get security groups
@@ -187,6 +191,7 @@ async function InventoryAssets() {
         }
         if (records.length > 0) {
             DL_access.writeData(SGSchema, records, S3_KEY);
+            records = []
         }
 
         // Get network interfaces
@@ -222,6 +227,7 @@ async function InventoryAssets() {
         }
         if (records.length > 0) {
             DL_access.writeData(NISchema, records, S3_KEY);
+            records = []
         }
 
         // Get Lambda functions
@@ -250,6 +256,7 @@ async function InventoryAssets() {
         }
         if (records.length > 0) {
             DL_access.writeData(LambdaSchema, records, S3_KEY);
+            records = []
         }
 
         // Get RDS instances
@@ -304,6 +311,7 @@ async function CollectRoles() {
         }
         if (records.length > 0) {
             DL_access.writeData(IAMRoleSchema, records, S3_KEY);
+            records = []
         }
         //return roles.Roles;
     } catch (error) {
@@ -353,6 +361,7 @@ async function CollectPolicies() {
         }
         if (records.length > 0) {
             DL_access.writeData(IAMPolicySchema, records, S3_KEY);
+            records = []
         }
         return policies.Policies;
     } catch (error) {
@@ -425,6 +434,7 @@ async function CollectUsers() {
         }
         if (records.length > 0) {
             DL_access.writeData(UserSchema, records, S3_KEY);
+            records = []
         }
         return users.Users;
     } catch (error) {
