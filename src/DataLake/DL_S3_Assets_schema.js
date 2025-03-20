@@ -32,6 +32,12 @@ const VpcSchema = new parquet.ParquetSchema({
     CidrBlock: { type: 'UTF8', optional: false }
     //tags: { type: 'UTF8', optional: true }*/
 });
+const SubnetSchema = new parquet.ParquetSchema({
+    UniqueId: { type: 'UTF8', optional: false },
+    SubnetId: { type: 'UTF8', optional: false },
+    VpcId: { type: 'UTF8', optional: false }
+    //tags: { type: 'UTF8', optional: true }*/
+}); 
 const S3Schema = new parquet.ParquetSchema({
     UniqueId: { type: 'UTF8', optional: false },
     Name: { type: 'UTF8', optional: false },
@@ -105,5 +111,6 @@ module.exports = {
     IAMRoleSchema,
     IAMPolicySchema,
     UserSchema,
-    AssetDirectorySchema
+    AssetDirectorySchema,
+    SubnetSchema
 };

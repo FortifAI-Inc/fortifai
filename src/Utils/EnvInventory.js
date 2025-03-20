@@ -6,7 +6,7 @@ const { S3 } = require("@aws-sdk/client-s3");
 const DL_access = require('../DataLake/DL_access');
 const DL_S3_access = require('../DataLake/DL_S3_access');
 const { IAM } = require("@aws-sdk/client-iam");
-const { ec2Schema, VpcSchema, S3Schema, IGWSchema, SGSchema, NISchema, LambdaSchema, IAMRoleSchema, IAMPolicySchema, UserSchema } = require('../DataLake/DL_S3_Assets_schema');
+const { ec2Schema, VpcSchema, S3Schema, IGWSchema, SGSchema, NISchema, LambdaSchema, IAMRoleSchema, IAMPolicySchema, UserSchema, SubnetSchema } = require('../DataLake/DL_S3_Assets_schema');
 
 const EnvRegion = 'eu-north-1'
 //const EnvRegion = 'us-east-1'
@@ -108,6 +108,30 @@ async function InventoryAssets() {
         if (records.length > 0) {
             DL_access.writeData(VpcSchema, records, S3_KEY);
             DL_S3_access.addAssetTypeToDirectory('VPC', S3_KEY);
+            records = []
+        }
+        // Get Subnets
+        const subnets = await ec2.describeSubnets();
+        S3_KEY = 'Assets/Subnetinventory.parquet';
+        console.log("Subnets count:", subnets.Subnets.length);
+        for (const subnet of subnets.Subnets) {
+            const SubnetData = {
+                UniqueId: subnet.SubnetId,
+                SubnetId: subnet.SubnetId,
+                VpcId: subnet.VpcId
+            }
+            records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
+
+            const index = records.findIndex(rec => rec.UniqueId === SubnetData.SubnetId);
+            if (index !== -1) {
+                records[index] = SubnetData; // Update record
+            } else {
+                records.push(SubnetData); // Insert new record
+            }
+        }   
+        if (records.length > 0) {
+            DL_access.writeData(SubnetSchema, records, S3_KEY);
+            DL_S3_access.addAssetTypeToDirectory('Subnet', S3_KEY);
             records = []
         }
 
