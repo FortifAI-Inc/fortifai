@@ -128,8 +128,14 @@ async function InventoryAssets() {
             const SubnetData = {
                 UniqueId: subnet.SubnetId,
                 IsStale: false,
-                SubnetId: subnet.SubnetId,
-                VpcId: subnet.VpcId
+                SubnetId: subnet.SubnetId,  
+                SubnetArn: subnet.SubnetArn,
+                SubnetCidrBlock: subnet.SubnetCidrBlock,
+                SubnetAvailabilityZone: subnet.SubnetAvailabilityZone,
+                SubnetState: subnet.SubnetState,
+                VpcId: subnet.VpcId,
+                SubnetRegion: subnet.SubnetRegion,
+                SubnetOwnerId: subnet.SubnetOwnerId,
             }
             const index = records.findIndex(rec => rec.UniqueId === SubnetData.SubnetId);
             if (index !== -1) {
