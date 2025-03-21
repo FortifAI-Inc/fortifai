@@ -142,6 +142,7 @@ async function InventoryAssets() {
             }
         }
         if (records.length > 0) {
+            console.log("Writing Subnet records:", JSON.stringify(records, null, 2));
             DL_access.writeData(SubnetSchema, records, S3_KEY);
             DL_S3_access.addAssetTypeToDirectory('Subnet', S3_KEY);
             records = []
