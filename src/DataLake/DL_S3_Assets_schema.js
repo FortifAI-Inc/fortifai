@@ -58,7 +58,7 @@ const IGWSchema = new parquet.ParquetSchema({
     UniqueId: { type: 'UTF8', optional: false },
     IsStale: { type: 'BOOLEAN', optional: false },
     InternetGatewayId: { type: 'UTF8', optional: false },
-    VpcId: { type: 'UTF8', optional: false },
+    VpcId: { type: 'UTF8', optional: true },
     Tags: { type: 'UTF8', repeated: true, optional: true }
     //tags: { type: 'UTF8', optional: true }*/
 });

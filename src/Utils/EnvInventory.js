@@ -199,7 +199,7 @@ async function InventoryAssets() {
                 UniqueId: igw.InternetGatewayId,
                 IsStale: false,
                 InternetGatewayId: igw.InternetGatewayId,
-                VpcId: igw.VpcId,
+                VpcId: igw.Attachments && igw.Attachments.length > 0 ? igw.Attachments[0].VpcId : null,
                 Tags: igw.Tags
             }
 
