@@ -134,7 +134,6 @@ async function InventoryAssets() {
                 AvailabilityZone: subnet.AvailabilityZone,
                 State: subnet.State,
                 OwnerId: subnet.OwnerId,
-                AssignIpv6AddressOnCreation: subnet.AssignIpv6AddressOnCreation,
                 Ipv6CidrBlockAssociationSet: subnet.Ipv6CidrBlockAssociationSet,
                 Tags: subnet.Tags,
                 SubnetArn: subnet.SubnetArn,
