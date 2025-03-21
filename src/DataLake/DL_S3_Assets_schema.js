@@ -43,7 +43,6 @@ const SubnetSchema = new parquet.ParquetSchema({
     AvailabilityZone: { type: 'UTF8', optional: false },
     State: { type: 'UTF8', optional: false },
     VpcId: { type: 'UTF8', optional: false },
-    Region: { type: 'UTF8', optional: false },
     OwnerId: { type: 'UTF8', optional: false },
     SubnetAssignIpv6AddressOnCreation: { type: 'BOOLEAN', optional: false },
     Ipv6CidrBlockAssociationSet: { type: 'JSON', optional: false },

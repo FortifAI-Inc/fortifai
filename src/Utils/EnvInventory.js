@@ -138,7 +138,6 @@ async function InventoryAssets() {
                 Ipv6CidrBlockAssociationSet: subnet.Ipv6CidrBlockAssociationSet,
                 Tags: subnet.Tags,
                 SubnetArn: subnet.SubnetArn,
-                Region: subnet.Region
             }
             const index = records.findIndex(rec => rec.UniqueId === SubnetData.SubnetId);
             if (index !== -1) {
