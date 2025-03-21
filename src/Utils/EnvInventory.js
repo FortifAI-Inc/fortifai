@@ -134,14 +134,11 @@ async function InventoryAssets() {
             const index = records.findIndex(rec => rec.UniqueId === SubnetData.SubnetId);
             if (index !== -1) {
                 records[index] = SubnetData; // Update record
-                console.log("Updated Subnet:", SubnetData.SubnetId);
             } else {
                 records.push(SubnetData); // Insert new record
-                console.log("Added Subnet:", SubnetData.SubnetId);
             }
         }
         if (records.length > 0) {
-            console.log("Writing Subnet records:", JSON.stringify(records, null, 2));
             DL_access.writeData(SubnetSchema, records, S3_KEY);
             DL_S3_access.addAssetTypeToDirectory('Subnet', S3_KEY);
             records = []
