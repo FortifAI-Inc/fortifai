@@ -202,6 +202,7 @@ async function InventoryAssets() {
                 VpcId: igw.Attachments && igw.Attachments.length > 0 ? igw.Attachments[0].VpcId : null,
                 Tags: igw.Tags
             }
+            console.log("IGWData:", IGWData);
 
             // Check if InstanceId already exists
 
