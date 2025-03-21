@@ -32,7 +32,7 @@ async function InventoryAssets() {
     const lambda = new Lambda({
         region: EnvRegion,
     });
-
+    console.log("######################## Inventorying AWS environment...");
     try {
         // Get EC2 instances
         const ec2Instances = await ec2.describeInstances();
