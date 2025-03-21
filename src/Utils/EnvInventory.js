@@ -120,6 +120,10 @@ async function InventoryAssets() {
         const subnets = await ec2.describeSubnets();
         S3_KEY = 'Assets/Subnetinventory.parquet';
         console.log("Subnets count:", subnets.Subnets.length);
+        records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
+        for (const record of records) { // Mark all records as stale
+            record.IsStale = true;
+        }
         for (const subnet of subnets.Subnets) {
             const SubnetData = {
                 UniqueId: subnet.SubnetId,
@@ -127,11 +131,6 @@ async function InventoryAssets() {
                 SubnetId: subnet.SubnetId,
                 VpcId: subnet.VpcId
             }
-            records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
-            for (const record of records) { // Mark all records as stale
-                record.IsStale = true;
-            }
-
             const index = records.findIndex(rec => rec.UniqueId === SubnetData.SubnetId);
             if (index !== -1) {
                 records[index] = SubnetData; // Update record
@@ -151,6 +150,11 @@ async function InventoryAssets() {
         // Get S3 buckets
         const s3Buckets = await s3.listBuckets();
         S3_KEY = 'Assets/S3Bucketinventory.parquet';
+        records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
+        for (const record of records) { // Mark all records as stale
+            record.IsStale = true;
+        }
+
         for (const bucket of s3Buckets.Buckets) {
             const S3Data = {
                 UniqueId: bucket.Name,
@@ -158,11 +162,6 @@ async function InventoryAssets() {
                 Name: bucket.Name,
                 CreationDate: bucket.CreationDate
             }
-            records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
-            for (const record of records) { // Mark all records as stale
-                record.IsStale = true;
-            }
-
             // Check if InstanceId already exists
 
             const index = records.findIndex(rec => rec.UniqueId === S3Data.Name);
@@ -185,6 +184,10 @@ async function InventoryAssets() {
         // Get internet gateways
         const internetGateways = await ec2.describeInternetGateways();
         S3_KEY = 'Assets/IGWBucketinventory.parquet';
+        records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
+        for (const record of records) { // Mark all records as stale
+            record.IsStale = true;
+        }
         console.log("Internet Gateways count:", internetGateways.InternetGateways.length);
         for (const igw of internetGateways.InternetGateways) {
             const IGWData = {
@@ -192,10 +195,6 @@ async function InventoryAssets() {
                 IsStale: false,
                 InternetGatewayId: igw.InternetGatewayId,
                 VpcId: igw.VpcId
-            }
-            records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
-            for (const record of records) { // Mark all records as stale
-                record.IsStale = true;
             }
 
             // Check if InstanceId already exists
@@ -218,6 +217,10 @@ async function InventoryAssets() {
         // Get security groups
         const securityGroups = await ec2.describeSecurityGroups();
         S3_KEY = 'Assets/SGBucketinventory.parquet';
+        records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
+        for (const record of records) { // Mark all records as stale
+            record.IsStale = true;
+        }
         console.log("Security Groups count:", securityGroups.SecurityGroups.length);
         for (const sg of securityGroups.SecurityGroups) {
             const SGData = {
@@ -225,10 +228,6 @@ async function InventoryAssets() {
                 IsStale: false,
                 GroupId: sg.GroupId,
                 VpcId: sg.VpcId
-            }
-            records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
-            for (const record of records) { // Mark all records as stale
-                record.IsStale = true;
             }
 
             // Check if InstanceId already exists
@@ -251,6 +250,10 @@ async function InventoryAssets() {
         // Get network interfaces
         const networkInterfaces = await ec2.describeNetworkInterfaces();
         S3_KEY = 'Assets/NIBucketinventory.parquet';
+        records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
+        for (const record of records) { // Mark all records as stale
+            record.IsStale = true;
+        }
         console.log("Network Interfaces count:", networkInterfaces.NetworkInterfaces.length);
         for (const ni of networkInterfaces.NetworkInterfaces) {
             const NIData = {
@@ -266,10 +269,6 @@ async function InventoryAssets() {
                 VpcId: ni.VpcId,
                 SubnetId: ni.SubnetId,
                 GroupId: ni.Groups ? ni.Groups.map(group => group.GroupId).join(',') : null
-            }
-            records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
-            for (const record of records) { // Mark all records as stale
-                record.IsStale = true;
             }
 
             // Check if InstanceId already exists
@@ -292,6 +291,10 @@ async function InventoryAssets() {
         // Get Lambda functions
         const lambdaFunctions = await lambda.listFunctions();
         S3_KEY = 'Assets/LambdaBucketinventory.parquet';
+        records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
+        for (const record of records) { // Mark all records as stale
+            record.IsStale = true;
+        }
         console.log("Lambda Functions count:", lambdaFunctions.Functions.length);
         for (const lambdaFunction of lambdaFunctions.Functions) {
             const LambdaData = {
@@ -300,10 +303,6 @@ async function InventoryAssets() {
                 FunctionName: lambdaFunction.FunctionName,
                 Description: lambdaFunction.Description,
                 Role: lambdaFunction.Role
-            }
-            records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
-            for (const record of records) { // Mark all records as stale
-                record.IsStale = true;
             }
 
             // Check if InstanceId already exists
@@ -351,7 +350,10 @@ async function CollectRoles() {
         // Get IAM roles
         const roles = await iam.listRoles();
         console.log("IAM Roles count:", roles.Roles.length);
-        let records = []
+        let records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
+        for (const record of records) { // Mark all records as stale
+            record.IsStale = true;
+        }
         for (const role of roles.Roles) {
             const IAMRoleData = {
                 UniqueId: role.RoleId,
@@ -359,10 +361,6 @@ async function CollectRoles() {
                 RoleId: role.RoleId,
                 RoleName: role.RoleName,
                 AssumeRolePolicyDocument: role.AssumeRolePolicyDocument
-            }
-            records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
-            for (const record of records) { // Mark all records as stale
-                record.IsStale = true;
             }
 
             // Check if InstanceId already exists
@@ -400,7 +398,10 @@ async function CollectPolicies() {
         // Get IAM policies
         const policies = await iam.listPolicies({ Scope: 'Local' });
         console.log("IAM Policies count:", policies.Policies.length);
-        let records = []
+        let records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
+        for (const record of records) { // Mark all records as stale
+            record.IsStale = true;
+        }
         for (const policy of policies.Policies) {
             const policyDetails = await iam.getPolicy({ PolicyArn: policy.Arn });
             const policyVersion = await iam.getPolicyVersion({
@@ -416,10 +417,6 @@ async function CollectPolicies() {
                 PermissionsBoundaryUsageCount: policy.PermissionsBoundaryUsageCount,
                 Document: policyVersion.PolicyVersion.Document
             }
-            records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
-            for (const record of records) { // Mark all records as stale
-                record.IsStale = true;
-            }   
 
             // Check if InstanceId already exists
 
@@ -456,7 +453,10 @@ async function CollectUsers() {
         // Get IAM users
         const users = await iam.listUsers();
         console.log("IAM Users count:", users.Users.length);
-        let records = []
+        let records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
+        for (const record of records) { // Mark all records as stale
+            record.IsStale = true;
+        }
         for (const user of users.Users) {
             //console.log("User: ", user);
             const accessKeys = await iam.listAccessKeys({ UserName: user.UserName });
@@ -493,10 +493,6 @@ async function CollectUsers() {
                 AttachedPolicyNames: PolicyNames,
                 InlinePolicyNames: InlinePolicies
             }
-            records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
-            for (const record of records) { // Mark all records as stale
-                record.IsStale = true;
-            }   
 
             // Check if InstanceId already exists
 
