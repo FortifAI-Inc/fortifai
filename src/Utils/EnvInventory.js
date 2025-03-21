@@ -135,8 +135,10 @@ async function InventoryAssets() {
             const index = records.findIndex(rec => rec.UniqueId === SubnetData.SubnetId);
             if (index !== -1) {
                 records[index] = SubnetData; // Update record
+                console.log("Updated Subnet:", SubnetData.SubnetId);
             } else {
                 records.push(SubnetData); // Insert new record
+                console.log("Added Subnet:", SubnetData.SubnetId);
             }
         }
         if (records.length > 0) {
