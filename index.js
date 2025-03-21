@@ -15,11 +15,11 @@ async function main() {
             //await flow_logs.collectFlowLogs();
             
             // Wait for 1 minute before next iteration
-            await new Promise(resolve => setTimeout(resolve, 60000));
+            await new Promise(resolve => setTimeout(resolve, 10000));
         } catch (error) {
             console.error("Error in main function:", error);
             // Wait 1 minute before retrying after error
-            await new Promise(resolve => setTimeout(resolve, 60000));
+            await new Promise(resolve => setTimeout(resolve, 10000));
         }
     }
 }
