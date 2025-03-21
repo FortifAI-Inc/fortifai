@@ -194,11 +194,13 @@ async function InventoryAssets() {
         }
         console.log("Internet Gateways count:", internetGateways.InternetGateways.length);
         for (const igw of internetGateways.InternetGateways) {
+            console.log("IGW:", igw);
             const IGWData = {
                 UniqueId: igw.InternetGatewayId,
                 IsStale: false,
                 InternetGatewayId: igw.InternetGatewayId,
-                VpcId: igw.VpcId
+                VpcId: igw.VpcId,
+                Tags: igw.Tags
             }
 
             // Check if InstanceId already exists
