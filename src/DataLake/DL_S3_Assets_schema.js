@@ -44,7 +44,7 @@ const SubnetSchema = new parquet.ParquetSchema({
     State: { type: 'UTF8', optional: false },
     VpcId: { type: 'UTF8', optional: false },
     OwnerId: { type: 'UTF8', optional: false },
-    Ipv6CidrBlockAssociationSet: { type: 'JSON', optional: false },
+    Ipv6CidrBlockAssociationSet: { type: 'JSON', optional: true },
     Tags: { type: 'UTF8', repeated: true, optional: true }
 }); 
 const S3Schema = new parquet.ParquetSchema({
