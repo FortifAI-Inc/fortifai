@@ -128,14 +128,17 @@ async function InventoryAssets() {
             const SubnetData = {
                 UniqueId: subnet.SubnetId,
                 IsStale: false,
-                SubnetId: subnet.SubnetId,  
-                SubnetArn: subnet.SubnetArn,
-                SubnetCidrBlock: subnet.SubnetCidrBlock,
-                SubnetAvailabilityZone: subnet.SubnetAvailabilityZone,
-                SubnetState: subnet.SubnetState,
+                SubnetId: subnet.SubnetId,
                 VpcId: subnet.VpcId,
-                SubnetRegion: subnet.SubnetRegion,
-                SubnetOwnerId: subnet.SubnetOwnerId,
+                CidrBlock: subnet.CidrBlock,
+                AvailabilityZone: subnet.AvailabilityZone,
+                State: subnet.State,
+                OwnerId: subnet.OwnerId,
+                AssignIpv6AddressOnCreation: subnet.AssignIpv6AddressOnCreation,
+                Ipv6CidrBlockAssociationSet: subnet.Ipv6CidrBlockAssociationSet,
+                Tags: subnet.Tags,
+                SubnetArn: subnet.SubnetArn,
+                Region: subnet.Region
             }
             const index = records.findIndex(rec => rec.UniqueId === SubnetData.SubnetId);
             if (index !== -1) {

@@ -39,15 +39,14 @@ const SubnetSchema = new parquet.ParquetSchema({
     IsStale: { type: 'BOOLEAN', optional: false },
     SubnetId: { type: 'UTF8', optional: false },
     SubnetArn: { type: 'UTF8', optional: false },
-    SubnetCidrBlock: { type: 'UTF8', optional: false },
-    SubnetAvailabilityZone: { type: 'UTF8', optional: false },
-    SubnetState: { type: 'UTF8', optional: false },
+    CidrBlock: { type: 'UTF8', optional: false },
+    AvailabilityZone: { type: 'UTF8', optional: false },
+    State: { type: 'UTF8', optional: false },
     VpcId: { type: 'UTF8', optional: false },
-    SubnetRegion: { type: 'UTF8', optional: false },
-    SubnetOwnerId: { type: 'UTF8', optional: false },
-    SubnetIsDefault: { type: 'BOOLEAN', optional: false },
+    Region: { type: 'UTF8', optional: false },
+    OwnerId: { type: 'UTF8', optional: false },
     SubnetAssignIpv6AddressOnCreation: { type: 'BOOLEAN', optional: false },
-    SubnetIpv6CidrBlock: { type: 'UTF8', optional: false },
+    Ipv6CidrBlockAssociationSet: { type: 'JSON', optional: false },
     Tags: { type: 'UTF8', repeated: true, optional: true }
 }); 
 const S3Schema = new parquet.ParquetSchema({
