@@ -223,7 +223,7 @@ class OSExplorer {
 
     async createFileListingChunks(instanceId) {
         const ssm = new SSMClient({ region: this.#AWS_REGION });
-
+        
         try {
             // The script, with escaped variables
             const script = `#!/bin/bash
@@ -308,45 +308,73 @@ echo "NUMFILES=$NUMFILES"
             };
 
             const output = await waitForCommand(commandId, instanceId);
-
+            
             if (!output?.StandardOutputContent) {
                 throw new Error('No script output received');
             }
 
-            // Parse the output to get the working directory
+            // Parse the output to get the working directory and chunk count
             const lines = output.StandardOutputContent.split('\n');
             const workdirLine = lines.find(line => line.startsWith('WORKDIR='));
-            if (!workdirLine) {
-                throw new Error('Could not find working directory in script output');
+            const numFilesLine = lines.find(line => line.startsWith('NUMFILES='));
+            
+            if (!workdirLine || !numFilesLine) {
+                throw new Error('Could not find working directory or chunk count in script output');
             }
 
             const workdir = workdirLine.split('=')[1];
-            const chunkCountLine = lines.find(line => line.startsWith('NUMFILES='));
-            const chunkCount = chunkCountLine ? parseInt(chunkCountLine.split('=')[1]) : 0;
-            console.log('Script completed successfully');
-            console.log('Working directory:', workdir);
-            console.log('Number of chunk files created:', chunkCount);
-            // Retrieve first chunk content
-            const getChunkCommand = new SendCommandCommand({
+            const chunkCount = parseInt(numFilesLine.split('=')[1]);
+            
+            console.log(`Found ${chunkCount} chunks in ${workdir}`);
+
+            // Read all chunks
+            let concatenatedBase64 = '';
+            
+            for (let i = 0; i < chunkCount; i++) {
+                const chunkNum = i.toString().padStart(2, '0');
+                const getChunkCommand = new SendCommandCommand({
+                    InstanceIds: [instanceId],
+                    DocumentName: 'AWS-RunShellScript',
+                    Parameters: {
+                        commands: [`cat ${workdir}/chunk_${chunkNum}.b64`]
+                    }
+                });
+
+                console.log(`Reading chunk ${i + 1}/${chunkCount}...`);
+                const chunkResponse = await ssm.send(getChunkCommand);
+                const chunkOutput = await waitForCommand(chunkResponse.Command.CommandId, instanceId);
+                
+                if (!chunkOutput?.StandardOutputContent) {
+                    throw new Error(`Failed to read chunk ${chunkNum}`);
+                }
+
+                concatenatedBase64 += chunkOutput.StandardOutputContent;
+            }
+            console.log('concatenatedBase64.length', concatenatedBase64.length);
+
+            // Decode base64 and decompress
+            console.log('Decoding and decompressing data...');
+            const compressed = Buffer.from(concatenatedBase64, 'base64');
+            const { gunzip } = require('zlib');
+            const util = require('util');
+            const gunzipAsync = util.promisify(gunzip);
+            
+            const decompressed = await gunzipAsync(compressed);
+            const fileList = decompressed.toString().split('\n').filter(Boolean);
+
+            // Cleanup command
+            const cleanupCommand = new SendCommandCommand({
                 InstanceIds: [instanceId],
                 DocumentName: 'AWS-RunShellScript',
                 Parameters: {
-                    commands: [`cat ${workdir}/chunk_00.b64`]
+                    commands: [`rm -rf ${workdir}`]
                 }
             });
 
-            const chunkResponse = await ssm.send(getChunkCommand);
-            const chunkCommandId = chunkResponse.Command.CommandId;
+            console.log('Cleaning up temporary files...');
+            await ssm.send(cleanupCommand);
 
-            const chunkOutput = await waitForCommand(chunkCommandId, instanceId);
-            console.log('First chunk content length:', chunkOutput.StandardOutputContent.length);
-
-            return {
-                workdir,
-                output: output.StandardOutputContent,
-                chunkCount
-            };
-
+            return fileList;
         } catch (error) {
             console.error('Error executing file listing script:', error);
             throw error;
