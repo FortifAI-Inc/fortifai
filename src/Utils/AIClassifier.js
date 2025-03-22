@@ -263,7 +263,7 @@ class AIClassifier {
             const command = parts.slice(10).join(' ');
             const memUsage = parseInt(parts[5]);
 
-            // Check all framework indicators
+            // Check all framework indicators and LLM-specific patterns
             Object.entries(this.#AI_INDICATORS).forEach(([category, categoryData]) => {
                 Object.entries(categoryData).forEach(([framework, data]) => {
                     data.processes.forEach(processPattern => {
@@ -271,11 +271,24 @@ class AIClassifier {
                             findings.frameworksDetected.add(framework);
                             findings.confidence += data.weight;
                             findings.details.push(`${framework} process detected: ${command}`);
+                            
+                            // Check for LLM-specific patterns
+                            const llmPatterns = ['llama', 'gpt', 'bert', 'transformer', 'embedding'];
+                            const isLLM = llmPatterns.some(pattern => 
+                                command.toLowerCase().includes(pattern.toLowerCase())
+                            );
+                            
                             findings.suspectedAIProcesses.push({
                                 framework,
                                 command,
-                                memoryMB: memUsage / 1024
+                                memoryMB: memUsage / 1024,
+                                isLLM: isLLM
                             });
+
+                            if (isLLM) {
+                                findings.confidence += 0.2; // Additional confidence for LLM detection
+                                findings.details.push(`LLM workload detected in process: ${command}`);
+                            }
                         }
                     });
                 });
