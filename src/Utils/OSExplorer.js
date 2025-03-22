@@ -80,7 +80,7 @@ class OSExplorer {
                 InstanceIds: [instanceId],
                 DocumentName: 'AWS-RunShellScript',
                 Parameters: {
-                    commands: ['ps aux']
+                    commands: ['ps auxww']
                 }
             });
 
@@ -221,6 +221,116 @@ class OSExplorer {
             throw error;
         }
     }
+
+    async createFileListingChunks(instanceId) {
+        const ssm = new SSMClient({ region: this.#AWS_REGION });
+        
+        try {
+            // The script, with escaped variables
+            const script = `#!/bin/bash
+
+# Set up working directory
+WORKDIR=$(mktemp -d)
+OUTPUT="$WORKDIR/filesystem_list.txt"
+COMPRESSED="$WORKDIR/filesystem_list.txt.gz"
+ENCODED="$WORKDIR/filesystem_list.b64"
+CHUNK_PREFIX="chunk_"
+CHUNK_SIZE=23800
+
+echo "Listing all files in the filesystem. This may take a while..."
+find / -type f 2>/dev/null > "$OUTPUT"
+
+echo "Compressing the output..."
+gzip -c "$OUTPUT" > "$COMPRESSED"
+
+echo "Encoding to base64..."
+base64 "$COMPRESSED" > "$ENCODED"
+
+echo "Splitting into chunks of $CHUNK_SIZE bytes..."
+split -b $CHUNK_SIZE -d --additional-suffix=.b64 "$ENCODED" "$WORKDIR/$CHUNK_PREFIX"
+
+echo "Chunks created in: $WORKDIR"
+ls -lh "$WORKDIR/$CHUNK_PREFIX"*.b64
+
+# Echo the working directory for later use
+echo "WORKDIR=$WORKDIR"`;
+
+            // Send the script command
+            const scriptCommand = new SendCommandCommand({
+                InstanceIds: [instanceId],
+                DocumentName: 'AWS-RunShellScript',
+                Parameters: {
+                    commands: [script]
+                }
+            });
+
+            console.log('Initiating file listing script...');
+            const scriptResponse = await ssm.send(scriptCommand);
+            const commandId = scriptResponse.Command.CommandId;
+
+            // Wait for script completion
+            const waitForCommand = async (commandId, instanceId) => {
+                const maxAttempts = 20; // Increased attempts due to longer operation
+                const delaySeconds = 3;
+                
+                console.log('Waiting for script to complete...');
+                await new Promise(resolve => setTimeout(resolve, 5000));
+                
+                for (let attempt = 0; attempt < maxAttempts; attempt++) {
+                    try {
+                        const getCommandOutput = new GetCommandInvocationCommand({
+                            CommandId: commandId,
+                            InstanceId: instanceId
+                        });
+                        
+                        const output = await ssm.send(getCommandOutput);
+                        console.log(`Script status: ${output.Status}`);
+                        
+                        if (output.Status === 'Success') {
+                            return output;
+                        } else if (output.Status === 'Failed') {
+                            throw new Error(`Script failed: ${output.StatusDetails}`);
+                        }
+                        
+                        await new Promise(resolve => setTimeout(resolve, delaySeconds * 1000));
+                    } catch (error) {
+                        if (error.name === 'InvocationDoesNotExist') {
+                            await new Promise(resolve => setTimeout(resolve, delaySeconds * 1000));
+                            continue;
+                        }
+                        throw error;
+                    }
+                }
+                throw new Error('Script execution timed out');
+            };
+
+            const output = await waitForCommand(commandId, instanceId);
+            
+            if (!output?.StandardOutputContent) {
+                throw new Error('No script output received');
+            }
+
+            // Parse the output to get the working directory
+            const lines = output.StandardOutputContent.split('\n');
+            const workdirLine = lines.find(line => line.startsWith('WORKDIR='));
+            if (!workdirLine) {
+                throw new Error('Could not find working directory in script output');
+            }
+
+            const workdir = workdirLine.split('=')[1];
+            console.log('Script completed successfully');
+            console.log('Working directory:', workdir);
+            
+            return {
+                workdir,
+                output: output.StandardOutputContent
+            };
+
+        } catch (error) {
+            console.error('Error executing file listing script:', error);
+            throw error;
+        }
+    }
 }
 
 // Updated main function
@@ -246,10 +356,10 @@ async function main() {
         
         // Then get filesystem
         console.log('\nRetrieving filesystem list...');
-        const files = await explorer.getFilesystemViaSSM(instanceId);
+        const { workdir, output } = await explorer.createFileListingChunks(instanceId);   
         console.log('\n=== Files ===');
-        console.log(files.slice(0, 10).join('\n'));
-        console.log(`... and ${files.length - 10} more files`);
+        console.log(output.slice(0, 10).join('\n'));
+        console.log(`... and ${output.length - 10} more files`);
         
     } catch (error) {
         console.error('Error in main:', error);
