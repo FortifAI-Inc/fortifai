@@ -138,12 +138,15 @@ class OSExplorer {
         const ssm = new SSMClient({ region: this.#AWS_REGION });
         
         try {
-            // Command to get files
+            // Modified command to count total files and compress the output
             const filesCommand = new SendCommandCommand({
                 InstanceIds: [instanceId],
                 DocumentName: 'AWS-RunShellScript',
                 Parameters: {
-                    commands: ['find / -type f 2>/dev/null']
+                    commands: [
+                        'echo "Total files: $(find / -type f 2>/dev/null | wc -l)"',
+                        'find / -type f 2>/dev/null | gzip -c | base64'
+                    ]
                 }
             });
 
@@ -192,7 +195,53 @@ class OSExplorer {
                 throw new Error('No filesystem listing output received');
             }
 
-            return output.StandardOutputContent.split('\n').filter(Boolean);
+            // Split the output into lines
+            const lines = output.StandardOutputContent.split('\n');
+            
+            // Extract total files count
+            const totalFiles = lines[0].replace('Total files:', '').trim();
+            console.log(`Total files found: ${totalFiles}`);
+
+            // Get the base64 compressed data (remaining lines) and decode it
+            const base64Data = lines.slice(1).join('');
+            
+            // We need to create a temporary file to handle the large output
+            const { execSync } = require('child_process');
+            const fs = require('fs');
+            const path = require('path');
+            const os = require('os');
+
+            // Create a temporary file for the base64 data
+            const tempFile = path.join(os.tmpdir(), `files-${instanceId}-${Date.now()}`);
+            
+            try {
+                // Write base64 data to temp file
+                fs.writeFileSync(tempFile + '.b64', base64Data);
+                
+                // Decode and decompress in one go using shell commands
+                execSync(`base64 -d "${tempFile}.b64" | gunzip > "${tempFile}.txt"`);
+                
+                // Read and split the decompressed file
+                const fileList = fs.readFileSync(tempFile + '.txt', 'utf8')
+                    .split('\n')
+                    .filter(Boolean);
+
+                // Cleanup temporary files
+                fs.unlinkSync(tempFile + '.b64');
+                fs.unlinkSync(tempFile + '.txt');
+
+                return fileList;
+            } catch (error) {
+                console.error('Error processing file list:', error);
+                // Cleanup on error
+                try {
+                    if (fs.existsSync(tempFile + '.b64')) fs.unlinkSync(tempFile + '.b64');
+                    if (fs.existsSync(tempFile + '.txt')) fs.unlinkSync(tempFile + '.txt');
+                } catch (e) {
+                    console.error('Error cleaning up temp files:', e);
+                }
+                throw error;
+            }
         } catch (error) {
             console.error('Error getting filesystem info:', error);
             throw error;
