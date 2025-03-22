@@ -373,7 +373,8 @@ echo "NUMFILES=$NUMFILES"
 
             console.log('Cleaning up temporary files...');
             await ssm.send(cleanupCommand);
-
+            console.log('fileList.length', fileList.length);
+            console.log('fileList[0]', fileList[0]);
             return fileList;
         } catch (error) {
             console.error('Error executing file listing script:', error);
