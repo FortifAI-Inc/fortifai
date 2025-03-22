@@ -412,12 +412,12 @@ async function main() {
         console.log(`... and ${fileList.length - 10} more files`);
         // Save process list to file
         const processFilename = `${instanceId}-processes.txt`;
-        await fs.writeFile(processFilename, processes.join('\n'));
+        await fs.writeFileSync(processFilename, processes.join('\n'));
         console.log(`\nProcess list saved to ${processFilename}`);
 
         // Save file list to file 
         const fileListFilename = `${instanceId}-files.txt`;
-        await fs.writeFile(fileListFilename, fileList.join('\n'));
+        await fs.writeFileSync(fileListFilename, fileList.join('\n'));
         console.log(`File list saved to ${fileListFilename}`);
 
     } catch (error) {
