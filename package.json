@@ -9,19 +9,20 @@
   "author": "Hilik Stein",
   "license": "Commercial",
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.758.0",
+    "@aws-sdk/client-cloudtrail": "^3.758.0",
+    "@aws-sdk/client-cloudwatch-logs": "^3.758.0",
     "@aws-sdk/client-ec2": "^3.758.0",
+    "@aws-sdk/client-eventbridge": "^3.758.0",
+    "@aws-sdk/client-iam": "^3.758.0",
     "@aws-sdk/client-lambda": "^3.758.0",
     "@aws-sdk/client-rds": "^3.758.0",
-    "@aws-sdk/client-iam": "^3.758.0",
-    "@aws-sdk/client-cloudwatch-logs": "^3.758.0",
-    "@aws-sdk/client-cloudtrail": "^3.758.0",
-    "parquetjs-lite": "",
-    "@aws-sdk/client-eventbridge": "^3.758.0",
-    "fs": "^0.0.1-security",
-    "uuid": "^8.3.2",
+    "@aws-sdk/client-s3": "^3.758.0",
+    "@aws-sdk/client-ssm": "^3.772.0",
     "archiver": "^5.3.0",
-    "ssh2": "^1.15.0",
-    "@aws-sdk/client-ssm": "^3.0.0"
+    "fs": "^0.0.1-security",
+    "package.json": "^2.0.1",
+    "parquetjs-lite": "",
+    "ssh2": "^1.16.0",
+    "uuid": "^8.3.2"
   }
 }
