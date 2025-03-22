@@ -10,7 +10,7 @@ const fs = require('fs');
 class OSExplorer {
     #AWS_REGION = process.env.AWS_REGION || 'eu-north-1';
 
-    async getInstanceInfo(instanceConfig) {
+    async getInstanceInfoSSH(instanceConfig) {
         return new Promise((resolve, reject) => {
             const conn = new Client();
 
@@ -51,7 +51,7 @@ class OSExplorer {
         });
     }
 
-    createInstanceConfig(host, username, privateKeyPath) {
+    createInstanceConfigSSH(host, username, privateKeyPath) {
         return {
             host,
             username,
@@ -59,10 +59,10 @@ class OSExplorer {
         };
     }
 
-    async exploreInstance(host, username, privateKeyPath) {
+    async exploreInstanceSSH(host, username, privateKeyPath) {
         try {
-            const config = this.createInstanceConfig(host, username, privateKeyPath);
-            const instanceInfo = await this.getInstanceInfo(config);
+            const config = this.createInstanceConfigSSH(host, username, privateKeyPath);
+            const instanceInfo = await this.getInstanceInfoSSH(config);
             return instanceInfo;
         } catch (error) {
             console.error('Error exploring instance:', error);
@@ -135,91 +135,6 @@ class OSExplorer {
         }
     }
 
-    async getFilesystemViaSSM(instanceId) {
-        const ssm = new SSMClient({ region: this.#AWS_REGION });
-
-        try {
-            // Command to get files
-            const filesCommand = new SendCommandCommand({
-                InstanceIds: [instanceId],
-                DocumentName: 'AWS-RunShellScript',
-                Parameters: {
-                    commands: ['find / -type f 2>/dev/null']
-                }
-            });
-
-            const filesResponse = await ssm.send(filesCommand);
-            const commandId = filesResponse.Command.CommandId;
-
-            // Helper function to wait for command completion
-            const waitForCommand = async (commandId, instanceId) => {
-                const maxAttempts = 10;
-                const delaySeconds = 3;
-
-                console.log('Waiting for filesystem command to complete...');
-                await new Promise(resolve => setTimeout(resolve, 5000));
-
-                for (let attempt = 0; attempt < maxAttempts; attempt++) {
-                    try {
-                        const getCommandOutput = new GetCommandInvocationCommand({
-                            CommandId: commandId,
-                            InstanceId: instanceId
-                        });
-
-                        const output = await ssm.send(getCommandOutput);
-                        console.log(`Filesystem command status: ${output.Status}`);
-
-                        if (output.Status === 'Success') {
-                            return output;
-                        } else if (output.Status === 'Failed') {
-                            throw new Error(`Filesystem command failed: ${output.StatusDetails}`);
-                        }
-
-                        await new Promise(resolve => setTimeout(resolve, delaySeconds * 1000));
-                    } catch (error) {
-                        if (error.name === 'InvocationDoesNotExist') {
-                            await new Promise(resolve => setTimeout(resolve, delaySeconds * 1000));
-                            continue;
-                        }
-                        throw error;
-                    }
-                }
-                throw new Error('Filesystem command timed out');
-            };
-
-            const output = await waitForCommand(commandId, instanceId);
-
-            if (!output?.StandardOutputContent) {
-                throw new Error('No filesystem listing output received');
-            }
-            console.log('output.StandardOutputContent.length', output.StandardOutputContent.length);
-            console.log(output);
-
-            return output.StandardOutputContent.split('\n').filter(Boolean);
-        } catch (error) {
-            console.error('Error getting filesystem info:', error);
-            throw error;
-        }
-    }
-
-    // Updated main exploration method
-    async exploreInstanceViaSSM(instanceId) {
-        try {
-            console.log('Getting process list...');
-            const processes = await this.getProcessesViaSSM(instanceId);
-
-            console.log('Getting filesystem list...');
-            const files = await this.getFilesystemViaSSM(instanceId);
-
-            return {
-                processes,
-                files
-            };
-        } catch (error) {
-            console.error('Error exploring instance via SSM:', error);
-            throw error;
-        }
-    }
 
     async createFileListingChunks(instanceId) {
         const ssm = new SSMClient({ region: this.#AWS_REGION });
@@ -234,7 +149,7 @@ OUTPUT="$WORKDIR/filesystem_list.txt"
 COMPRESSED="$WORKDIR/filesystem_list.txt.gz"
 ENCODED="$WORKDIR/filesystem_list.b64"
 CHUNK_PREFIX="chunk_"
-CHUNK_SIZE=23950
+CHUNK_SIZE=23990
 
 echo "Listing all files in the filesystem. This may take a while..."
 find / -type f 2>/dev/null > "$OUTPUT"
