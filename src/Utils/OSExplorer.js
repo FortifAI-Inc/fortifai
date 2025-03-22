@@ -235,7 +235,7 @@ OUTPUT="$WORKDIR/filesystem_list.txt"
 COMPRESSED="$WORKDIR/filesystem_list.txt.gz"
 ENCODED="$WORKDIR/filesystem_list.b64"
 CHUNK_PREFIX="chunk_"
-CHUNK_SIZE=23800
+CHUNK_SIZE=23950
 
 echo "Listing all files in the filesystem. This may take a while..."
 find / -type f 2>/dev/null > "$OUTPUT"
@@ -318,12 +318,16 @@ echo "WORKDIR=$WORKDIR"`;
             }
 
             const workdir = workdirLine.split('=')[1];
+            const chunkCountLine = lines.find(line => line.startsWith('CHUNK_COUNT='));
+            const chunkCount = chunkCountLine ? parseInt(chunkCountLine.split('=')[1]) : 0;
             console.log('Script completed successfully');
             console.log('Working directory:', workdir);
+            console.log('Number of chunk files created:', chunkCount);
             
             return {
                 workdir,
-                output: output.StandardOutputContent
+                output: output.StandardOutputContent,
+                chunkCount
             };
 
         } catch (error) {
@@ -356,10 +360,10 @@ async function main() {
         
         // Then get filesystem
         console.log('\nRetrieving filesystem list...');
-        const { workdir, output } = await explorer.createFileListingChunks(instanceId);   
+        const { workdir, output, chunkCount } = await explorer.createFileListingChunks(instanceId);   
         console.log('\n=== Files ===');
-        console.log(output.slice(0, 10).join('\n'));
-        console.log(`... and ${output.length - 10} more files`);
+        console.log(output);
+        //console.log(`... and ${output.length - 10} more files`);
         
     } catch (error) {
         console.error('Error in main:', error);
