@@ -110,22 +110,35 @@ class OSExplorer {
                 const maxAttempts = 10;
                 const delaySeconds = 3;
                 
+                // Initial delay before first check
+                console.log('Waiting for initial command registration...');
+                await new Promise(resolve => setTimeout(resolve, 5000));
+                
                 for (let attempt = 0; attempt < maxAttempts; attempt++) {
-                    const getCommandOutput = new GetCommandInvocationCommand({
-                        CommandId: commandId,
-                        InstanceId: instanceId
-                    });
-                    
-                    const output = await ssm.send(getCommandOutput);
-                    
-                    if (output.Status === 'Success') {
-                        return output;
-                    } else if (output.Status === 'Failed') {
-                        throw new Error(`Command failed: ${output.StatusDetails}`);
+                    try {
+                        const getCommandOutput = new GetCommandInvocationCommand({
+                            CommandId: commandId,
+                            InstanceId: instanceId
+                        });
+                        
+                        const output = await ssm.send(getCommandOutput);
+                        
+                        if (output.Status === 'Success') {
+                            return output;
+                        } else if (output.Status === 'Failed') {
+                            throw new Error(`Command failed: ${output.StatusDetails}`);
+                        }
+                        
+                        console.log(`Waiting for command completion... Status: ${output.Status}`);
+                        await new Promise(resolve => setTimeout(resolve, delaySeconds * 1000));
+                    } catch (error) {
+                        if (error.name === 'InvocationDoesNotExist') {
+                            console.log('Command not yet registered, waiting...');
+                            await new Promise(resolve => setTimeout(resolve, delaySeconds * 1000));
+                            continue;
+                        }
+                        throw error;
                     }
-                    
-                    console.log(`Waiting for command completion... Status: ${output.Status}`);
-                    await new Promise(resolve => setTimeout(resolve, delaySeconds * 1000));
                 }
                 throw new Error('Command timed out');
             };
