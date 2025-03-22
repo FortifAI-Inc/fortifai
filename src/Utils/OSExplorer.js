@@ -267,7 +267,7 @@ echo "NUMFILES=$NUMFILES"
                 }
             });
 
-            console.log('Initiating file listing script...');
+            //console.log('Initiating file listing script...');
             const scriptResponse = await ssm.send(scriptCommand);
             const commandId = scriptResponse.Command.CommandId;
 
@@ -276,7 +276,7 @@ echo "NUMFILES=$NUMFILES"
                 const maxAttempts = 20; // Increased attempts due to longer operation
                 const delaySeconds = 3;
 
-                console.log('Waiting for script to complete...');
+                //console.log('Waiting for script to complete...');
                 await new Promise(resolve => setTimeout(resolve, 5000));
 
                 for (let attempt = 0; attempt < maxAttempts; attempt++) {
@@ -287,7 +287,7 @@ echo "NUMFILES=$NUMFILES"
                         });
 
                         const output = await ssm.send(getCommandOutput);
-                        console.log(`Script status: ${output.Status}`);
+                        //console.log(`Script status: ${output.Status}`);
 
                         if (output.Status === 'Success') {
                             return output;
@@ -325,7 +325,7 @@ echo "NUMFILES=$NUMFILES"
             const workdir = workdirLine.split('=')[1];
             const chunkCount = parseInt(numFilesLine.split('=')[1]);
             
-            console.log(`Found ${chunkCount} chunks in ${workdir}`);
+            //console.log(`Found ${chunkCount} chunks in ${workdir}`);
 
             // Read all chunks
             let concatenatedBase64 = '';
@@ -350,10 +350,10 @@ echo "NUMFILES=$NUMFILES"
 
                 concatenatedBase64 += chunkOutput.StandardOutputContent;
             }
-            console.log('concatenatedBase64.length', concatenatedBase64.length);
+            //console.log('concatenatedBase64.length', concatenatedBase64.length);
 
             // Decode base64 and decompress
-            console.log('Decoding and decompressing data...');
+            //console.log('Decoding and decompressing data...');
             const compressed = Buffer.from(concatenatedBase64, 'base64');
             const { gunzip } = require('zlib');
             const util = require('util');
@@ -371,10 +371,10 @@ echo "NUMFILES=$NUMFILES"
                 }
             });
 
-            console.log('Cleaning up temporary files...');
+            //console.log('Cleaning up temporary files...');
             await ssm.send(cleanupCommand);
-            console.log('fileList.length', fileList.length);
-            console.log('fileList[0]', fileList[0]);
+            console.log('Number of files listed:', fileList.length);
+            //console.log('fileList[0]', fileList[0]);
             return fileList;
         } catch (error) {
             console.error('Error executing file listing script:', error);
@@ -398,18 +398,27 @@ async function main() {
         console.log(`Retrieving information for instance ${instanceId}...`);
 
         // Get processes first
-        /*console.log('\nRetrieving process list...');
+        console.log('\nRetrieving process list...');
         const processes = await explorer.getProcessesViaSSM(instanceId);
         console.log('\n=== Processes ===');
         console.log(processes.slice(0, 10).join('\n'));
-        console.log(`... and ${processes.length - 10} more processes`);*/
+        console.log(`... and ${processes.length - 10} more processes`);
 
         // Then get filesystem
         console.log('\nRetrieving filesystem list...');
-        const { workdir, output, chunkCount } = await explorer.createFileListingChunks(instanceId);
+        const fileList = await explorer.createFileListingChunks(instanceId);
         console.log('\n=== Files ===');
-        console.log(output);
-        //console.log(`... and ${output.length - 10} more files`);
+        console.log(fileList.slice(0, 10).join('\n'));
+        console.log(`... and ${fileList.length - 10} more files`);
+        // Save process list to file
+        const processFilename = `${instanceId}-processes.txt`;
+        await fs.writeFile(processFilename, processes.join('\n'));
+        console.log(`\nProcess list saved to ${processFilename}`);
+
+        // Save file list to file 
+        const fileListFilename = `${instanceId}-files.txt`;
+        await fs.writeFile(fileListFilename, fileList.join('\n'));
+        console.log(`File list saved to ${fileListFilename}`);
 
     } catch (error) {
         console.error('Error in main:', error);
