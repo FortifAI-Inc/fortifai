@@ -322,11 +322,25 @@ echo "NUMFILES=$NUMFILES"
             }
 
             const workdir = workdirLine.split('=')[1];
-            const chunkCountLine = lines.find(line => line.startsWith('CHUNK_COUNT='));
+            const chunkCountLine = lines.find(line => line.startsWith('NUMFILES='));
             const chunkCount = chunkCountLine ? parseInt(chunkCountLine.split('=')[1]) : 0;
             console.log('Script completed successfully');
             console.log('Working directory:', workdir);
             console.log('Number of chunk files created:', chunkCount);
+            // Retrieve first chunk content
+            const getChunkCommand = new SendCommandCommand({
+                InstanceId: instanceId,
+                DocumentName: 'AWS-RunShellScript',
+                Parameters: {
+                    commands: [`cat ${workdir}/chunk_0`]
+                }
+            });
+            
+            const chunkResponse = await ssm.send(getChunkCommand);
+            const chunkCommandId = chunkResponse.Command.CommandId;
+            
+            const chunkOutput = await waitForCommand(chunkCommandId, instanceId);
+            console.log('First chunk content length:', chunkOutput.StandardOutputContent.length);
             
             return {
                 workdir,
