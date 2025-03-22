@@ -102,25 +102,39 @@ class OSExplorer {
                 ssm.send(processesCommand)
             ]);
 
-            // Wait for command completion and get output
             const commandId1 = filesResponse.Command.CommandId;
             const commandId2 = processesResponse.Command.CommandId;
 
-            // Wait longer for commands to complete (increased from 5s to 15s)
-            await new Promise(resolve => setTimeout(resolve, 15000));
+            // Helper function to wait for command completion
+            const waitForCommand = async (commandId, instanceId) => {
+                const maxAttempts = 10;
+                const delaySeconds = 3;
+                
+                for (let attempt = 0; attempt < maxAttempts; attempt++) {
+                    const getCommandOutput = new GetCommandInvocationCommand({
+                        CommandId: commandId,
+                        InstanceId: instanceId
+                    });
+                    
+                    const output = await ssm.send(getCommandOutput);
+                    
+                    if (output.Status === 'Success') {
+                        return output;
+                    } else if (output.Status === 'Failed') {
+                        throw new Error(`Command failed: ${output.StatusDetails}`);
+                    }
+                    
+                    console.log(`Waiting for command completion... Status: ${output.Status}`);
+                    await new Promise(resolve => setTimeout(resolve, delaySeconds * 1000));
+                }
+                throw new Error('Command timed out');
+            };
 
-            const getCommandOutput = new GetCommandInvocationCommand({
-                CommandId: commandId1,
-                InstanceId: instanceId
-            });
-            const getProcessOutput = new GetCommandInvocationCommand({
-                CommandId: commandId2,
-                InstanceId: instanceId
-            });
-
+            // Wait for both commands to complete
+            console.log('Waiting for commands to complete...');
             const [filesOutput, processesOutput] = await Promise.all([
-                ssm.send(getCommandOutput),
-                ssm.send(getProcessOutput)
+                waitForCommand(commandId1, instanceId),
+                waitForCommand(commandId2, instanceId)
             ]);
 
             // Add error checking for the output
