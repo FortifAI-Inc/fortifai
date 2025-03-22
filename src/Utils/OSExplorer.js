@@ -69,8 +69,8 @@ class OSExplorer {
     // Default region from environment or fallback to eu-north-1
     #AWS_REGION = process.env.AWS_REGION || 'eu-north-1';
 
-    async getInstanceInfoViaSSM(instanceId) {
-        const ssm = new SSMClient({ region: this.#AWS_REGION });
+    async getInstanceInfoViaSSM(instanceId, region = 'us-east-1') {
+        const ssm = new SSMClient({ region });
         
         try {
             const results = {
@@ -106,8 +106,8 @@ class OSExplorer {
             const commandId1 = filesResponse.Command.CommandId;
             const commandId2 = processesResponse.Command.CommandId;
 
-            // Poll for results (simplified for brevity)
-            await new Promise(resolve => setTimeout(resolve, 5000));
+            // Wait longer for commands to complete (increased from 5s to 15s)
+            await new Promise(resolve => setTimeout(resolve, 15000));
 
             const getCommandOutput = new GetCommandInvocationCommand({
                 CommandId: commandId1,
@@ -123,12 +123,26 @@ class OSExplorer {
                 ssm.send(getProcessOutput)
             ]);
 
+            // Add error checking for the output
+            if (!filesOutput?.StandardOutput) {
+                throw new Error(`No file listing output received. Status: ${filesOutput?.Status}`);
+            }
+
+            if (!processesOutput?.StandardOutput) {
+                throw new Error(`No process listing output received. Status: ${processesOutput?.Status}`);
+            }
+
             results.files = filesOutput.StandardOutput.split('\n').filter(Boolean);
             results.processes = processesOutput.StandardOutput.split('\n').filter(Boolean);
 
             return results;
         } catch (error) {
             console.error('Error getting instance info via SSM:', error);
+            console.error('Make sure:');
+            console.error('1. The instance has SSM agent installed and running');
+            console.error('2. The instance has the necessary IAM role with SSM permissions');
+            console.error('3. Your AWS credentials have SSM permissions');
+            console.error('4. The instance is in the correct region');
             throw error;
         }
     }
