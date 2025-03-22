@@ -4,6 +4,8 @@ const {
     SendCommandCommand,
     GetCommandInvocationCommand
 } = require("@aws-sdk/client-ssm");
+const path = require('path');
+const fs = require('fs');
 
 class OSExplorer {
     async getInstanceInfo(instanceConfig) {
@@ -284,6 +286,119 @@ class OSExplorer {
             throw error;
         }
     }
+
+    async getFileFromInstanceViaSSM(instanceId, remotePath) {
+        const ssm = new SSMClient({ region: this.#AWS_REGION });
+        
+        try {
+            // First check if file exists and get its size
+            const checkCommand = new SendCommandCommand({
+                InstanceIds: [instanceId],
+                DocumentName: 'AWS-RunShellScript',
+                Parameters: {
+                    commands: [
+                        `if [ -f "${remotePath}" ]; then`,
+                        '  echo "FILE_EXISTS"',
+                        `  stat -f %z "${remotePath}" 2>/dev/null || stat -c %s "${remotePath}"`,
+                        'else',
+                        '  echo "FILE_NOT_FOUND"',
+                        'fi'
+                    ]
+                }
+            });
+
+            console.log(`Checking file ${remotePath}...`);
+            const checkResponse = await ssm.send(checkCommand);
+            const checkOutput = await this.waitForCommand(checkResponse.Command.CommandId, instanceId, ssm);
+
+            const [fileStatus, fileSize] = checkOutput.StandardOutputContent.trim().split('\n');
+            
+            if (fileStatus === 'FILE_NOT_FOUND') {
+                throw new Error(`File not found: ${remotePath}`);
+            }
+
+            console.log(`File size: ${fileSize} bytes`);
+
+            // For large files, we need to split the reading
+            const maxChunkSize = 20 * 1024 * 1024; // 20MB chunks
+            const totalChunks = Math.ceil(parseInt(fileSize) / maxChunkSize);
+            
+            if (totalChunks > 1) {
+                console.log(`Large file detected, will read in ${totalChunks} chunks`);
+            }
+
+            let fileContent = Buffer.from('');
+            
+            for (let chunk = 0; chunk < totalChunks; chunk++) {
+                const start = chunk * maxChunkSize;
+                const length = Math.min(maxChunkSize, parseInt(fileSize) - start);
+
+                const readCommand = new SendCommandCommand({
+                    InstanceIds: [instanceId],
+                    DocumentName: 'AWS-RunShellScript',
+                    Parameters: {
+                        commands: [
+                            // Use dd to read specific chunks and base64 encode them
+                            `dd if="${remotePath}" bs=1 skip=${start} count=${length} 2>/dev/null | base64`
+                        ]
+                    }
+                });
+
+                console.log(`Reading chunk ${chunk + 1}/${totalChunks}...`);
+                const readResponse = await ssm.send(readCommand);
+                const readOutput = await this.waitForCommand(readResponse.Command.CommandId, instanceId, ssm);
+
+                if (!readOutput?.StandardOutputContent) {
+                    throw new Error(`Failed to read chunk ${chunk + 1}`);
+                }
+
+                // Decode base64 chunk and append to result
+                const chunkContent = Buffer.from(readOutput.StandardOutputContent, 'base64');
+                fileContent = Buffer.concat([fileContent, chunkContent]);
+            }
+
+            return fileContent;
+        } catch (error) {
+            console.error('Error retrieving file:', error);
+            throw error;
+        }
+    }
+
+    // Helper method to wait for command completion (extracted from existing code)
+    async waitForCommand(commandId, instanceId, ssm) {
+        const maxAttempts = 10;
+        const delaySeconds = 3;
+        
+        console.log('Waiting for command to complete...');
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        
+        for (let attempt = 0; attempt < maxAttempts; attempt++) {
+            try {
+                const getCommandOutput = new GetCommandInvocationCommand({
+                    CommandId: commandId,
+                    InstanceId: instanceId
+                });
+                
+                const output = await ssm.send(getCommandOutput);
+                console.log(`Command status: ${output.Status}`);
+                
+                if (output.Status === 'Success') {
+                    return output;
+                } else if (output.Status === 'Failed') {
+                    throw new Error(`Command failed: ${output.StatusDetails}`);
+                }
+                
+                await new Promise(resolve => setTimeout(resolve, delaySeconds * 1000));
+            } catch (error) {
+                if (error.name === 'InvocationDoesNotExist') {
+                    await new Promise(resolve => setTimeout(resolve, delaySeconds * 1000));
+                    continue;
+                }
+                throw error;
+            }
+        }
+        throw new Error('Command timed out');
+    }
 }
 
 // Updated main function
@@ -291,28 +406,22 @@ async function main() {
     try {
         const explorer = new OSExplorer();
         const instanceId = process.argv[2];
+        const filePath = process.argv[3];
         
-        if (!instanceId) {
-            console.error('Please provide an instance ID as an argument');
-            console.log('Usage: node OSExplorer.js <instance-id>');
+        if (!instanceId || !filePath) {
+            console.error('Please provide instance ID and file path');
+            console.log('Usage: node OSExplorer.js <instance-id> <file-path>');
             process.exit(1);
         }
 
-        console.log(`Retrieving information for instance ${instanceId}...`);
+        console.log(`Retrieving file ${filePath} from instance ${instanceId}...`);
+        const fileContent = await explorer.getFileFromInstanceViaSSM(instanceId, filePath);
         
-        // Get processes first
-        console.log('\nRetrieving process list...');
-        const processes = await explorer.getProcessesViaSSM(instanceId);
-        console.log('\n=== Processes ===');
-        console.log(processes.slice(0, 10).join('\n'));
-        console.log(`... and ${processes.length - 10} more processes`);
-        
-        // Then get filesystem
-        console.log('\nRetrieving filesystem list...');
-        const files = await explorer.getFilesystemViaSSM(instanceId);
-        console.log('\n=== Files ===');
-        console.log(files.slice(0, 10).join('\n'));
-        console.log(`... and ${files.length - 10} more files`);
+        // Save to local file
+        const localPath = path.basename(filePath);
+        fs.writeFileSync(localPath, fileContent);
+        console.log(`File saved locally as: ${localPath}`);
+        console.log(`File size: ${fileContent.length} bytes`);
         
     } catch (error) {
         console.error('Error in main:', error);
