@@ -60,6 +60,110 @@ class AIClassifier {
                 ]
             }
         },
+        llm_apis: {
+            openai_api: {
+                weight: 0.7,
+                processes: ['openai-api', 'chatgpt-api', 'gpt-3', 'gpt-4', 'davinci-api'],
+                files: ['openai.json', '.env', 'openai_config.yaml'],
+                dirs: ['/openai_cache/', '/gpt_responses/']
+            },
+            anthropic: {
+                weight: 0.7,
+                processes: ['claude-api', 'anthropic-api', 'claude-2', 'claude-instant', 'claude-3'],
+                files: ['anthropic.key', 'claude_config.json'],
+                dirs: ['/anthropic/', '/claude_cache/']
+            },
+            google: {
+                weight: 0.7,
+                processes: ['gemini-api', 'palm-api', 'bard-api', 'vertex-ai'],
+                files: ['google_ai.json', 'gemini_config.yaml'],
+                dirs: ['/google_ai/', '/gemini_cache/']
+            },
+            cohere: {
+                weight: 0.6,
+                processes: ['cohere-api', 'command-api', 'cohere-embed'],
+                files: ['cohere.key', 'cohere_config.json'],
+                dirs: ['/cohere_cache/']
+            },
+            mistral: {
+                weight: 0.6,
+                processes: ['mistral-api', 'mistral-large', 'mistral-medium', 'mistral-small'],
+                files: ['mistral.key', 'mistral_config.yaml'],
+                dirs: ['/mistral_cache/']
+            },
+            meta: {
+                weight: 0.6,
+                processes: ['llama-api', 'llama2-api', 'llama-70b', 'code-llama'],
+                files: ['meta_ai.key', 'llama_config.json'],
+                dirs: ['/meta_cache/', '/llama_responses/']
+            },
+            ai21: {
+                weight: 0.6,
+                processes: ['jurassic-api', 'j2-ultra', 'j2-mid'],
+                files: ['ai21.key', 'jurassic_config.json'],
+                dirs: ['/ai21_cache/']
+            },
+            amazon: {
+                weight: 0.6,
+                processes: ['bedrock-api', 'titan-api', 'claude-bedrock'],
+                files: ['aws_ai.json', 'bedrock_config.yaml'],
+                dirs: ['/aws_ai/', '/bedrock_cache/']
+            },
+            inflection: {
+                weight: 0.6,
+                processes: ['inflection-api', 'pi-api'],
+                files: ['inflection.key', 'pi_config.json'],
+                dirs: ['/inflection_cache/']
+            },
+            perplexity: {
+                weight: 0.6,
+                processes: ['perplexity-api', 'pplx-api', 'perplexity-online'],
+                files: ['perplexity.key', 'pplx_config.yaml'],
+                dirs: ['/perplexity_cache/']
+            },
+            groq: {
+                weight: 0.6,
+                processes: ['groq-api', 'mixtral-groq', 'llama2-groq'],
+                files: ['groq.key', 'groq_config.json'],
+                dirs: ['/groq_cache/']
+            },
+            deepinfra: {
+                weight: 0.6,
+                processes: ['deepinfra-api', 'deepinfra-inference'],
+                files: ['deepinfra.key', 'deepinfra_config.yaml'],
+                dirs: ['/deepinfra_cache/']
+            },
+            together: {
+                weight: 0.6,
+                processes: ['together-api', 'together-inference'],
+                files: ['together.key', 'together_config.json'],
+                dirs: ['/together_cache/']
+            },
+            anyscale: {
+                weight: 0.6,
+                processes: ['anyscale-api', 'endpoints-api'],
+                files: ['anyscale.key', 'endpoints_config.yaml'],
+                dirs: ['/anyscale_cache/']
+            },
+            replicate: {
+                weight: 0.6,
+                processes: ['replicate-api', 'cog-api'],
+                files: ['replicate.key', 'cog_config.json'],
+                dirs: ['/replicate_cache/']
+            },
+            fireworks: {
+                weight: 0.6,
+                processes: ['fireworks-api', 'fireworks-inference'],
+                files: ['fireworks.key', 'fireworks_config.yaml'],
+                dirs: ['/fireworks_cache/']
+            },
+            deepseek: {
+                weight: 0.6,
+                processes: ['deepseek-api', 'deepseek-coder', 'deepseek-chat'],
+                files: ['deepseek.key', 'deepseek_config.yaml'],
+                dirs: ['/deepseek_cache/', '/deepseek_responses/']
+            }
+        },
         hardware: {
             nvidia: {
                 weight: 0.3,
