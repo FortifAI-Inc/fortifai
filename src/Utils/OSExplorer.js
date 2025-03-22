@@ -315,16 +315,16 @@ async function main() {
 
         // Get processes first
         console.log('\nRetrieving process list...');
-        //const processes = await explorer.getProcessesViaSSM(instanceId);
-        const processes = fs.readFileSync('i-077640c1c0aa3f1b6-processes.txt', 'utf8').split('\n');
+        const processes = await explorer.getProcessesViaSSM(instanceId);
+        //const processes = fs.readFileSync('i-077640c1c0aa3f1b6-processes.txt', 'utf8').split('\n');
         console.log('\n=== Processes ===');
         console.log(processes.slice(0, 10).join('\n'));
         console.log(`... and ${processes.length - 10} more processes`);
 
         // Then get filesystem
         console.log('\nRetrieving filesystem list...');
-        //const fileList = await explorer.createFileListingChunks(instanceId);
-        const fileList = fs.readFileSync('i-077640c1c0aa3f1b6-files.txt', 'utf8').split('\n');
+        const fileList = await explorer.createFileListingChunks(instanceId);
+        //const fileList = fs.readFileSync('i-077640c1c0aa3f1b6-files.txt', 'utf8').split('\n');
         console.log('\n=== Files ===');
         console.log(fileList.slice(0, 10).join('\n'));
         console.log(`... and ${fileList.length - 10} more files`);
