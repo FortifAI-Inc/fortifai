@@ -123,11 +123,11 @@ class OSExplorer {
 
             const output = await waitForCommand(commandId, instanceId);
             
-            if (!output?.StandardOutput) {
+            if (!output?.StandardOutputContent) {
                 throw new Error('No process listing output received');
             }
 
-            return output.StandardOutput.split('\n').filter(Boolean);
+            return output.StandardOutputContent.split('\n').filter(Boolean);
         } catch (error) {
             console.error('Error getting process info:', error);
             throw error;
@@ -188,11 +188,11 @@ class OSExplorer {
 
             const output = await waitForCommand(commandId, instanceId);
             
-            if (!output?.StandardOutput) {
+            if (!output?.StandardOutputContent) {
                 throw new Error('No filesystem listing output received');
             }
 
-            return output.StandardOutput.split('\n').filter(Boolean);
+            return output.StandardOutputContent.split('\n').filter(Boolean);
         } catch (error) {
             console.error('Error getting filesystem info:', error);
             throw error;
