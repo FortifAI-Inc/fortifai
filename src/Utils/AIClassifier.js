@@ -372,6 +372,17 @@ class AIClassifier {
                                 (findings.statistics.frameworkDistribution[framework] || 0) + 1;
                         }
                     });
+
+                    // Check LLM-specific indicators if present in AI_INDICATORS
+                    if (category === 'llm' && data.indicators) {
+                        data.indicators.forEach(indicator => {
+                            if (file.toLowerCase().includes(indicator)) {
+                                findings.modelTypes.add('LLM');
+                                findings.confidence += data.weight;
+                                findings.details.push(`LLM indicator detected: ${file}`);
+                            }
+                        });
+                    }
                 });
             });
 
