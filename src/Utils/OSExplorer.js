@@ -317,17 +317,17 @@ async function main() {
         console.log('\nRetrieving process list...');
         //const processes = await explorer.getProcessesViaSSM(instanceId);
         const processes = fs.readFileSync(`${instanceId}-processes.txt`, 'utf8').split('\n');
-        console.log('\n=== Processes ===');
-        console.log(processes.slice(0, 10).join('\n'));
-        console.log(`... and ${processes.length - 10} more processes`);
+        //console.log('\n=== Processes ===');
+        //console.log(processes.slice(0, 10).join('\n'));
+        //console.log(`... and ${processes.length - 10} more processes`);
 
         // Then get filesystem
         console.log('\nRetrieving filesystem list...');
         //const fileList = await explorer.createFileListingChunks(instanceId);
         const fileList = fs.readFileSync(`${instanceId}-files.txt`, 'utf8').split('\n');
-        console.log('\n=== Files ===');
-        console.log(fileList.slice(0, 10).join('\n'));
-        console.log(`... and ${fileList.length - 10} more files`);
+        //console.log('\n=== Files ===');
+        //console.log(fileList.slice(0, 10).join('\n'));
+        //console.log(`... and ${fileList.length - 10} more files`);
         // Save process list to file
         const processFilename = `${instanceId}-processes.txt`;
         await fs.writeFileSync(processFilename, processes.join('\n'));
