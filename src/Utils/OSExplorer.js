@@ -69,8 +69,8 @@ class OSExplorer {
     // Default region from environment or fallback to eu-north-1
     #AWS_REGION = process.env.AWS_REGION || 'eu-north-1';
 
-    async getInstanceInfoViaSSM(instanceId, region = 'us-east-1') {
-        const ssm = new SSMClient({ region });
+    async getInstanceInfoViaSSM(instanceId) {
+        const ssm = new SSMClient({ region: this.#AWS_REGION });
         
         try {
             const results = {
