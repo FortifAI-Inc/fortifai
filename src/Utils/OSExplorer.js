@@ -1,6 +1,6 @@
 const { Client } = require('ssh2');
-const { 
-    SSMClient, 
+const {
+    SSMClient,
     SendCommandCommand,
     GetCommandInvocationCommand
 } = require("@aws-sdk/client-ssm");
@@ -13,13 +13,13 @@ class OSExplorer {
     async getInstanceInfo(instanceConfig) {
         return new Promise((resolve, reject) => {
             const conn = new Client();
-            
+
             conn.on('ready', () => {
                 const results = {
                     files: null,
                     processes: null
                 };
-                
+
                 // Get file listing
                 conn.exec('find / -type f 2>/dev/null', (err, stream) => {
                     if (err) reject(err);
@@ -28,7 +28,7 @@ class OSExplorer {
                         fileData += data;
                     }).on('end', () => {
                         results.files = fileData.split('\n').filter(Boolean);
-                        
+
                         // Get process listing
                         conn.exec('ps aux', (err, stream) => {
                             if (err) reject(err);
@@ -44,7 +44,7 @@ class OSExplorer {
                     });
                 });
             }).connect(instanceConfig);
-            
+
             conn.on('error', (err) => {
                 reject(err);
             });
@@ -72,7 +72,7 @@ class OSExplorer {
 
     async getProcessesViaSSM(instanceId) {
         const ssm = new SSMClient({ region: this.#AWS_REGION });
-        
+
         try {
             // Command to get processes
             const processesCommand = new SendCommandCommand({
@@ -90,26 +90,26 @@ class OSExplorer {
             const waitForCommand = async (commandId, instanceId) => {
                 const maxAttempts = 10;
                 const delaySeconds = 3;
-                
+
                 console.log('Waiting for process list command to complete...');
                 await new Promise(resolve => setTimeout(resolve, 5000));
-                
+
                 for (let attempt = 0; attempt < maxAttempts; attempt++) {
                     try {
                         const getCommandOutput = new GetCommandInvocationCommand({
                             CommandId: commandId,
                             InstanceId: instanceId
                         });
-                        
+
                         const output = await ssm.send(getCommandOutput);
                         console.log(`Process command status: ${output.Status}`);
-                        
+
                         if (output.Status === 'Success') {
                             return output;
                         } else if (output.Status === 'Failed') {
                             throw new Error(`Process command failed: ${output.StatusDetails}`);
                         }
-                        
+
                         await new Promise(resolve => setTimeout(resolve, delaySeconds * 1000));
                     } catch (error) {
                         if (error.name === 'InvocationDoesNotExist') {
@@ -123,7 +123,7 @@ class OSExplorer {
             };
 
             const output = await waitForCommand(commandId, instanceId);
-            
+
             if (!output?.StandardOutputContent) {
                 throw new Error('No process listing output received');
             }
@@ -137,7 +137,7 @@ class OSExplorer {
 
     async getFilesystemViaSSM(instanceId) {
         const ssm = new SSMClient({ region: this.#AWS_REGION });
-        
+
         try {
             // Command to get files
             const filesCommand = new SendCommandCommand({
@@ -155,26 +155,26 @@ class OSExplorer {
             const waitForCommand = async (commandId, instanceId) => {
                 const maxAttempts = 10;
                 const delaySeconds = 3;
-                
+
                 console.log('Waiting for filesystem command to complete...');
                 await new Promise(resolve => setTimeout(resolve, 5000));
-                
+
                 for (let attempt = 0; attempt < maxAttempts; attempt++) {
                     try {
                         const getCommandOutput = new GetCommandInvocationCommand({
                             CommandId: commandId,
                             InstanceId: instanceId
                         });
-                        
+
                         const output = await ssm.send(getCommandOutput);
                         console.log(`Filesystem command status: ${output.Status}`);
-                        
+
                         if (output.Status === 'Success') {
                             return output;
                         } else if (output.Status === 'Failed') {
                             throw new Error(`Filesystem command failed: ${output.StatusDetails}`);
                         }
-                        
+
                         await new Promise(resolve => setTimeout(resolve, delaySeconds * 1000));
                     } catch (error) {
                         if (error.name === 'InvocationDoesNotExist') {
@@ -188,7 +188,7 @@ class OSExplorer {
             };
 
             const output = await waitForCommand(commandId, instanceId);
-            
+
             if (!output?.StandardOutputContent) {
                 throw new Error('No filesystem listing output received');
             }
@@ -207,7 +207,7 @@ class OSExplorer {
         try {
             console.log('Getting process list...');
             const processes = await this.getProcessesViaSSM(instanceId);
-            
+
             console.log('Getting filesystem list...');
             const files = await this.getFilesystemViaSSM(instanceId);
 
@@ -223,7 +223,7 @@ class OSExplorer {
 
     async createFileListingChunks(instanceId) {
         const ssm = new SSMClient({ region: this.#AWS_REGION });
-        
+
         try {
             // The script, with escaped variables
             const script = `#!/bin/bash
@@ -275,26 +275,26 @@ echo "NUMFILES=$NUMFILES"
             const waitForCommand = async (commandId, instanceId) => {
                 const maxAttempts = 20; // Increased attempts due to longer operation
                 const delaySeconds = 3;
-                
+
                 console.log('Waiting for script to complete...');
                 await new Promise(resolve => setTimeout(resolve, 5000));
-                
+
                 for (let attempt = 0; attempt < maxAttempts; attempt++) {
                     try {
                         const getCommandOutput = new GetCommandInvocationCommand({
                             CommandId: commandId,
                             InstanceId: instanceId
                         });
-                        
+
                         const output = await ssm.send(getCommandOutput);
                         console.log(`Script status: ${output.Status}`);
-                        
+
                         if (output.Status === 'Success') {
                             return output;
                         } else if (output.Status === 'Failed') {
                             throw new Error(`Script failed: ${output.StatusDetails}`);
                         }
-                        
+
                         await new Promise(resolve => setTimeout(resolve, delaySeconds * 1000));
                     } catch (error) {
                         if (error.name === 'InvocationDoesNotExist') {
@@ -308,7 +308,7 @@ echo "NUMFILES=$NUMFILES"
             };
 
             const output = await waitForCommand(commandId, instanceId);
-            
+
             if (!output?.StandardOutputContent) {
                 throw new Error('No script output received');
             }
@@ -328,19 +328,19 @@ echo "NUMFILES=$NUMFILES"
             console.log('Number of chunk files created:', chunkCount);
             // Retrieve first chunk content
             const getChunkCommand = new SendCommandCommand({
-                InstanceId: instanceId,
+                InstanceIds: [instanceId],
                 DocumentName: 'AWS-RunShellScript',
                 Parameters: {
                     commands: [`cat ${workdir}/chunk_00.b64`]
                 }
             });
-            
+
             const chunkResponse = await ssm.send(getChunkCommand);
             const chunkCommandId = chunkResponse.Command.CommandId;
-            
+
             const chunkOutput = await waitForCommand(chunkCommandId, instanceId);
             console.log('First chunk content length:', chunkOutput.StandardOutputContent.length);
-            
+
             return {
                 workdir,
                 output: output.StandardOutputContent,
@@ -359,7 +359,7 @@ async function main() {
     try {
         const explorer = new OSExplorer();
         const instanceId = process.argv[2];
-        
+
         if (!instanceId) {
             console.error('Please provide an instance ID as an argument');
             console.log('Usage: node OSExplorer.js <instance-id>');
@@ -367,21 +367,21 @@ async function main() {
         }
 
         console.log(`Retrieving information for instance ${instanceId}...`);
-        
+
         // Get processes first
         /*console.log('\nRetrieving process list...');
         const processes = await explorer.getProcessesViaSSM(instanceId);
         console.log('\n=== Processes ===');
         console.log(processes.slice(0, 10).join('\n'));
         console.log(`... and ${processes.length - 10} more processes`);*/
-        
+
         // Then get filesystem
         console.log('\nRetrieving filesystem list...');
-        const { workdir, output, chunkCount } = await explorer.createFileListingChunks(instanceId);   
+        const { workdir, output, chunkCount } = await explorer.createFileListingChunks(instanceId);
         console.log('\n=== Files ===');
         console.log(output);
         //console.log(`... and ${output.length - 10} more files`);
-        
+
     } catch (error) {
         console.error('Error in main:', error);
         process.exit(1);
