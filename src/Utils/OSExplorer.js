@@ -140,30 +140,15 @@ class OSExplorer {
         const ssm = new SSMClient({ region: this.#AWS_REGION });
         
         try {
-            // Create temporary file on target system, save listing, and count total files
-            const tempFileName = `/tmp/file_listing_${Date.now()}.txt`;
+            // Command to get files
             const filesCommand = new SendCommandCommand({
                 InstanceIds: [instanceId],
                 DocumentName: 'AWS-RunShellScript',
                 Parameters: {
-                    commands: [
-                        // Count total files first
-                        'echo "Starting file enumeration..."',
-                        `total_files=$(find / -type f 2>/dev/null | wc -l)`,
-                        'echo "Total files found: $total_files"',
-                        // Save full listing to temp file
-                        `find / -type f 2>/dev/null > ${tempFileName}`,
-                        // Split into smaller chunks that SSM can handle
-                        `split -b 20m ${tempFileName} ${tempFileName}_part_`,
-                        // List the parts
-                        `ls -l ${tempFileName}_part_*`,
-                        // Get number of parts
-                        `ls ${tempFileName}_part_* | wc -l`
-                    ]
+                    commands: ['find / -type f 2>/dev/null']
                 }
             });
 
-            console.log('Creating file listing on target system...');
             const filesResponse = await ssm.send(filesCommand);
             const commandId = filesResponse.Command.CommandId;
 
@@ -203,67 +188,17 @@ class OSExplorer {
                 throw new Error('Filesystem command timed out');
             };
 
-            const initialOutput = await waitForCommand(commandId, instanceId);
-            console.log('Initial file listing complete. Reading parts...');
-
-            // Get the number of parts from the last line
-            const numParts = parseInt(initialOutput.StandardOutputContent.split('\n').pop());
-            let allFiles = [];
-
-            // Read each part
-            for (let i = 0; i < numParts; i++) {
-                const partFile = `${tempFileName}_part_${String.fromCharCode(97 + i)}`; // parts are named a, b, c, etc.
-                const readCommand = new SendCommandCommand({
-                    InstanceIds: [instanceId],
-                    DocumentName: 'AWS-RunShellScript',
-                    Parameters: {
-                        commands: [`cat ${partFile}`]
-                    }
-                });
-
-                console.log(`Reading part ${i + 1} of ${numParts}...`);
-                const readResponse = await ssm.send(readCommand);
-                const readOutput = await waitForCommand(readResponse.Command.CommandId, instanceId);
-                
-                if (readOutput?.StandardOutputContent) {
-                    allFiles = allFiles.concat(readOutput.StandardOutputContent.split('\n').filter(Boolean));
-                }
+            const output = await waitForCommand(commandId, instanceId);
+            
+            if (!output?.StandardOutputContent) {
+                throw new Error('No filesystem listing output received');
             }
+            console.log('output.StandardOutputContent.length', output.StandardOutputContent.length);
+            console.log(output);
 
-            // Cleanup temporary files
-            const cleanupCommand = new SendCommandCommand({
-                InstanceIds: [instanceId],
-                DocumentName: 'AWS-RunShellScript',
-                Parameters: {
-                    commands: [
-                        `rm ${tempFileName}*`,
-                        'echo "Cleanup complete"'
-                    ]
-                }
-            });
-
-            console.log('Cleaning up temporary files...');
-            await ssm.send(cleanupCommand);
-
-            return allFiles;
+            return output.StandardOutputContent.split('\n').filter(Boolean);
         } catch (error) {
             console.error('Error getting filesystem info:', error);
-            // Attempt cleanup on error
-            try {
-                const cleanupCommand = new SendCommandCommand({
-                    InstanceIds: [instanceId],
-                    DocumentName: 'AWS-RunShellScript',
-                    Parameters: {
-                        commands: [
-                            `rm -f /tmp/file_listing_*`,
-                            'echo "Emergency cleanup complete"'
-                        ]
-                    }
-                });
-                await ssm.send(cleanupCommand);
-            } catch (cleanupError) {
-                console.error('Error during cleanup:', cleanupError);
-            }
             throw error;
         }
     }
