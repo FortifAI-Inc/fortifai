@@ -250,10 +250,11 @@ echo "Splitting into chunks of $CHUNK_SIZE bytes..."
 split -b $CHUNK_SIZE -d --additional-suffix=.b64 "$ENCODED" "$WORKDIR/$CHUNK_PREFIX"
 
 echo "Chunks created in: $WORKDIR"
-ls -lh "$WORKDIR/$CHUNK_PREFIX"*.b64
+ls -lh "$WORKDIR/$CHUNK_PREFIX"*.b64 | tail -n 1 | awk '{print $9}'
 
 # Echo the working directory for later use
-echo "WORKDIR=$WORKDIR"`;
+echo "WORKDIR=$WORKDIR"
+echo "LASTCHUNK=\`ls -lh $WORKDIR/$CHUNK_PREFIX*.b64 | tail -n 1 | awk \'{print $9}\'\`"`;
 
             // Send the script command
             const scriptCommand = new SendCommandCommand({
@@ -352,11 +353,11 @@ async function main() {
         console.log(`Retrieving information for instance ${instanceId}...`);
         
         // Get processes first
-        console.log('\nRetrieving process list...');
+        /*console.log('\nRetrieving process list...');
         const processes = await explorer.getProcessesViaSSM(instanceId);
         console.log('\n=== Processes ===');
         console.log(processes.slice(0, 10).join('\n'));
-        console.log(`... and ${processes.length - 10} more processes`);
+        console.log(`... and ${processes.length - 10} more processes`);*/
         
         // Then get filesystem
         console.log('\nRetrieving filesystem list...');
