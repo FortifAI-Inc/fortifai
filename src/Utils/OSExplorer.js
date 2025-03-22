@@ -251,10 +251,13 @@ split -b $CHUNK_SIZE -d --additional-suffix=.b64 "$ENCODED" "$WORKDIR/$CHUNK_PRE
 
 echo "Chunks created in: $WORKDIR"
 ls -lh "$WORKDIR/$CHUNK_PREFIX"*.b64 | tail -n 1 | awk '{print $9}'
+NUMFILES=\`ls -lh $WORKDIR/$CHUNK_PREFIX*.b64 | wc -l\`
 
 # Echo the working directory for later use
 echo "WORKDIR=$WORKDIR"
-echo "LASTCHUNK=\`ls -lh $WORKDIR/$CHUNK_PREFIX*.b64 | tail -n 1 | awk \'{print $9}\'\`"`;
+echo "LASTCHUNK=\`ls -lh $WORKDIR/$CHUNK_PREFIX*.b64 | tail -n 1 | awk \'{print $9}\'\`"
+echo "NUMFILES=$NUMFILES"
+`;
 
             // Send the script command
             const scriptCommand = new SendCommandCommand({
