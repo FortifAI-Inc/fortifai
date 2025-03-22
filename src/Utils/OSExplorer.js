@@ -8,6 +8,8 @@ const path = require('path');
 const fs = require('fs');
 
 class OSExplorer {
+    #AWS_REGION = process.env.AWS_REGION || 'eu-north-1';
+
     async getInstanceInfo(instanceConfig) {
         return new Promise((resolve, reject) => {
             const conn = new Client();
@@ -67,9 +69,6 @@ class OSExplorer {
             throw error;
         }
     }
-
-    // Default region from environment or fallback to eu-north-1
-    #AWS_REGION = process.env.AWS_REGION || 'eu-north-1';
 
     async getProcessesViaSSM(instanceId) {
         const ssm = new SSMClient({ region: this.#AWS_REGION });
@@ -332,7 +331,7 @@ echo "NUMFILES=$NUMFILES"
                 InstanceId: instanceId,
                 DocumentName: 'AWS-RunShellScript',
                 Parameters: {
-                    commands: [`cat ${workdir}/chunk_0`]
+                    commands: [`cat ${workdir}/chunk_00.b64`]
                 }
             });
             
