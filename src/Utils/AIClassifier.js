@@ -1,12 +1,10 @@
-const AIClassifier = require('./AIClassifier');
+//const classifier = new AIClassifier();
+//const analysis = classifier.analyzeInstance(processes, files);
 
-const classifier = new AIClassifier();
-const analysis = classifier.analyzeInstance(processes, files);
-
-console.log('AI Workload Analysis:', analysis.summary);
-console.log('Confidence Explanation:', analysis.confidenceExplanation);
-console.log('Detected Frameworks:', analysis.summary.detectedFrameworks);
-console.log('Model Types:', analysis.summary.detectedModelTypes);
+//console.log('AI Workload Analysis:', analysis.summary);
+//console.log('Confidence Explanation:', analysis.confidenceExplanation);
+//console.log('Detected Frameworks:', analysis.summary.detectedFrameworks);
+//console.log('Model Types:', analysis.summary.detectedModelTypes);
 
 
 class AIClassifier {
