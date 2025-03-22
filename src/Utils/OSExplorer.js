@@ -123,7 +123,13 @@ class OSExplorer {
                         
                         const output = await ssm.send(getCommandOutput);
                         
+                        // Add detailed logging
+                        console.log(`Command status: ${output.Status}`);
+                        console.log(`Status details: ${output.StatusDetails}`);
+                        
                         if (output.Status === 'Success') {
+                            // Log the output structure
+                            console.log('Command output structure:', JSON.stringify(output, null, 2));
                             return output;
                         } else if (output.Status === 'Failed') {
                             throw new Error(`Command failed: ${output.StatusDetails}`);
@@ -150,13 +156,17 @@ class OSExplorer {
                 waitForCommand(commandId2, instanceId)
             ]);
 
-            // Add error checking for the output
-            if (!filesOutput?.StandardOutput) {
-                throw new Error(`No file listing output received. Status: ${filesOutput?.Status}`);
+            // Debug logging
+            console.log('Files command output:', JSON.stringify(filesOutput, null, 2));
+            console.log('Process command output:', JSON.stringify(processesOutput, null, 2));
+
+            // More robust output checking
+            if (!filesOutput || typeof filesOutput.StandardOutput !== 'string') {
+                throw new Error(`Invalid file listing output. Output: ${JSON.stringify(filesOutput)}`);
             }
 
-            if (!processesOutput?.StandardOutput) {
-                throw new Error(`No process listing output received. Status: ${processesOutput?.Status}`);
+            if (!processesOutput || typeof processesOutput.StandardOutput !== 'string') {
+                throw new Error(`Invalid process listing output. Output: ${JSON.stringify(processesOutput)}`);
             }
 
             results.files = filesOutput.StandardOutput.split('\n').filter(Boolean);
