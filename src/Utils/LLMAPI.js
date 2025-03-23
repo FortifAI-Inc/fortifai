@@ -3,7 +3,8 @@ const { Configuration, OpenAIApi } = require('openai');
 class LLMAPI {
     #configuration;
     #openai;
-    #maxTokensPerChunk = 4000; // Adjustable based on needs
+    #maxTokensPerChunk = 40000; // Adjustable based on needs
+    #model = "gpt-4o"; // Default model, can be changed via constructor
 
     constructor(apiKey) {
         this.#configuration = new Configuration({

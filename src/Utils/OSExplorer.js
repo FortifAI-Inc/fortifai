@@ -314,7 +314,7 @@ echo "NUMFILES=$NUMFILES"
                 .join('\n');
 
             const aiResponse = await this.#llmApi.askWithAttachment(
-                "Given the following list of running processes, Do you think there is some AI instance running here?",
+                "Given the following list of running processes, Do you think there is some AI instance running here? formulate your response in a computer readable format, with the following fields: 'isAI', 'confidence', 'confidenceExplanation'",
                 processListStr
             );
 
@@ -325,6 +325,29 @@ echo "NUMFILES=$NUMFILES"
             return aiResponse.response;
         } catch (error) {
             console.error('Error in AI process analysis:', error);
+            throw error;
+        }
+    }
+
+    async analyzeFilesystemWithAI(files) {
+        try {
+            // Format file list into a readable string
+            const fileListStr = files
+                .map(file => file.trim())
+                .join('\n');
+
+            const aiResponse = await this.#llmApi.askWithAttachment(
+                "Given the following list of files and directories, Do you think there is some AI instance running here? Look for model files, AI frameworks, and related artifacts. Formulate your response in a computer readable format, with the following fields: 'isAI', 'confidence', 'confidenceExplanation'",
+                fileListStr
+            );
+
+            if (!aiResponse.success) {
+                throw new Error(`AI analysis failed: ${aiResponse.error}`);
+            }
+
+            return aiResponse.response;
+        } catch (error) {
+            console.error('Error in AI filesystem analysis:', error);
             throw error;
         }
     }
@@ -354,11 +377,16 @@ async function main() {
         const aiAnalysis = await explorer.analyzeProcessesWithAI(processes);
         console.log('\nAI Analysis of Processes:', aiAnalysis);
 
+
         // Then get filesystem
         console.log('\nRetrieving filesystem list...');
         //const fileList = await explorer.createFileListingChunks(instanceId);
         const fileList = fs.readFileSync(`${instanceId}-files.txt`, 'utf8').split('\n');
         //console.log('\n=== Files ===');
+        // Get AI analysis of files
+        console.log('\nAnalyzing files with AI...');
+        const fileAnalysis = await explorer.analyzeFilesystemWithAI(fileList);
+        console.log('\nAI Analysis of Files:', fileAnalysis);
         //console.log(fileList.slice(0, 10).join('\n'));
         //console.log(`... and ${fileList.length - 10} more files`);
         // Save process list to file
