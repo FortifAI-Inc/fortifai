@@ -125,7 +125,7 @@ ${prompt}` : 'Please analyze this part of the context and maintain relevant info
 
 class DeepSeekAPI {
     #apiKey;
-    #maxTokensPerChunk = 4000;
+    #maxTokensPerChunk = 40000;
     #maxRetries = 3;
     #retryDelay = 1000; // Start with 1 second delay
     #model = "deepseek-chat"; // Default model
@@ -135,7 +135,7 @@ class DeepSeekAPI {
     }
 
     // Helper method to split text into chunks
-    #splitIntoChunks(text, maxChunkSize = 4000) {
+    #splitIntoChunks(text, maxChunkSize = 40000) {
         const chunks = [];
         const lines = text.split('\n');
         let currentChunk = '';
