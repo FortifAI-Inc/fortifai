@@ -3,6 +3,7 @@ const { Configuration, OpenAIApi } = require('openai');
 class LLMAPI {
     #configuration;
     #openai;
+    #maxTokensPerChunk = 4000; // Adjustable based on needs
 
     constructor(apiKey) {
         this.#configuration = new Configuration({
@@ -11,33 +12,62 @@ class LLMAPI {
         this.#openai = new OpenAIApi(this.#configuration);
     }
 
+    // Helper method to split text into chunks
+    #splitIntoChunks(text, maxChunkSize = 4000) {
+        const chunks = [];
+        const lines = text.split('\n');
+        let currentChunk = '';
+
+        for (const line of lines) {
+            if ((currentChunk + line).length > maxChunkSize) {
+                chunks.push(currentChunk);
+                currentChunk = line;
+            } else {
+                currentChunk += (currentChunk ? '\n' : '') + line;
+            }
+        }
+        if (currentChunk) {
+            chunks.push(currentChunk);
+        }
+        return chunks;
+    }
+
     async askWithAttachment(prompt, attachment) {
         try {
-            const combinedPrompt = `
-Context/Attachment:
-${attachment}
+            const chunks = this.#splitIntoChunks(attachment);
+            let finalResponse = '';
 
-Question/Prompt:
-${prompt}
+            // Process each chunk separately
+            for (let i = 0; i < chunks.length; i++) {
+                const combinedPrompt = `
+Context/Attachment (Part ${i + 1}/${chunks.length}):
+${chunks[i]}
+<CURRENT_CURSOR_POSITION>
 
-Please provide a response taking into account both the context/attachment and the specific question/prompt above.`;
+${i === chunks.length - 1 ? `Question/Prompt:
+${prompt}` : 'Please analyze this part of the context and maintain relevant information for the final response.'}`;
 
-            const response = await this.#openai.createChatCompletion({
-                model: "gpt-4", // Can be configured based on needs
-                messages: [
-                    {
-                        role: "user",
-                        content: combinedPrompt
-                    }
-                ],
-                temperature: 0.7,
-                max_tokens: 2000
-            });
+                const response = await this.#openai.createChatCompletion({
+                    model: "gpt-4",
+                    messages: [
+                        {
+                            role: "user",
+                            content: combinedPrompt
+                        }
+                    ],
+                    temperature: 0.7,
+                    max_tokens: 2000
+                });
+
+                if (i === chunks.length - 1) {
+                    finalResponse = response.data.choices[0].message.content;
+                }
+            }
 
             return {
                 success: true,
-                response: response.data.choices[0].message.content,
-                usage: response.data.usage
+                response: finalResponse,
+                usage: { total_tokens: 'Multiple requests made' } // Actual token counting would need to be implemented
             };
 
         } catch (error) {

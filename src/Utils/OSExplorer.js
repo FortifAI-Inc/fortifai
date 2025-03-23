@@ -7,9 +7,16 @@ const {
 const path = require('path');
 const fs = require('fs');
 const AIClassifier = require('./AIClassifier');
+const LLMAPI = require('./LLMAPI');
 
 class OSExplorer {
     #AWS_REGION = process.env.AWS_REGION || 'eu-north-1';
+    #llmApi;
+
+    constructor() {
+        // Initialize LLMAPI with OpenAI key from environment variable
+        this.#llmApi = new LLMAPI(process.env.OPENAI_API_KEY);
+    }
 
     async getInstanceInfoSSH(instanceConfig) {
         return new Promise((resolve, reject) => {
@@ -297,6 +304,29 @@ echo "NUMFILES=$NUMFILES"
             throw error;
         }
     }
+
+    async analyzeProcessesWithAI(processes) {
+        try {
+            // Format processes into a readable string
+            const processListStr = processes
+                .map(process => process.trim())
+                .join('\n');
+
+            const aiResponse = await this.#llmApi.askWithAttachment(
+                "Given the following list of running processes, Do you think there is some AI instance running here?",
+                processListStr
+            );
+
+            if (!aiResponse.success) {
+                throw new Error(`AI analysis failed: ${aiResponse.error}`);
+            }
+
+            return aiResponse.response;
+        } catch (error) {
+            console.error('Error in AI process analysis:', error);
+            throw error;
+        }
+    }
 }
 
 // Updated main function
@@ -317,9 +347,11 @@ async function main() {
         console.log('\nRetrieving process list...');
         //const processes = await explorer.getProcessesViaSSM(instanceId);
         const processes = fs.readFileSync(`${instanceId}-processes.txt`, 'utf8').split('\n');
-        //console.log('\n=== Processes ===');
-        //console.log(processes.slice(0, 10).join('\n'));
-        //console.log(`... and ${processes.length - 10} more processes`);
+
+        // Get AI analysis of processes
+        console.log('\nAnalyzing processes with AI...');
+        const aiAnalysis = await explorer.analyzeProcessesWithAI(processes);
+        console.log('\nAI Analysis of Processes:', aiAnalysis);
 
         // Then get filesystem
         console.log('\nRetrieving filesystem list...');
