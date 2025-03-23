@@ -8,15 +8,15 @@ const {
 const path = require('path');
 const fs = require('fs');
 const AIClassifier = require('./AIClassifier');
-const LLMAPI = require('./LLMAPI');
+const { DeepSeekAPI } = require('./LLMAPI');
 
 class OSExplorer {
     #AWS_REGION = process.env.AWS_REGION || 'eu-north-1';
     #llmApi;
 
     constructor() {
-        // Initialize LLMAPI with OpenAI key from environment variable
-        this.#llmApi = new LLMAPI(process.env.OPENAI_API_KEY);
+        // Initialize with DeepSeekAPI instead of LLMAPI
+        this.#llmApi = new DeepSeekAPI(process.env.DEEPSEEK_API_KEY);
     }
 
     async getInstanceInfoSSH(instanceConfig) {
