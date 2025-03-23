@@ -1,0 +1,114 @@
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root           1  0.1  1.4 171516 13116 ?        Ss   16:26   0:01 /usr/lib/systemd/systemd --switched-root --system --deserialize=32
+root           2  0.0  0.0      0     0 ?        S    16:26   0:00 [kthreadd]
+root           3  0.0  0.0      0     0 ?        I<   16:26   0:00 [rcu_gp]
+root           4  0.0  0.0      0     0 ?        I<   16:26   0:00 [rcu_par_gp]
+root           5  0.0  0.0      0     0 ?        I<   16:26   0:00 [slub_flushwq]
+root           6  0.0  0.0      0     0 ?        I<   16:26   0:00 [netns]
+root           8  0.0  0.0      0     0 ?        I<   16:26   0:00 [kworker/0:0H-events_highpri]
+root           9  0.0  0.0      0     0 ?        I    16:26   0:00 [kworker/u4:0-flush-259:0]
+root          10  0.0  0.0      0     0 ?        I<   16:26   0:00 [mm_percpu_wq]
+root          11  0.0  0.0      0     0 ?        I    16:26   0:00 [rcu_tasks_kthread]
+root          12  0.0  0.0      0     0 ?        I    16:26   0:00 [rcu_tasks_rude_kthread]
+root          13  0.0  0.0      0     0 ?        I    16:26   0:00 [rcu_tasks_trace_kthread]
+root          14  0.0  0.0      0     0 ?        S    16:26   0:00 [ksoftirqd/0]
+root          15  0.0  0.0      0     0 ?        I    16:26   0:00 [rcu_preempt]
+root          16  0.0  0.0      0     0 ?        S    16:26   0:00 [migration/0]
+root          18  0.0  0.0      0     0 ?        S    16:26   0:00 [cpuhp/0]
+root          19  0.0  0.0      0     0 ?        S    16:26   0:00 [cpuhp/1]
+root          20  0.0  0.0      0     0 ?        S    16:26   0:00 [migration/1]
+root          21  0.0  0.0      0     0 ?        S    16:26   0:00 [ksoftirqd/1]
+root          23  0.0  0.0      0     0 ?        I<   16:26   0:00 [kworker/1:0H-events_highpri]
+root          26  0.0  0.0      0     0 ?        S    16:26   0:00 [kdevtmpfs]
+root          27  0.0  0.0      0     0 ?        I<   16:26   0:00 [inet_frag_wq]
+root          28  0.0  0.0      0     0 ?        S    16:26   0:00 [kauditd]
+root          29  0.0  0.0      0     0 ?        S    16:26   0:00 [khungtaskd]
+root          30  0.0  0.0      0     0 ?        S    16:26   0:00 [oom_reaper]
+root          32  0.0  0.0      0     0 ?        I<   16:26   0:00 [writeback]
+root          33  0.0  0.0      0     0 ?        S    16:26   0:00 [kcompactd0]
+root          34  0.0  0.0      0     0 ?        SN   16:26   0:00 [khugepaged]
+root          35  0.0  0.0      0     0 ?        I<   16:26   0:00 [cryptd]
+root          36  0.0  0.0      0     0 ?        I<   16:26   0:00 [kintegrityd]
+root          37  0.0  0.0      0     0 ?        I<   16:26   0:00 [kblockd]
+root          38  0.0  0.0      0     0 ?        I<   16:26   0:00 [blkcg_punt_bio]
+root          39  0.0  0.0      0     0 ?        I    16:26   0:00 [kworker/1:1-cgroup_destroy]
+root          40  0.0  0.0      0     0 ?        I<   16:26   0:00 [tpm_dev_wq]
+root          41  0.0  0.0      0     0 ?        I<   16:26   0:00 [md]
+root          42  0.0  0.0      0     0 ?        I<   16:26   0:00 [edac-poller]
+root          43  0.0  0.0      0     0 ?        S    16:26   0:00 [watchdogd]
+root          44  0.0  0.0      0     0 ?        I<   16:26   0:00 [kworker/1:1H-xfs-log/nvme0n1p1]
+root          53  0.0  0.0      0     0 ?        S    16:26   0:00 [kswapd0]
+root          71  0.0  0.0      0     0 ?        I<   16:26   0:00 [xfsalloc]
+root          72  0.0  0.0      0     0 ?        I<   16:26   0:00 [xfs_mru_cache]
+root          75  0.0  0.0      0     0 ?        I<   16:26   0:00 [kthrotld]
+root         122  0.0  0.0      0     0 ?        I<   16:26   0:00 [nvme-wq]
+root         124  0.0  0.0      0     0 ?        I<   16:26   0:00 [nvme-reset-wq]
+root         126  0.0  0.0      0     0 ?        I<   16:26   0:00 [nvme-delete-wq]
+root         152  0.0  0.0      0     0 ?        I<   16:26   0:00 [mld]
+root         153  0.0  0.0      0     0 ?        I<   16:26   0:00 [ipv6_addrconf]
+root         172  0.0  0.0      0     0 ?        I<   16:26   0:00 [kstrp]
+root         182  0.0  0.0      0     0 ?        I<   16:26   0:00 [zswap-shrink]
+root         183  0.0  0.0      0     0 ?        I<   16:26   0:00 [kworker/u5:0]
+root         300  0.0  0.0      0     0 ?        I<   16:26   0:00 [kworker/0:1H-kblockd]
+root         771  0.0  0.0      0     0 ?        I<   16:26   0:00 [xfs-buf/nvme0n1]
+root         772  0.0  0.0      0     0 ?        I<   16:26   0:00 [xfs-conv/nvme0n]
+root         773  0.0  0.0      0     0 ?        I<   16:26   0:00 [xfs-reclaim/nvm]
+root         774  0.0  0.0      0     0 ?        I<   16:26   0:00 [xfs-blockgc/nvm]
+root         775  0.0  0.0      0     0 ?        I<   16:26   0:00 [xfs-inodegc/nvm]
+root         776  0.0  0.0      0     0 ?        I<   16:26   0:00 [xfs-log/nvme0n1]
+root         777  0.0  0.0      0     0 ?        I<   16:26   0:00 [xfs-cil/nvme0n1]
+root         778  0.0  0.0      0     0 ?        S    16:26   0:00 [xfsaild/nvme0n1p1]
+root         826  0.0  1.1  52548 11012 ?        Ss   16:26   0:00 /usr/lib/systemd/systemd-journald
+root        1228  0.0  0.0      0     0 ?        I    16:26   0:00 [kworker/0:4-xfs-inodegc/nvme0n1p1]
+root        1240  0.0  0.6  31044  6112 ?        Ss   16:26   0:00 /usr/lib/systemd/systemd-udevd
+systemd+    1262  0.0  0.9  21236  8408 ?        Ss   16:26   0:00 /usr/lib/systemd/systemd-resolved
+root        1269  0.0  0.0      0     0 ?        I<   16:26   0:00 [rpciod]
+root        1272  0.0  0.0      0     0 ?        I<   16:26   0:00 [xprtiod]
+root        1276  0.0  0.0      0     0 ?        I<   16:26   0:00 [ena]
+root        1284  0.0  0.2  20228  2004 ?        S<sl 16:26   0:00 /sbin/auditd
+root        1397  0.0  0.3  15300  3064 ?        Ss   16:26   0:00 /usr/bin/systemd-inhibit --what=handle-suspend-key:handle-hibernate-key --who=noah --why=acpid instead --mode=block /usr/sbin/acpid -f
+root        1400  0.0  0.2  81408  1984 ?        Ssl  16:26   0:00 /usr/sbin/irqbalance --foreground
+libstor+    1401  0.0  0.1   2760  1720 ?        Ss   16:26   0:00 /usr/bin/lsmd -d
+root        1403  2.4  0.4 164932  4476 ?        Ssl  16:26   0:36 /usr/sbin/rngd -f -x pkcs11 -x nist
+root        1405  0.0  0.4  15804  4036 ?        Ss   16:26   0:00 /usr/lib/systemd/systemd-homed
+root        1406  0.0  0.5  17644  5108 ?        Ss   16:26   0:00 /usr/lib/systemd/systemd-logind
+dbus        1413  0.0  0.2   8352  1908 ?        Ss   16:26   0:00 /usr/bin/dbus-broker-launch --scope system --audit
+systemd+    1416  0.0  0.5 235892  4872 ?        Ss   16:26   0:00 /usr/lib/systemd/systemd-networkd
+dbus        1432  0.0  0.2   5268  2180 ?        S    16:26   0:00 dbus-broker --log 4 --controller 9 --machine-id ec240682fad7d118402b7a6a6e280b93 --max-bytes 536870912 --max-fds 4096 --max-matches 16384 --audit
+root        1434  0.0  0.0   2672   724 ?        S    16:26   0:00 /usr/sbin/acpid -f
+root        1438  0.0  0.2 281032  2276 ?        Ssl  16:26   0:00 /usr/sbin/gssproxy -D
+root        1609  0.0  0.6  13316  5592 ?        Ss   16:26   0:00 sshd: /usr/sbin/sshd -D [listener] 0 of 10-100 startups
+root        1618  0.0  0.2   4732  1904 ?        Ss   16:26   0:00 /usr/sbin/atd -f
+root        1624  0.0  0.0 221348   516 tty1     Ss+  16:26   0:00 /sbin/agetty -o -p -- \u --noclear - linux
+root        1625  0.0  0.0 221392   472 ttyS0    Ss+  16:26   0:00 /sbin/agetty -o -p -- \u --keep-baud 115200,57600,38400,9600 - vt220
+chrony      1638  0.0  0.2  86520  1968 ?        S    16:26   0:00 /usr/sbin/chronyd -F 2
+root        2168  0.0  0.0      0     0 ?        I    16:39   0:00 [kworker/0:0-cgroup_destroy]
+root        2170  0.0  0.6  14800  5916 ?        Ss   16:40   0:00 sshd: ec2-user [priv]
+root        2173  0.0  0.3  15300  2984 ?        Ss   16:40   0:00 /usr/lib/systemd/systemd-userdbd
+ec2-user    2178  0.0  0.9  20468  8768 ?        Ss   16:40   0:00 /usr/lib/systemd/systemd --user
+ec2-user    2180  0.0  0.7 172660  6612 ?        S    16:40   0:00 (sd-pam)
+ec2-user    2187  0.1  0.5  14800  5004 ?        S    16:40   0:00 sshd: ec2-user@pts/0
+ec2-user    2188  0.0  0.4 224032  4180 pts/0    Ss   16:40   0:00 -bash
+root        2238  0.0  0.0      0     0 ?        I    16:41   0:00 [kworker/u4:3-flush-259:0]
+root        2241  0.0  0.0      0     0 ?        I    16:41   0:00 [kworker/u4:4-events_unbound]
+root       26779  0.0  0.0      0     0 ?        I    16:45   0:00 [kworker/1:2-cgroup_destroy]
+root       26853  0.0  0.0      0     0 ?        I    16:45   0:00 [kworker/0:1-cgroup_destroy]
+root       27009  0.0  0.8  15888  7544 ?        S    16:46   0:00 systemd-userwork: waiting...
+root       27010  0.0  0.8  15712  7504 ?        S    16:46   0:00 systemd-userwork: waiting...
+root       27191  0.0  0.0      0     0 ?        I    16:50   0:00 [kworker/0:2-cgroup_destroy]
+root       27207  0.2  2.2 1773896 20624 ?       Ssl  16:50   0:00 /usr/bin/amazon-ssm-agent
+root       27208  0.0  0.0      0     0 ?        I    16:50   0:00 [kworker/1:0-events]
+root       27215  0.0  0.0      0     0 ?        I    16:50   0:00 [kworker/1:3-events]
+root       27218  0.4  3.2 2088160 29840 ?       Sl   16:50   0:00 /usr/bin/ssm-agent-worker
+ec2-user   27233  9.2 11.6 521040 107528 pts/0   S+   16:50   0:01 /usr/bin/python3 /home/ec2-user/.local/bin/ailice_web --modelID=anthropic:claude-3-5-sonnet-20241022 --contextWindowRatio=0.2
+ec2-user   27235  6.1  8.6 1661052 80444 pts/0   Sl+  16:50   0:00 python3 -m ailice.modules.AStorageVecDB --addr=ipc:///tmp/AIliceStorage.ipc
+ec2-user   27236  6.8  9.0 1669200 83772 pts/0   Sl+  16:50   0:00 python3 -m ailice.modules.ABrowser --addr=ipc:///tmp/ABrowser.ipc
+ec2-user   27237  5.6  8.4 1659580 78724 pts/0   Sl+  16:50   0:00 python3 -m ailice.modules.AArxiv --addr=ipc:///tmp/AArxiv.ipc
+ec2-user   27238  6.4  9.0 1666912 83616 pts/0   Sl+  16:50   0:00 python3 -m ailice.modules.AGoogle --addr=ipc:///tmp/AGoogle.ipc
+ec2-user   27239  5.9  9.1 1672984 84540 pts/0   Sl+  16:50   0:00 python3 -m ailice.modules.ADuckDuckGo --addr=ipc:///tmp/ADuckDuckGo.ipc
+ec2-user   27240  5.7  8.3 1658220 77256 pts/0   Sl+  16:50   0:00 python3 -m ailice.modules.AScripter --addr=tcp://127.0.0.1:59000
+ec2-user   27242  5.6  8.3 1658476 77696 pts/0   Sl+  16:50   0:00 python3 -m ailice.modules.AComputer --addr=ipc:///tmp/AComputer.ipc
+root       27375  0.0  0.7  15656  6608 ?        S    16:50   0:00 systemd-userwork: waiting...
+root       27376  0.0  2.9 1707388 27212 ?       Sl   16:51   0:00 /usr/bin/ssm-document-worker 07c8e793-9a24-4eec-9336-af3fd37d1564
+root       27385  0.0  0.3 223008  3348 ?        S    16:51   0:00 sh -c /var/lib/amazon/ssm/i-0c214fe7ecc460890/document/orchestration/07c8e793-9a24-4eec-9336-af3fd37d1564/awsrunShellScript/0.awsrunShellScript/_script.sh
+root       27386  0.0  0.3 223492  2912 ?        R    16:51   0:00 ps auxww

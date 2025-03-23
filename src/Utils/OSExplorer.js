@@ -8,15 +8,17 @@ const {
 const path = require('path');
 const fs = require('fs');
 const AIClassifier = require('./AIClassifier');
-const { DeepSeekAPI } = require('./LLMAPI');
+const { DeepSeekAPI, LlamaAPI } = require('./LLMAPI');
 
 class OSExplorer {
     #AWS_REGION = process.env.AWS_REGION || 'eu-north-1';
     #llmApi;
 
     constructor() {
-        // Initialize with DeepSeekAPI instead of LLMAPI
-        this.#llmApi = new DeepSeekAPI(process.env.DEEPSEEK_API_KEY);
+        // Initialize with LlamaAPI
+        this.#llmApi = new LlamaAPI();
+        // Or with custom endpoint:
+        // this.#llmApi = new LlamaAPI('http://your-llama-server:11434');
     }
 
     async getInstanceInfoSSH(instanceConfig) {
@@ -370,7 +372,7 @@ async function main() {
         // Get processes first
         console.log('\nRetrieving process list...');
         //const processes = await explorer.getProcessesViaSSM(instanceId);
-        const processes = fs.readFileSync(`${instanceId}-processes.txt`, 'utf8').split('\n');
+        const processes = fs.readFileSync(`samples/${instanceId}-processes.txt`, 'utf8').split('\n');
 
         // Get AI analysis of processes
         console.log('\nAnalyzing processes with AI...');
@@ -381,7 +383,7 @@ async function main() {
         // Then get filesystem
         console.log('\nRetrieving filesystem list...');
         //const fileList = await explorer.createFileListingChunks(instanceId);
-        const fileList = fs.readFileSync(`${instanceId}-files.txt`, 'utf8').split('\n');
+        const fileList = fs.readFileSync(`samples/${instanceId}-files.txt`, 'utf8').split('\n');
         //console.log('\n=== Files ===');
         // Get AI analysis of files
         console.log('\nAnalyzing files with AI...');
