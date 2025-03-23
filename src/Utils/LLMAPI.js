@@ -3,7 +3,9 @@ const { Configuration, OpenAIApi } = require('openai');
 class LLMAPI {
     #configuration;
     #openai;
-    #maxTokensPerChunk = 40000; // Adjustable based on needs
+    #maxTokensPerChunk = 4000;
+    #maxRetries = 3;
+    #retryDelay = 1000; // Start with 1 second delay
     #model = "gpt-4o"; // Default model, can be changed via constructor
 
     constructor(apiKey) {
@@ -33,13 +35,44 @@ class LLMAPI {
         return chunks;
     }
 
+    async #delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async #retryWithExponentialBackoff(operation) {
+        let retries = 0;
+        let lastError;
+
+        while (retries < this.#maxRetries) {
+            try {
+                return await operation();
+            } catch (error) {
+                lastError = error;
+                if (error.response?.status === 429) {
+                    retries++;
+                    const delayTime = this.#retryDelay * Math.pow(2, retries); // Exponential backoff
+                    console.log(`Rate limited. Retrying in ${delayTime/1000} seconds... (Attempt ${retries}/${this.#maxRetries})`);
+                    await this.#delay(delayTime);
+                } else {
+                    throw error; // If it's not a rate limit error, throw immediately
+                }
+            }
+        }
+        throw lastError;
+    }
+
     async askWithAttachment(prompt, attachment) {
         try {
             const chunks = this.#splitIntoChunks(attachment);
             let finalResponse = '';
 
+            console.log(`Processing attachment in ${chunks.length} chunks...`);
+
             // Process each chunk separately
             for (let i = 0; i < chunks.length; i++) {
+                const progress = ((i + 1) / chunks.length * 100).toFixed(1);
+                console.log(`Processing chunk ${i + 1}/${chunks.length} (${progress}%)`);
+
                 const combinedPrompt = `
 Context/Attachment (Part ${i + 1}/${chunks.length}):
 ${chunks[i]}
@@ -48,27 +81,36 @@ ${chunks[i]}
 ${i === chunks.length - 1 ? `Question/Prompt:
 ${prompt}` : 'Please analyze this part of the context and maintain relevant information for the final response.'}`;
 
-                const response = await this.#openai.createChatCompletion({
-                    model: "gpt-4",
-                    messages: [
-                        {
-                            role: "user",
-                            content: combinedPrompt
-                        }
-                    ],
-                    temperature: 0.7,
-                    max_tokens: 2000
+                const response = await this.#retryWithExponentialBackoff(async () => {
+                    return await this.#openai.createChatCompletion({
+                        model: "gpt-4o",
+                        messages: [
+                            {
+                                role: "user",
+                                content: combinedPrompt
+                            }
+                        ],
+                        temperature: 0.7,
+                        max_tokens: 2000
+                    });
                 });
 
                 if (i === chunks.length - 1) {
                     finalResponse = response.data.choices[0].message.content;
                 }
+
+                // Add a small delay between chunks to avoid rate limits
+                if (i < chunks.length - 1) {
+                    await this.#delay(1000);
+                }
             }
+
+            console.log('Finished processing all chunks');
 
             return {
                 success: true,
                 response: finalResponse,
-                usage: { total_tokens: 'Multiple requests made' } // Actual token counting would need to be implemented
+                usage: { total_tokens: 'Multiple requests made' }
             };
 
         } catch (error) {
