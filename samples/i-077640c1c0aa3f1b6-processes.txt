@@ -1,0 +1,114 @@
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root           1  0.0  1.7 171516 16488 ?        Ss   Mar20   0:10 /usr/lib/systemd/systemd --switched-root --system --deserialize=32
+root           2  0.0  0.0      0     0 ?        S    Mar20   0:00 [kthreadd]
+root           3  0.0  0.0      0     0 ?        I<   Mar20   0:00 [rcu_gp]
+root           4  0.0  0.0      0     0 ?        I<   Mar20   0:00 [rcu_par_gp]
+root           5  0.0  0.0      0     0 ?        I<   Mar20   0:00 [slub_flushwq]
+root           6  0.0  0.0      0     0 ?        I<   Mar20   0:00 [netns]
+root           8  0.0  0.0      0     0 ?        I<   Mar20   0:00 [kworker/0:0H-events_highpri]
+root          10  0.0  0.0      0     0 ?        I<   Mar20   0:00 [mm_percpu_wq]
+root          11  0.0  0.0      0     0 ?        I    Mar20   0:00 [rcu_tasks_kthread]
+root          12  0.0  0.0      0     0 ?        I    Mar20   0:00 [rcu_tasks_rude_kthread]
+root          13  0.0  0.0      0     0 ?        I    Mar20   0:00 [rcu_tasks_trace_kthread]
+root          14  0.0  0.0      0     0 ?        S    Mar20   0:02 [ksoftirqd/0]
+root          15  0.0  0.0      0     0 ?        I    Mar20   0:10 [rcu_preempt]
+root          16  0.0  0.0      0     0 ?        S    Mar20   0:01 [migration/0]
+root          18  0.0  0.0      0     0 ?        S    Mar20   0:00 [cpuhp/0]
+root          19  0.0  0.0      0     0 ?        S    Mar20   0:00 [cpuhp/1]
+root          20  0.0  0.0      0     0 ?        S    Mar20   0:00 [migration/1]
+root          21  0.0  0.0      0     0 ?        S    Mar20   0:02 [ksoftirqd/1]
+root          23  0.0  0.0      0     0 ?        I<   Mar20   0:00 [kworker/1:0H-events_highpri]
+root          26  0.0  0.0      0     0 ?        S    Mar20   0:00 [kdevtmpfs]
+root          27  0.0  0.0      0     0 ?        I<   Mar20   0:00 [inet_frag_wq]
+root          28  0.0  0.0      0     0 ?        S    Mar20   0:00 [kauditd]
+root          29  0.0  0.0      0     0 ?        S    Mar20   0:00 [khungtaskd]
+root          30  0.0  0.0      0     0 ?        S    Mar20   0:00 [oom_reaper]
+root          32  0.0  0.0      0     0 ?        I<   Mar20   0:00 [writeback]
+root          33  0.0  0.0      0     0 ?        S    Mar20   0:05 [kcompactd0]
+root          34  0.0  0.0      0     0 ?        SN   Mar20   0:00 [khugepaged]
+root          35  0.0  0.0      0     0 ?        I<   Mar20   0:00 [cryptd]
+root          36  0.0  0.0      0     0 ?        I<   Mar20   0:00 [kintegrityd]
+root          37  0.0  0.0      0     0 ?        I<   Mar20   0:00 [kblockd]
+root          38  0.0  0.0      0     0 ?        I<   Mar20   0:00 [blkcg_punt_bio]
+root          40  0.0  0.0      0     0 ?        I<   Mar20   0:00 [tpm_dev_wq]
+root          41  0.0  0.0      0     0 ?        I<   Mar20   0:00 [md]
+root          42  0.0  0.0      0     0 ?        I<   Mar20   0:00 [edac-poller]
+root          43  0.0  0.0      0     0 ?        S    Mar20   0:00 [watchdogd]
+root          45  0.0  0.0      0     0 ?        I<   Mar20   0:00 [kworker/1:1H-kblockd]
+root          56  0.0  0.0      0     0 ?        S    Mar20   0:00 [kswapd0]
+root          70  0.0  0.0      0     0 ?        I<   Mar20   0:00 [xfsalloc]
+root          72  0.0  0.0      0     0 ?        I<   Mar20   0:00 [xfs_mru_cache]
+root          75  0.0  0.0      0     0 ?        I<   Mar20   0:00 [kthrotld]
+root         122  0.0  0.0      0     0 ?        I<   Mar20   0:00 [nvme-wq]
+root         124  0.0  0.0      0     0 ?        I<   Mar20   0:00 [nvme-reset-wq]
+root         126  0.0  0.0      0     0 ?        I<   Mar20   0:00 [nvme-delete-wq]
+root         155  0.0  0.0      0     0 ?        I<   Mar20   0:00 [mld]
+root         156  0.0  0.0      0     0 ?        I<   Mar20   0:00 [ipv6_addrconf]
+root         157  0.0  0.0      0     0 ?        I<   Mar20   0:00 [kworker/0:1H-kblockd]
+root         173  0.0  0.0      0     0 ?        I<   Mar20   0:00 [kstrp]
+root         183  0.0  0.0      0     0 ?        I<   Mar20   0:00 [zswap-shrink]
+root         184  0.0  0.0      0     0 ?        I<   Mar20   0:00 [kworker/u5:0]
+root         771  0.0  0.0      0     0 ?        I<   Mar20   0:00 [xfs-buf/nvme0n1]
+root         772  0.0  0.0      0     0 ?        I<   Mar20   0:00 [xfs-conv/nvme0n]
+root         773  0.0  0.0      0     0 ?        I<   Mar20   0:00 [xfs-reclaim/nvm]
+root         774  0.0  0.0      0     0 ?        I<   Mar20   0:00 [xfs-blockgc/nvm]
+root         775  0.0  0.0      0     0 ?        I<   Mar20   0:00 [xfs-inodegc/nvm]
+root         776  0.0  0.0      0     0 ?        I<   Mar20   0:00 [xfs-log/nvme0n1]
+root         777  0.0  0.0      0     0 ?        I<   Mar20   0:00 [xfs-cil/nvme0n1]
+root         778  0.0  0.0      0     0 ?        S    Mar20   0:44 [xfsaild/nvme0n1p1]
+root         826  0.0  4.5  85636 42228 ?        Ss   Mar20   0:06 /usr/lib/systemd/systemd-journald
+root        1240  0.0  1.1  31044 10344 ?        Ss   Mar20   0:00 /usr/lib/systemd/systemd-udevd
+systemd+    1261  0.0  1.4  21236 13352 ?        Ss   Mar20   0:00 /usr/lib/systemd/systemd-resolved
+root        1265  0.0  0.0      0     0 ?        I<   Mar20   0:00 [rpciod]
+root        1266  0.0  0.0      0     0 ?        I<   Mar20   0:00 [xprtiod]
+root        1268  0.0  0.2  20228  2444 ?        S<sl Mar20   0:00 /sbin/auditd
+root        1277  0.0  0.0      0     0 ?        I<   Mar20   0:00 [ena]
+root        1396  0.0  0.6  15300  5644 ?        Ss   Mar20   0:00 /usr/bin/systemd-inhibit --what=handle-suspend-key:handle-hibernate-key --who=noah --why=acpid instead --mode=block /usr/sbin/acpid -f
+root        1399  0.0  0.3  81408  3008 ?        Ssl  Mar20   0:04 /usr/sbin/irqbalance --foreground
+libstor+    1400  0.0  0.2   2760  2088 ?        Ss   Mar20   0:00 /usr/bin/lsmd -d
+root        1402  0.0  0.7 164932  6856 ?        Ssl  Mar20   0:35 /usr/sbin/rngd -f -x pkcs11 -x nist
+root        1404  0.0  0.7  15804  6976 ?        Ss   Mar20   0:00 /usr/lib/systemd/systemd-homed
+root        1405  0.0  0.9  17648  8888 ?        Ss   Mar20   0:00 /usr/lib/systemd/systemd-logind
+dbus        1429  0.0  0.3   8352  3024 ?        Ss   Mar20   0:00 /usr/bin/dbus-broker-launch --scope system --audit
+systemd+    1430  0.0  0.9 235892  8588 ?        Ss   Mar20   0:00 /usr/lib/systemd/systemd-networkd
+dbus        1431  0.0  0.3   5268  2840 ?        S    Mar20   0:01 dbus-broker --log 4 --controller 9 --machine-id ec2840ae7896de984484a1db3b8ed884 --max-bytes 536870912 --max-fds 4096 --max-matches 16384 --audit
+root        1432  0.0  0.1   2672  1128 ?        S    Mar20   0:00 /usr/sbin/acpid -f
+root        1437  0.0  0.3 281032  3568 ?        Ssl  Mar20   0:01 /usr/sbin/gssproxy -D
+root        1608  0.0  0.8  13316  8128 ?        Ss   Mar20   0:00 sshd: /usr/sbin/sshd -D [listener] 0 of 10-100 startups
+root        1621  0.0  0.2   4732  2660 ?        Ss   Mar20   0:00 /usr/sbin/atd -f
+root        1626  0.0  0.1 221348  1064 tty1     Ss+  Mar20   0:00 /sbin/agetty -o -p -- \u --noclear - linux
+root        1627  0.0  0.1 221392  1064 ttyS0    Ss+  Mar20   0:00 /sbin/agetty -o -p -- \u --keep-baud 115200,57600,38400,9600 - vt220
+chrony      1641  0.0  0.3  86520  2920 ?        S    Mar20   0:03 /usr/sbin/chronyd -F 2
+root        2359  0.0  1.0  14800  9524 ?        Ss   Mar20   0:00 sshd: ec2-user [priv]
+root        2362  0.0  0.6  15300  6144 ?        Ss   Mar20   0:00 /usr/lib/systemd/systemd-userdbd
+ec2-user    2367  0.0  1.3  20464 12540 ?        Ss   Mar20   0:00 /usr/lib/systemd/systemd --user
+ec2-user    2369  0.0  0.7 172660  6620 ?        S    Mar20   0:00 (sd-pam)
+ec2-user    2377  0.0  0.6  14800  6272 ?        S    Mar20   0:00 sshd: ec2-user@pts/0
+ec2-user    2378  0.0  0.5 224164  5164 pts/0    Ss+  Mar20   0:00 -bash
+root       28953  0.0  1.0  14800  9508 ?        Ss   Mar20   0:00 sshd: ec2-user [priv]
+ec2-user   28962  0.0  0.8  15896  7548 ?        S    Mar20   0:03 sshd: ec2-user@pts/1
+ec2-user   29014  0.0  0.6 225392  6368 pts/1    Ss   Mar20   0:00 -bash
+root      121347  0.0  2.0 1849676 19168 ?       Ssl  10:14   0:00 /usr/bin/amazon-ssm-agent
+root      121356  0.0  3.7 2164196 35076 ?       Sl   10:14   0:05 /usr/bin/ssm-agent-worker
+root      128477  0.0  0.0      0     0 ?        I    12:57   0:00 [kworker/0:2-events_power_efficient]
+root      129318  0.0  0.0      0     0 ?        I    13:06   0:00 [kworker/1:0-cgroup_destroy]
+root      129785  0.0  0.0      0     0 ?        I    13:10   0:00 [kworker/1:3-cgroup_destroy]
+root      129942  0.0  0.0      0     0 ?        I    13:12   0:00 [kworker/u4:3-writeback]
+root      129943  0.0  0.0      0     0 ?        I    13:12   0:00 [kworker/u4:4-events_unbound]
+root      130141  0.0  0.0      0     0 ?        I    13:16   0:00 [kworker/1:1-events]
+root      130143  0.0  0.0      0     0 ?        I    13:17   0:00 [kworker/u4:0-events_unbound]
+root      130144  0.0  0.0      0     0 ?        I    13:17   0:00 [kworker/0:0-events]
+root      130465  0.0  0.0      0     0 ?        I    13:20   0:00 [kworker/u4:1-events_unbound]
+root      130477  0.0  0.0      0     0 ?        I    13:20   0:00 [kworker/1:2-events]
+root      130721  0.0  0.0      0     0 ?        I    13:22   0:00 [kworker/u4:2-events_unbound]
+root      130724  0.0  0.0      0     0 ?        I    13:22   0:00 [kworker/u4:5-events_unbound]
+root      130725  0.0  0.0      0     0 ?        I    13:22   0:00 [kworker/u4:6-events_unbound]
+root      130726  0.0  0.0      0     0 ?        I    13:22   0:00 [kworker/u4:7]
+root      130782  0.0  0.0      0     0 ?        I    13:23   0:00 [kworker/0:1-events]
+root      130784  0.0  0.7  15656  6780 ?        S    13:24   0:00 systemd-userwork: waiting...
+root      130785  0.0  0.7  15656  6780 ?        S    13:24   0:00 systemd-userwork: waiting...
+root      130845  0.0  0.7  15656  6780 ?        S    13:25   0:00 systemd-userwork: waiting...
+ec2-user  130863  0.0  7.2 11210288 67484 pts/1  Sl+  13:25   0:00 node src/Utils/OSExplorer.js i-077640c1c0aa3f1b6
+root      130878  0.0  2.8 1631608 26060 ?       Sl   13:25   0:00 /usr/bin/ssm-document-worker de2985ce-516f-4f61-9e1f-b478ae34e1c4
+root      130884  0.0  0.3 223008  3480 ?        S    13:25   0:00 sh -c /var/lib/amazon/ssm/i-077640c1c0aa3f1b6/document/orchestration/de2985ce-516f-4f61-9e1f-b478ae34e1c4/awsrunShellScript/0.awsrunShellScript/_script.sh
+root      130885  0.0  0.3 223492  2912 ?        R    13:25   0:00 ps auxww
