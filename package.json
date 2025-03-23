@@ -23,6 +23,7 @@
     "package.json": "^2.0.1",
     "parquetjs-lite": "",
     "ssh2": "^1.16.0",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "openai": "^3.3.0"
   }
 }
