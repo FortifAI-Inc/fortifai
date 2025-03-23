@@ -40,6 +40,7 @@ async function InventoryAssets() {
         let records = []
         let S3_KEY = ' '
         S3_KEY = 'Assets/ec2inventory.parquet';
+        records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
         for (const instance of instanceList) {
             IfIDs = []
             for (const networkInterface of instance.NetworkInterfaces) {
@@ -64,7 +65,6 @@ async function InventoryAssets() {
                 CpuOptions: instance.CpuOptions.CoreCount * instance.CpuOptions.ThreadsPerCore + " threads total",
                 PlatformDetails: instance.PlatformDetails
             }
-            records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
 
             // Check if InstanceId already exists
 
@@ -87,6 +87,7 @@ async function InventoryAssets() {
         // Get VPCs
         const vpcs = await ec2.describeVpcs();
         S3_KEY = 'Assets/vpcinventory.parquet';
+        records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
         console.log("VPCs count:", vpcs.Vpcs.length);
 
         for (const vpc of vpcs.Vpcs) {
@@ -96,7 +97,6 @@ async function InventoryAssets() {
                 VpcId: vpc.VpcId,
                 CidrBlock: vpc.CidrBlock
             }
-            records = await DL_S3_access.fetchParquetFromS3(S3_KEY);
             for (const record of records) { // Mark all records as stale
                 record.IsStale = true;
             }
