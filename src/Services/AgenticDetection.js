@@ -41,7 +41,7 @@ class AgentDetection {
                             
                             // Update instance if AI is detected with high confidence
                             if (analysis.confidence > 0.8 && analysis.isAI) { // This is an agentic workload
-                                if (instance.IsAI === false) {  
+                                if ((instance.IsAI === false) || (instance.IsAI === null)) {
                                     instance.IsAI = true;
                                     instance.AIDetectionDetails = analysis.confidenceExplanation;
                                     // Write back to datalake only if AI is detected
