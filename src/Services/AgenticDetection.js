@@ -7,7 +7,7 @@ class AgentDetection {
     #S3_KEY = 'Assets/ec2inventory.parquet';
 
     constructor() {
-        this.#osExplorer = new OSExplorer();
+        this.#osExplorer = new OSExplorer("openai");
     }
 
     async monitorInstances() {
