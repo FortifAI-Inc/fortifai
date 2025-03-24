@@ -335,7 +335,7 @@ echo "NUMFILES=$NUMFILES"
                 .join('\n');
 
             const aiResponse = await this.#llmApi.askWithAttachment(
-                "Given the following list of running processes, Do you think there is some AI instance running here? formulate your response in a JSON computer readable format, with the following fields: 'isAI', 'confidence', 'confidenceExplanation'",
+                "Given the following list of running processes, Do you think there is some AI instance running here? formulate your response in a JSON computer readable format, with the following fields: 'isAI', 'confidence', 'confidenceExplanation'. provide the confidence as a number between 0 and 1.",
                 processListStr
             );
 
