@@ -29,7 +29,7 @@ class AgentDetection {
                             const processes = await this.#osExplorer.getProcessesViaSSM(instance.InstanceId);
                             
                             // Analyze processes with AI
-                            const aiAnalysis = await this.#osExplorer.analyzeProcessesWithAI(processes);
+                            let aiAnalysis = await this.#osExplorer.analyzeProcessesWithAI(processes);
                             // Strip JSON formatting lines if present
                             aiAnalysis = aiAnalysis.replace(/^```json\n/, '').replace(/\n```$/, '');
                             // Parse the AI response
