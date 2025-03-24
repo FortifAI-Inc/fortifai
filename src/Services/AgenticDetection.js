@@ -30,7 +30,8 @@ class AgentDetection {
                             
                             // Analyze processes with AI
                             const aiAnalysis = await this.#osExplorer.analyzeProcessesWithAI(processes);
-                            
+                            // Strip JSON formatting lines if present
+                            aiAnalysis = aiAnalysis.replace(/^```json\n/, '').replace(/\n```$/, '');
                             // Parse the AI response
                             const analysis = JSON.parse(aiAnalysis);
                             
