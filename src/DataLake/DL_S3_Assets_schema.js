@@ -23,6 +23,8 @@ const ec2Schema = new parquet.ParquetSchema({
     NetworkInterfaces: { type: 'UTF8', repeated: true}, // for now save only the IfID, later figure out how to store an object
     CpuOptions: { type: 'UTF8', optional: true},
     PlatformDetails: { type: 'UTF8', optional: true},
+    IsAI: { type: 'BOOLEAN', optional: true}, // if the instance is an AI instance
+    AIDetectionDetails: { type: 'UTF8', optional: true}, // details about the AI instance
     /*,
     securityGroups: { type: 'UTF8', optional: true },
     tags: { type: 'UTF8', optional: true }*/
