@@ -66,12 +66,12 @@ class LLMAPI {
             const chunks = this.#splitIntoChunks(attachment);
             let finalResponse = '';
 
-            console.log(`Processing attachment in ${chunks.length} chunks...`);
+            //console.log(`Processing attachment in ${chunks.length} chunks...`);
 
             // Process each chunk separately
             for (let i = 0; i < chunks.length; i++) {
                 const progress = ((i + 1) / chunks.length * 100).toFixed(1);
-                console.log(`Processing chunk ${i + 1}/${chunks.length} (${progress}%)`);
+                //console.log(`Processing chunk ${i + 1}/${chunks.length} (${progress}%)`);
 
                 const combinedPrompt = `
 Context/Attachment (Part ${i + 1}/${chunks.length}):
@@ -105,7 +105,7 @@ ${prompt}` : 'Please analyze this part of the context and maintain relevant info
                 }
             }
 
-            console.log('Finished processing all chunks');
+            //console.log('Finished processing all chunks');
 
             return {
                 success: true,

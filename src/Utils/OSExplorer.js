@@ -121,7 +121,7 @@ class OSExplorer {
                 const maxAttempts = 10;
                 const delaySeconds = 3;
 
-                console.log('Waiting for process list command to complete...');
+                //console.log('Waiting for process list command to complete...');
                 await new Promise(resolve => setTimeout(resolve, 5000));
 
                 for (let attempt = 0; attempt < maxAttempts; attempt++) {
@@ -132,7 +132,7 @@ class OSExplorer {
                         });
 
                         const output = await ssm.send(getCommandOutput);
-                        console.log(`Process command status: ${output.Status}`);
+                        //console.log(`Process command status: ${output.Status}`);
 
                         if (output.Status === 'Success') {
                             return output;

@@ -37,7 +37,7 @@ class AgentDetection {
                             aiAnalysis = aiAnalysis.replace(/^```json\n/, '').replace(/\n```$/, '');
                             // Parse the AI response
                             const analysis = JSON.parse(aiAnalysis);
-                            console.log('Analysis:', JSON.stringify(analysis, null, 2));
+                            //console.log('Analysis:', JSON.stringify(analysis, null, 2));
                             
                             // Update instance if AI is detected with high confidence
                             if (analysis.confidence > 0.8 && analysis.isAI) { // This is an agentic workload
@@ -47,14 +47,14 @@ class AgentDetection {
                                     // Write back to datalake only if AI is detected
                                     records[records.findIndex(r => r.InstanceId === instance.InstanceId)] = instance;
                                     modified = true;
-                                    console.log(`Updated instance ${instance.InstanceId} as AI workload`);
+                                    console.log(`### Updated instance ${instance.InstanceId} as AI workload`);
                                 }
                             } else {
                                 if (instance.IsAI === true) {
                                     instance.IsAI = false;
                                     instance.AIDetectionDetails = null;
                                     modified = true;
-                                    console.log(`Updated instance ${instance.InstanceId} as non-AI workload`);
+                                    console.log(`### Updated instance ${instance.InstanceId} as non-AI workload`);
                                 }
                             }
                         }
