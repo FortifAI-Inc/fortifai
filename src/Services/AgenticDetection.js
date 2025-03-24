@@ -1,6 +1,7 @@
 require('dotenv').config();
 const DL_S3_access = require('../DataLake/DL_S3_access');
 const OSExplorer = require('../Utils/OSExplorer');
+const DL_access = require('../DataLake/DL_access');
 
 class AgentDetection {
     #osExplorer;
@@ -17,6 +18,7 @@ class AgentDetection {
                 
                 // Fetch EC2 instances from the datalake
                 const records = await DL_S3_access.fetchParquetFromS3(this.#S3_KEY);
+                let modified = false;
                 console.log(`Retrieved ${records.length} EC2 instances from datalake`);
 
                 // Process each instance
@@ -41,7 +43,8 @@ class AgentDetection {
                                 instance.IsAI = true;
                                 instance.AIDetectionDetails = analysis.confidenceExplanation;
                                 // Write back to datalake only if AI is detected
-                                await DL_S3_access.writeParquetToS3(this.#S3_KEY, records);
+                                records[records.findIndex(r => r.InstanceId === instance.InstanceId)] = instance;
+                                modified = true;
                                 console.log(`Updated instance ${instance.InstanceId} as AI workload`);
                             }
                         }
@@ -50,6 +53,9 @@ class AgentDetection {
                         // Continue with next instance
                         continue;
                     }
+                }
+                if (modified) { // Only write to datalake if there are changes
+                    await DL_access.writeData(ec2Schema, records, this.#S3_KEY);
                 }
 
                 // Wait for 10 seconds before next iteration
