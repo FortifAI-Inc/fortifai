@@ -1,6 +1,6 @@
 require('dotenv').config();
 const DL_S3_access = require('../DataLake/DL_S3_access');
-const OSExplorer = require('./OSExplorer');
+const OSExplorer = require('../Utils/OSExplorer');
 
 class AgentDetection {
     #osExplorer;
