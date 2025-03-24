@@ -2,6 +2,7 @@ require('dotenv').config();
 const DL_S3_access = require('../DataLake/DL_S3_access');
 const OSExplorer = require('../Utils/OSExplorer');
 const DL_access = require('../DataLake/DL_access');
+const { ec2Schema, VpcSchema, S3Schema, IGWSchema, SGSchema, NISchema, LambdaSchema, IAMRoleSchema, IAMPolicySchema, UserSchema, SubnetSchema } = require('../DataLake/DL_S3_Assets_schema');
 
 class AgentDetection {
     #osExplorer;
