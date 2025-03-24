@@ -34,14 +34,12 @@ class AgentDetection {
                             aiAnalysis = aiAnalysis.replace(/^```json\n/, '').replace(/\n```$/, '');
                             // Parse the AI response
                             const analysis = JSON.parse(aiAnalysis);
+                            console.log(`analysis: ${analysis}`);
                             
                             // Update instance if AI is detected with high confidence
                             if (analysis.confidence > 0.7 && analysis.isAI) {
                                 instance.IsAI = true;
                                 instance.AIDetectionDetails = analysis.confidenceExplanation;
-                                console.log(`Updated instance ${instance.InstanceId} as AI workload`);
-                                console.log(`analysis.confidence: ${analysis.confidence}`);
-                                console.log(`AIDetectionDetails: ${instance.AIDetectionDetails}`);
                                 // Write back to datalake only if AI is detected
                                 await DL_S3_access.writeParquetToS3(this.#S3_KEY, records);
                                 console.log(`Updated instance ${instance.InstanceId} as AI workload`);
