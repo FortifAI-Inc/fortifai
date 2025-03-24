@@ -8,17 +8,36 @@ const {
 const path = require('path');
 const fs = require('fs');
 const AIClassifier = require('./AIClassifier');
-const { DeepSeekAPI, LlamaAPI } = require('./LLMAPI');
+const { LLMAPI, DeepSeekAPI, LlamaAPI } = require('./LLMAPI');
 
 class OSExplorer {
     #AWS_REGION = process.env.AWS_REGION || 'eu-north-1';
     #llmApi;
 
-    constructor() {
-        // Initialize with LlamaAPI
-        this.#llmApi = new LlamaAPI();
-        // Or with custom endpoint:
-        // this.#llmApi = new LlamaAPI('http://your-llama-server:11434');
+    constructor(llmProvider = 'llama') {  // Default to llama if not specified
+        // Initialize the specified LLM API
+        switch (llmProvider.toLowerCase()) {
+            case 'openai':
+                if (!process.env.OPENAI_API_KEY) {
+                    throw new Error('OPENAI_API_KEY environment variable is required for OpenAI');
+                }
+                this.#llmApi = new LLMAPI(process.env.OPENAI_API_KEY);
+                break;
+
+            case 'deepseek':
+                if (!process.env.DEEPSEEK_API_KEY) {
+                    throw new Error('DEEPSEEK_API_KEY environment variable is required for DeepSeek');
+                }
+                this.#llmApi = new DeepSeekAPI(process.env.DEEPSEEK_API_KEY);
+                break;
+
+            case 'llama':
+                this.#llmApi = new LlamaAPI();  // Uses default localhost:11434
+                break;
+
+            default:
+                throw new Error('Invalid LLM provider. Choose "openai", "deepseek", or "llama"');
+        }
     }
 
     async getInstanceInfoSSH(instanceConfig) {
@@ -358,7 +377,7 @@ echo "NUMFILES=$NUMFILES"
 // Updated main function
 async function main() {
     try {
-        const explorer = new OSExplorer();
+        const explorer = new OSExplorer("openai"); // "deepseek" or "llama"
         const instanceId = process.argv[2];
 
         if (!instanceId) {
@@ -421,3 +440,12 @@ if (require.main === module) {
 }
 
 module.exports = OSExplorer;
+
+// Use OpenAI
+//const explorerOpenAI = new OSExplorer('openai');
+
+// Use DeepSeek
+//const explorerDeepSeek = new OSExplorer('deepseek');
+
+// or explicitly
+const explorerLlama2 = new OSExplorer('llama');
