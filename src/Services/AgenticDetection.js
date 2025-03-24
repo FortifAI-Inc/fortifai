@@ -34,7 +34,7 @@ class AgentDetection {
                             aiAnalysis = aiAnalysis.replace(/^```json\n/, '').replace(/\n```$/, '');
                             // Parse the AI response
                             const analysis = JSON.parse(aiAnalysis);
-                            console.log(`analysis: ${analysis}`);
+                            console.log('Analysis:', JSON.stringify(analysis, null, 2));
                             
                             // Update instance if AI is detected with high confidence
                             if (analysis.confidence > 0.7 && analysis.isAI) {
