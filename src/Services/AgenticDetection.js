@@ -40,13 +40,22 @@ class AgentDetection {
                             console.log('Analysis:', JSON.stringify(analysis, null, 2));
                             
                             // Update instance if AI is detected with high confidence
-                            if (analysis.confidence > 0.8 && analysis.isAI) {
-                                instance.IsAI = true;
-                                instance.AIDetectionDetails = analysis.confidenceExplanation;
-                                // Write back to datalake only if AI is detected
-                                records[records.findIndex(r => r.InstanceId === instance.InstanceId)] = instance;
-                                modified = true;
-                                console.log(`Updated instance ${instance.InstanceId} as AI workload`);
+                            if (analysis.confidence > 0.8 && analysis.isAI) { // This is an agentic workload
+                                if (instance.IsAI === false) {  
+                                    instance.IsAI = true;
+                                    instance.AIDetectionDetails = analysis.confidenceExplanation;
+                                    // Write back to datalake only if AI is detected
+                                    records[records.findIndex(r => r.InstanceId === instance.InstanceId)] = instance;
+                                    modified = true;
+                                    console.log(`Updated instance ${instance.InstanceId} as AI workload`);
+                                }
+                            } else {
+                                if (instance.IsAI === true) {
+                                    instance.IsAI = false;
+                                    instance.AIDetectionDetails = null;
+                                    modified = true;
+                                    console.log(`Updated instance ${instance.InstanceId} as non-AI workload`);
+                                }
                             }
                         }
                     } catch (error) {
