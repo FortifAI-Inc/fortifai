@@ -3,7 +3,7 @@ const { Configuration, OpenAIApi } = require('openai');
 class LLMAPI {
     #configuration;
     #openai;
-    #maxTokensPerChunk = 4000;
+    #maxTokensPerChunk = 40000;
     #maxRetries = 3;
     #retryDelay = 1000; // Start with 1 second delay
     #model = "gpt-4o"; // Default model, can be changed via constructor
@@ -16,7 +16,7 @@ class LLMAPI {
     }
 
     // Helper method to split text into chunks
-    #splitIntoChunks(text, maxChunkSize = 4000) {
+    #splitIntoChunks(text, maxChunkSize = 40000) {
         const chunks = [];
         const lines = text.split('\n');
         let currentChunk = '';
