@@ -74,6 +74,7 @@ async function InventoryAssets() {
                 ec2Data.IsAI = records[index].IsAI;
                 ec2Data.AIDetectionDetails = records[index].AIDetectionDetails;
                 records[index] = ec2Data; // Update record
+                console.log(JSON.stringify(ec2Data, null, 2));
             } else {
                 //console.log(`Adding new instance: ${ec2Data.InstanceId}`);
                 records.push(ec2Data); // Insert new record
