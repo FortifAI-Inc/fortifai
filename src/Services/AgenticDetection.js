@@ -39,7 +39,7 @@ class AgentDetection {
                             console.log('Analysis:', JSON.stringify(analysis, null, 2));
                             
                             // Update instance if AI is detected with high confidence
-                            if (analysis.confidence > 0.7 && analysis.isAI) {
+                            if (analysis.confidence > 0.8 && analysis.isAI) {
                                 instance.IsAI = true;
                                 instance.AIDetectionDetails = analysis.confidenceExplanation;
                                 // Write back to datalake only if AI is detected
