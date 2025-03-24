@@ -71,6 +71,8 @@ async function InventoryAssets() {
             const index = records.findIndex(rec => rec.UniqueId === ec2Data.InstanceId);
             if (index !== -1) {
                 //console.log(`Updating existing instance: ${ec2Data.InstanceId}`);
+                ec2Data.IsAI = records[index].IsAI;
+                ec2Data.AIDetectionDetails = records[index].AIDetectionDetails;
                 records[index] = ec2Data; // Update record
             } else {
                 //console.log(`Adding new instance: ${ec2Data.InstanceId}`);
