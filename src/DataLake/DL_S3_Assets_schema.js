@@ -33,8 +33,8 @@ const VpcSchema = new parquet.ParquetSchema({
     UniqueId: { type: 'UTF8', optional: false },
     IsStale: { type: 'BOOLEAN', optional: false },
     VpcId: { type: 'UTF8', optional: false },
-    CidrBlock: { type: 'UTF8', optional: false }
-    //tags: { type: 'UTF8', optional: true }*/
+    CidrBlock: { type: 'UTF8', optional: false },
+    Tags: { type: 'JSON', optional: true }
 });
 const SubnetSchema = new parquet.ParquetSchema({
     UniqueId: { type: 'UTF8', optional: false },
@@ -47,29 +47,28 @@ const SubnetSchema = new parquet.ParquetSchema({
     VpcId: { type: 'UTF8', optional: false },
     OwnerId: { type: 'UTF8', optional: false },
     Ipv6CidrBlockAssociationSet: { type: 'JSON', optional: true },
-    Tags: { type: 'UTF8', repeated: true, optional: true }
+    Tags: { type: 'JSON', optional: true }
 }); 
 const S3Schema = new parquet.ParquetSchema({
     UniqueId: { type: 'UTF8', optional: false },
     IsStale: { type: 'BOOLEAN', optional: false },
     Name: { type: 'UTF8', optional: false },
-    CreationDate: { type: 'UTF8', optional: false }
-    //tags: { type: 'UTF8', optional: true }*/
+    CreationDate: { type: 'UTF8', optional: false },
+    Tags: { type: 'JSON', optional: true }
 });
 const IGWSchema = new parquet.ParquetSchema({
     UniqueId: { type: 'UTF8', optional: false },
     IsStale: { type: 'BOOLEAN', optional: false },
     InternetGatewayId: { type: 'UTF8', optional: false },
     VpcId: { type: 'UTF8', optional: true },
-    Tags: { type: 'UTF8', repeated: true, optional: true }
-    //tags: { type: 'UTF8', optional: true }*/
+    Tags: { type: 'JSON', optional: true }
 });
 const SGSchema = new parquet.ParquetSchema({
     UniqueId: { type: 'UTF8', optional: false },
     IsStale: { type: 'BOOLEAN', optional: false },
     GroupId: { type: 'UTF8', optional: false },
-    VpcId: { type: 'UTF8', optional: false }
-    //tags: { type: 'UTF8', optional: true }*/
+    VpcId: { type: 'UTF8', optional: false },
+    Tags: { type: 'JSON', optional: true }
 });
 const NISchema = new parquet.ParquetSchema({
     UniqueId: { type: 'UTF8', optional: false },
@@ -84,22 +83,23 @@ const NISchema = new parquet.ParquetSchema({
     VpcId: { type: 'UTF8', optional: false }, 
     SubnetId: { type: 'UTF8', optional: false },
     GroupId: { type: 'UTF8', optional: true },
-    //tags: { type: 'UTF8', optional: true }*/
+    Tags: { type: 'JSON', optional: true }
 });
 const LambdaSchema = new parquet.ParquetSchema({
     UniqueId: { type: 'UTF8', optional: false },
     IsStale: { type: 'BOOLEAN', optional: false },
     FunctionName: { type: 'UTF8', optional: false },
     Description: { type: 'UTF8', optional: true },
-    Role: { type: 'UTF8', optional: false }
-    //tags: { type: 'UTF8', optional: true }*/
+    Role: { type: 'UTF8', optional: false },
+    Tags: { type: 'JSON', optional: true }
 });
 const IAMRoleSchema = new parquet.ParquetSchema({
     UniqueId: { type: 'UTF8', optional: false },
     IsStale: { type: 'BOOLEAN', optional: false },
     RoleId: { type: 'UTF8', optional: false },
     RoleName: { type: 'UTF8', optional: false },
-    AssumeRolePolicyDocument: { type: 'UTF8', optional: false }
+    AssumeRolePolicyDocument: { type: 'UTF8', optional: false },
+    Tags: { type: 'JSON', optional: true }
 });
 const IAMPolicySchema = new parquet.ParquetSchema({
     UniqueId: { type: 'UTF8', optional: false },
@@ -108,7 +108,8 @@ const IAMPolicySchema = new parquet.ParquetSchema({
     PolicyName: { type: 'UTF8', optional: false },
     AttachmentCount: { type: 'INT32', optional: false },
     PermissionsBoundaryUsageCount: {type: 'INT32', optional: false},
-    Document: {type: 'UTF8', optional: false}
+    Document: {type: 'UTF8', optional: false},
+    Tags: { type: 'JSON', optional: true }
 });
 const UserSchema = new parquet.ParquetSchema({
     UniqueId: { type: 'UTF8', optional: false },
@@ -117,7 +118,8 @@ const UserSchema = new parquet.ParquetSchema({
     UserName: { type: 'UTF8', optional: false },
     AccessKeyIds: { type: 'UTF8', repeated: true },
     AttachedPolicyNames: {type: 'UTF8', repeated: true},
-    InlinePolicyNames: {type: 'UTF8', repeated: true}
+    InlinePolicyNames: {type: 'UTF8', repeated: true},
+    Tags: { type: 'JSON', optional: true }
 });
 
 module.exports = {
