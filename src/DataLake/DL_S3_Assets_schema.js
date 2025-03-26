@@ -25,9 +25,7 @@ const ec2Schema = new parquet.ParquetSchema({
     PlatformDetails: { type: 'UTF8', optional: true},
     IsAI: { type: 'BOOLEAN', optional: true}, // if the instance is an AI instance
     AIDetectionDetails: { type: 'UTF8', optional: true}, // details about the AI instance
-    /*,
-    securityGroups: { type: 'UTF8', optional: true },
-    tags: { type: 'UTF8', optional: true }*/
+    Tags: { type: 'JSON', optional: true } // Store instance tags as JSON
 });
 const VpcSchema = new parquet.ParquetSchema({
     UniqueId: { type: 'UTF8', optional: false },

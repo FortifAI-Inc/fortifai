@@ -63,7 +63,8 @@ async function InventoryAssets() {
                 ElasticInferenceAcceleratorAssociations: instance.ElasticInferenceAcceleratorAssociations,
                 NetworkInterfaces: IfIDs, // for now save only the IfID, later figure out how to store an object
                 CpuOptions: instance.CpuOptions.CoreCount * instance.CpuOptions.ThreadsPerCore + " threads total",
-                PlatformDetails: instance.PlatformDetails
+                PlatformDetails: instance.PlatformDetails,
+                Tags: instance.Tags || null // Store instance tags if available
             }
 
             // Check if InstanceId already exists
@@ -97,7 +98,8 @@ async function InventoryAssets() {
                 UniqueId: vpc.VpcId,
                 IsStale: false,
                 VpcId: vpc.VpcId,
-                CidrBlock: vpc.CidrBlock
+                CidrBlock: vpc.CidrBlock,
+                Tags: vpc.Tags || null
             }
             for (const record of records) { // Mark all records as stale
                 record.IsStale = true;
@@ -166,7 +168,8 @@ async function InventoryAssets() {
                 UniqueId: bucket.Name,
                 IsStale: false,
                 Name: bucket.Name,
-                CreationDate: bucket.CreationDate
+                CreationDate: bucket.CreationDate,
+                Tags: bucket.Tags || null
             }
             // Check if InstanceId already exists
 
@@ -234,7 +237,8 @@ async function InventoryAssets() {
                 UniqueId: sg.GroupId,
                 IsStale: false,
                 GroupId: sg.GroupId,
-                VpcId: sg.VpcId
+                VpcId: sg.VpcId,
+                Tags: sg.Tags || null
             }
 
             // Check if InstanceId already exists
@@ -275,7 +279,8 @@ async function InventoryAssets() {
                 InstanceId: ni.Attachment ? ni.Attachment.InstanceId : null,
                 VpcId: ni.VpcId,
                 SubnetId: ni.SubnetId,
-                GroupId: ni.Groups ? ni.Groups.map(group => group.GroupId).join(',') : null
+                GroupId: ni.Groups ? ni.Groups.map(group => group.GroupId).join(',') : null,
+                Tags: ni.TagSet || null
             }
 
             // Check if InstanceId already exists
@@ -309,7 +314,8 @@ async function InventoryAssets() {
                 IsStale: false,
                 FunctionName: lambdaFunction.FunctionName,
                 Description: lambdaFunction.Description,
-                Role: lambdaFunction.Role
+                Role: lambdaFunction.Role,
+                Tags: lambdaFunction.Tags || null
             }
 
             // Check if InstanceId already exists
@@ -367,7 +373,8 @@ async function CollectRoles() {
                 IsStale: false,
                 RoleId: role.RoleId,
                 RoleName: role.RoleName,
-                AssumeRolePolicyDocument: role.AssumeRolePolicyDocument
+                AssumeRolePolicyDocument: role.AssumeRolePolicyDocument,
+                Tags: role.Tags || null
             }
 
             // Check if InstanceId already exists
@@ -422,7 +429,8 @@ async function CollectPolicies() {
                 PolicyName: policy.PolicyName,
                 AttachmentCount: policy.AttachmentCount,
                 PermissionsBoundaryUsageCount: policy.PermissionsBoundaryUsageCount,
-                Document: policyVersion.PolicyVersion.Document
+                Document: policyVersion.PolicyVersion.Document,
+                Tags: policy.Tags || null
             }
 
             // Check if InstanceId already exists
@@ -498,7 +506,8 @@ async function CollectUsers() {
                 UserName: consolidatedUser.UserName,
                 AccessKeyIds: AccessKeys,
                 AttachedPolicyNames: PolicyNames,
-                InlinePolicyNames: InlinePolicies
+                InlinePolicyNames: InlinePolicies,
+                Tags: consolidatedUser.Tags || null
             }
 
             // Check if InstanceId already exists
